@@ -92,6 +92,8 @@ import { NgxGaugeComponent } from './gui-helpers/ngx-gauge/ngx-gauge.component';
 import { BagPropertyComponent } from './gauges/bag-property/bag-property.component';
 import { PipePropertyComponent } from './gauges/pipe/pipe-property/pipe-property.component';
 import { PipeComponent } from './gauges/pipe/pipe.component';
+import { TablePropertyComponent } from './gauges/controls/table/table-property/table-property.component';
+import { TableComponent } from './gauges/controls/table/table.component';
 
 import { httpInterceptorProviders } from './_helpers/auth-interceptor';
 
@@ -134,6 +136,7 @@ export function createTranslateLoader(http: HttpClient) {
       ChartPropertyComponent,
       BagPropertyComponent,
       PipePropertyComponent,
+      TablePropertyComponent,
       ShapesComponent,
       ProcEngComponent,
       ApeShapesComponent,
@@ -202,6 +205,7 @@ export function createTranslateLoader(http: HttpClient) {
         WindowRef,
         Utils,
         PipeComponent,
+        TableComponent,
         Dictionary,
         ModalPositionCache,
         Define,
