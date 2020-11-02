@@ -103,6 +103,7 @@ import { SliderPropertyComponent } from './gauges/slider/slider-property/slider-
 import { HtmlSwitchPropertyComponent } from './gauges/controls/html-switch/html-switch-property/html-switch-property.component';
 
 import { httpInterceptorProviders } from './_helpers/auth-interceptor';
+import { TestThreeComponent } from './test-three/test-three.component';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -181,7 +182,8 @@ export function createTranslateLoader(http: HttpClient) {
       LoginComponent,
       DialogUserInfo,
       ViewComponent,
-      DialogItemText
+      DialogItemText,
+      TestThreeComponent
    ],
    imports: [
       BrowserModule,

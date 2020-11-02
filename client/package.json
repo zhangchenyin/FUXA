@@ -55,6 +55,7 @@
     "panzoom": "^9.2.5",
     "rxjs": "6.0.0",
     "socket.io-client": "^2.2.0",
+    "three": "^0.88.0",
     "zone.js": "^0.8.26"
   },
   "devDependencies": {
