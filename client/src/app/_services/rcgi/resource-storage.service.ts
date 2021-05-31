@@ -7,6 +7,9 @@ import { ProjectData, ProjectDataCmdType } from '../../_models/project';
 
 @Injectable()
 export abstract class ResourceStorageService {
+    
+    public static prjresource = 'prj-data';
+
     public abstract getDemoProject(): Observable<any>;
     
     public abstract getStorageProject(): Observable<any>;
@@ -25,7 +28,7 @@ export abstract class ResourceStorageService {
 
     public abstract checkServer(): Observable<any>;
 
-    public AppId: string = '';
+    public abstract getProjectName(): string;
 
 	// public abstract get<T>( key: string ) : Promise<T | null>;
 	// public abstract remove( key: string ) : void;

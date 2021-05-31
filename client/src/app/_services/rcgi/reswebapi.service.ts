@@ -11,7 +11,6 @@ import { ResourceStorageService } from './resource-storage.service';
 export class ResWebApiService implements ResourceStorageService {
 
     private endPointConfig: string = EndPointApi.getURL();
-    public AppId: string = '';
 
     constructor(private http: HttpClient) {
     }
@@ -67,5 +66,9 @@ export class ResWebApiService implements ResourceStorageService {
 
     checkServer(): Observable<any> {
         return this.http.get<any>(this.endPointConfig + '/api/settings');
+    }
+
+    getProjectName() {
+        return ResourceStorageService.prjresource;
     }
 }

@@ -40,10 +40,8 @@ export class ProjectService {
         private resDemoService: ResDemoService,
         private resClientService: ResClientService,
         private translateService: TranslateService,        
-        private toastr: ToastrService,
-        @Inject('appid') @Optional() public wsAuthKey?: string) {
+        private toastr: ToastrService) {
 
-        console.log('projectService');
         this.storage = resewbApiService;
         switch (environment.type) {
             case "demo":
@@ -53,9 +51,9 @@ export class ProjectService {
             case "client":
                 console.log("mode:", "client");
                 this.storage = resClientService;
-                this.storage.AppId = this.AppId;
             break;
         }
+        this.storage.getProjectName = () => { return this.getProjectName(); }
         this.storage.checkServer().subscribe(result => {
             if (result) {
                 this.serverSettings = result;
@@ -68,16 +66,22 @@ export class ProjectService {
         });
     }
 
+    getProjectName() {
+        return this.AppId;
+    }
+
     //#region Load and Save
     /**
      * Load Project from Server if enable.
      * From Local Storage, from 'assets' if demo or create a local project
      */
     private load() {
-        console.log('ps ' + this.AppId);
         this.storage.getStorageProject().subscribe(prj => {
             if (environment.type === 'demo' && !prj) {
                 console.log('create demo');
+                this.setNewProject();
+            } else if (environment.type === 'client' && !prj) {
+                console.log('create client');
                 this.setNewProject();
             } else {
                 this.projectData = prj;

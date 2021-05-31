@@ -10,12 +10,7 @@ import { Utils } from '../../_helpers/utils';
 @Injectable()
 export class ResClientService implements ResourceStorageService {
 
-    private prjresource = 'prj-data';
-    private prjpart = 'prj-part';
-    public AppId: string = '';
-
     constructor(private http: HttpClient) {
-        console.log('ResClientService');
     }
 
     getDemoProject(): Observable<any> {
@@ -24,23 +19,18 @@ export class ResClientService implements ResourceStorageService {
 
     getStorageProject(): Observable<any> {
         return new Observable((observer) => {
-            let prj = localStorage.getItem(this.getProjectItem());
+            let prj = localStorage.getItem(this.getProjectName());
             if (prj) {
                 observer.next(JSON.parse(prj));
             } else {
-                // try root path
-                this.getDemoProject().subscribe(demo => {
-                    observer.next(demo);
-                }, err => {
-                    observer.error(err);
-                });
+                observer.next();
             }
         });
     }
 
     setServerProject(prj: ProjectData) {
         return new Observable((observer) => {
-            localStorage.setItem(this.getProjectItem(), JSON.stringify(prj));
+            localStorage.setItem(this.getProjectName(), JSON.stringify(prj));
             observer.next();
         });
     }
@@ -48,7 +38,7 @@ export class ResClientService implements ResourceStorageService {
     setServerProjectData(cmd: ProjectDataCmdType, data: any, prj: ProjectData) {
         return new Observable((observer) => {
             // localStorage.setItem(this.prjpart, JSON.stringify(data));
-            localStorage.setItem(this.getProjectItem(), JSON.stringify(prj));
+            localStorage.setItem(this.getProjectName(), JSON.stringify(prj));
             observer.next();
         });
     }
@@ -83,7 +73,7 @@ export class ResClientService implements ResourceStorageService {
         });
     }
 
-    private getProjectItem() {
-        return this.AppId + this.prjresource;
+    getProjectName() {
+        return ResourceStorageService.prjresource;
     }
 }

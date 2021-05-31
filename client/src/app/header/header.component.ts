@@ -12,6 +12,8 @@ import { HelpData } from '../_models/hmi';
 import { TutorialComponent } from '../help/tutorial/tutorial.component';
 import { TranslateService } from '@ngx-translate/core';
 
+import { AppService } from '../_services/app.service';
+
 @Component({
     moduleId: module.id,
     selector: 'app-header',
@@ -20,25 +22,35 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
 
-    @ViewChild('sidenav')sidenav: any; 
+    @ViewChild('sidenav') sidenav: any;
     @ViewChild('tutorial') tutorial: TutorialComponent;
     @ViewChild('fileImportInput') fileImportInput: any;
+
+    private subscriptionShowModeChanged: Subscription;
 
     ineditor = false;
     savededitor = false;
     private subscriptionShowHelp: Subscription;
-    
-    constructor(private router: Router,
-                public dialog: MatDialog,
-                private translateService: TranslateService,
-                private projectService: ProjectService){
 
-        this.router.events.subscribe(()=> {
-            this.ineditor = (this.router.url.indexOf('editor') >= 0 ||  this.router.url.indexOf('device') >= 0 ||
-            this.router.url.indexOf('users') >= 0 || this.router.url.indexOf('text') >= 0 || this.router.url.indexOf('messages') >= 0) ? true : false;
-            this.savededitor = (this.router.url.indexOf('device') >= 0 || this.router.url.indexOf('users') >= 0 || 
-                                this.router.url.indexOf('text') >= 0 || this.router.url.indexOf('messages') >= 0) ? true : false;
+    constructor(private router: Router,
+        public dialog: MatDialog,
+        private appService: AppService,
+        private translateService: TranslateService,
+        private projectService: ProjectService) {
+
+        this.subscriptionShowModeChanged = this.appService.onShowModeChanged.subscribe((mode) => {
+            this.ineditor = (mode.indexOf('editor') >= 0 || mode.indexOf('device') >= 0 ||
+                mode.indexOf('users') >= 0 || mode.indexOf('text') >= 0 || mode.indexOf('messages') >= 0) ? true : false;
+            this.savededitor = (mode.indexOf('device') >= 0 || mode.indexOf('users') >= 0 ||
+                mode.indexOf('text') >= 0 || mode.indexOf('messages') >= 0) ? true : false;
         });
+
+        // this.router.events.subscribe(() => {
+        //     this.ineditor = (this.router.url.indexOf('editor') >= 0 || this.router.url.indexOf('device') >= 0 ||
+        //         this.router.url.indexOf('users') >= 0 || this.router.url.indexOf('text') >= 0 || this.router.url.indexOf('messages') >= 0) ? true : false;
+        //     this.savededitor = (this.router.url.indexOf('device') >= 0 || this.router.url.indexOf('users') >= 0 ||
+        //         this.router.url.indexOf('text') >= 0 || this.router.url.indexOf('messages') >= 0) ? true : false;
+        // });
     }
 
     ngOnInit() {
@@ -46,12 +58,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         try {
-          if (this.subscriptionShowHelp) {
-            this.subscriptionShowHelp.unsubscribe();
-          } 
+            if (this.subscriptionShowHelp) {
+                this.subscriptionShowHelp.unsubscribe();
+            }
+            if (this.subscriptionShowModeChanged) {
+                this.subscriptionShowModeChanged.unsubscribe();
+            }
         } catch (e) {
         }
-      }
+    }
 
     public onClick(targetElement) {
         this.sidenav.close();
@@ -87,7 +102,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         });
     }
 
-    goTo(destination:string) {
+    goTo(destination: string) {
         this.router.navigate([destination]);//, this.ID]);
     }
 

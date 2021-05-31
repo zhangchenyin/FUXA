@@ -119,6 +119,7 @@ import { ChartUplotComponent } from './gauges/controls/html-chart/chart-uplot/ch
 import { httpInterceptorProviders } from './_helpers/auth-interceptor';
 import { environment } from '../environments/environment';
 
+
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }

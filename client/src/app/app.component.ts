@@ -1,6 +1,4 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, Input, ElementRef } from '@angular/core';
-import { Location } from '@angular/common';
-import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from "rxjs";
 
@@ -9,6 +7,7 @@ import { SettingsService } from './_services/settings.service';
 import { ResWebApiService } from './_services/rcgi/reswebapi.service';
 import { ResDemoService } from './_services/rcgi/resdemo.service';
 import { ResClientService } from './_services/rcgi/resclient.service';
+import { AppService } from './_services/app.service';
 
 import { HomeComponent } from './home/home.component';
 
@@ -21,12 +20,12 @@ import { HomeComponent } from './home/home.component';
         ResClientService,
         ResWebApiService,
         ResDemoService,
+        AppService
     ]
 })
 
 export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     title = 'app';
-    location: Location;
     showdev = false;
 
     @Input() id: string;
@@ -38,17 +37,16 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     constructor(private elementRef: ElementRef,
         public projectService: ProjectService,
         private settingsService: SettingsService,
-        location: Location) {
-            
-        this.location = location;
+        private appService: AppService) {
+
         this.projectService.AppId = this.elementRef.nativeElement.getAttribute('id');
-        console.log('appcomponent');
     }
 
     ngOnInit() {
     }
 
     ngAfterViewInit() {
+        this.appService.setShowMode(this.showMode);
         this.projectService.AppId = this.id;
         console.log(this.projectService.AppId);
         try {
@@ -88,30 +86,27 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     isHidden() {
-        let list = ['', '/lab', '/home'],
-            route = this.location.path();
-        return (list.indexOf(route) > -1);
+        let list = ['', 'lab', 'home'];
+        return (list.indexOf(this.showMode) > -1);
     }
 
     getClass() {
-        let route = this.location.path();
-        if (route.startsWith('/view')) {
+        if (this.showMode.startsWith('view')) {
             return 'work-void';
         }
         return (this.isHidden()) ? 'work-home' : 'work-editor';
     }
 
     showDevNavigation() {
-        let route = this.location.path();
-        if (route.startsWith('/view')) {
+        if (this.showMode.startsWith('view')) {
             return false;
         }
         return this.showdev;
     }
 
     onGoTo(goto) {
-        // this.router.navigate([goto]);
         this.fabmenu.toggle();
         this.showMode = goto;
+        this.appService.setShowMode(this.showMode);
     }
 }
