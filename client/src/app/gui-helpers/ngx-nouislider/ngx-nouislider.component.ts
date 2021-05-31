@@ -13,7 +13,7 @@ export class NgxNouisliderComponent implements OnInit, AfterViewInit, OnDestroy 
     @Input() public id: string;
     @ViewChild('panel') public panel: ElementRef;
     @ViewChild('slider') public slider: ElementRef;
-    @Input() public options: NgxNouisliderOptions;
+    @Input() public options: any;
 
     size = { w: 0, h: 0 };
     padding = 40;

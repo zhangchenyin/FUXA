@@ -6,12 +6,11 @@ import { Observable } from 'rxjs';
 import { ProjectData, ProjectDataCmdType } from '../../_models/project';
 import { ResourceStorageService } from './resource-storage.service';
 
-@Injectable({
-	providedIn: "root"
-})
+@Injectable()
 export class ResDemoService implements ResourceStorageService {
 
     private prjresource = 'prj-data';
+    public AppId: string = '';
 
     constructor(private http: HttpClient) {
     }

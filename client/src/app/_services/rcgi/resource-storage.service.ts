@@ -5,10 +5,7 @@ import { Observable } from 'rxjs';
 import { ResWebApiService } from './reswebapi.service';
 import { ProjectData, ProjectDataCmdType } from '../../_models/project';
 
-@Injectable({
-	providedIn: "root",
-	useClass: forwardRef( () => ResWebApiService ) // Default implementation.
-})
+@Injectable()
 export abstract class ResourceStorageService {
     public abstract getDemoProject(): Observable<any>;
     
@@ -16,7 +13,7 @@ export abstract class ResourceStorageService {
 
     public abstract setServerProject(prj: ProjectData);
 
-    public abstract setServerProjectData(cmd: ProjectDataCmdType, data: any);
+    public abstract setServerProjectData(cmd: ProjectDataCmdType, data: any, prj: ProjectData);
     
     public abstract getDeviceSecurity(name: string): Observable<any>;
 
@@ -27,6 +24,8 @@ export abstract class ResourceStorageService {
     public abstract setAlarmAck(name: string): Observable<any>;
 
     public abstract checkServer(): Observable<any>;
+
+    public AppId: string = '';
 
 	// public abstract get<T>( key: string ) : Promise<T | null>;
 	// public abstract remove( key: string ) : void;

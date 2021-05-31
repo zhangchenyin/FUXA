@@ -32,21 +32,104 @@
     <script src="assets/lib/svg/svg.min.js"></script>
     <script src="assets/lib/svg/raphael.min.js"></script>
 
+    <style>
+        .mydiv {
+            position: absolute;
+            z-index: 9;
+            background-color: #f1f1f1;
+            border: 1px solid #d3d3d3;
+            text-align: center;
+        }
+
+        .mydivheader {
+            padding: 10px;
+            cursor: move;
+            z-index: 10;
+            background-color: #2196F3;
+            color: #fff;
+        }
+    </style>
 </head>
 <!-- 3. Display the application -->
 
 <body>
-    <app-root>
-        <div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);">
-            <div class="logo" style="display: inline-block;width:40px;height:40px;background-size:40px 40px;"></div>
-            <div style="display: inline-block;padding-left:10px">
-                <div style="display:inline-block;font-size: 18px">FUXA Loading...</div>
-                <div style="display: block;font-size: 9px;padding-top: 3px;">
-                    powered by <span><b>frango</b>team</span>
+    <div id="mydiv1" class="mydiv">
+        <div id="mydiv1header" class="mydivheader">Click here to move</div>
+        <div style="position: relative; width:1000px; height: 900px">
+            <app-fuxa id="fuxa1">
+                <div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);">
+                    <div class="logo" style="display: inline-block;width:40px;height:40px;background-size:40px 40px;"></div>
+                    <div style="display: inline-block;padding-left:10px">
+                        <div style="display:inline-block;font-size: 18px">FUXA Loading...</div>
+                        <div style="display: block;font-size: 9px;padding-top: 3px;">
+                            powered by <span><b>frango</b>team</span>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </app-fuxa>
         </div>
-    </app-root>
+    </div>
+    <div id="mydiv2" class="mydiv">
+        <div id="mydiv2header" class="mydivheader">Click here to move</div>
+        <div style="position: relative; width:1000px; height: 900px">
+            <app-fuxa id="fuxa2" >
+                <div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);">
+                    <div class="logo" style="display: inline-block;width:40px;height:40px;background-size:40px 40px;"></div>
+                    <div style="display: inline-block;padding-left:10px">
+                        <div style="display:inline-block;font-size: 18px">FUXA Loading...</div>
+                        <div style="display: block;font-size: 9px;padding-top: 3px;">
+                            powered by <span><b>frango</b>team</span>
+                        </div>
+                    </div>
+                </div>
+            </app-fuxa>
+        </div>
+    </div>
 </body>
+<script>
 
+    dragElement(document.getElementById("mydiv1"));
+    dragElement(document.getElementById("mydiv2"));
+
+    function dragElement(elmnt) {
+        var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        if (document.getElementById(elmnt.id + "header")) {
+            // if present, the header is where you move the DIV from:
+            document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+        } else {
+            // otherwise, move the DIV from anywhere inside the DIV:
+            elmnt.onmousedown = dragMouseDown;
+        }
+
+        function dragMouseDown(e) {
+            e = e || window.event;
+            e.preventDefault();
+            // get the mouse cursor position at startup:
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = closeDragElement;
+            // call a function whenever the cursor moves:
+            document.onmousemove = elementDrag;
+        }
+
+        function elementDrag(e) {
+            e = e || window.event;
+            e.preventDefault();
+            // calculate the new cursor position:
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            // set the element's new position:
+            elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+            elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        }
+
+        function closeDragElement() {
+            // stop moving when mouse button is released:
+            document.onmouseup = null;
+            document.onmousemove = null;
+        }
+    }
+</script>
 </html>

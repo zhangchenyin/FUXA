@@ -5,15 +5,17 @@ import { Observable } from 'rxjs';
 
 import { ProjectData, ProjectDataCmdType } from '../../_models/project';
 import { ResourceStorageService } from './resource-storage.service';
+import { Utils } from '../../_helpers/utils';
 
-@Injectable({
-	providedIn: "root"
-})
+@Injectable()
 export class ResClientService implements ResourceStorageService {
 
     private prjresource = 'prj-data';
+    private prjpart = 'prj-part';
+    public AppId: string = '';
 
     constructor(private http: HttpClient) {
+        console.log('ResClientService');
     }
 
     getDemoProject(): Observable<any> {
@@ -22,7 +24,7 @@ export class ResClientService implements ResourceStorageService {
 
     getStorageProject(): Observable<any> {
         return new Observable((observer) => {
-            let prj = localStorage.getItem(this.prjresource);
+            let prj = localStorage.getItem(this.getProjectItem());
             if (prj) {
                 observer.next(JSON.parse(prj));
             } else {
@@ -38,14 +40,16 @@ export class ResClientService implements ResourceStorageService {
 
     setServerProject(prj: ProjectData) {
         return new Observable((observer) => {
-            localStorage.setItem(this.prjresource, JSON.stringify(prj));
+            localStorage.setItem(this.getProjectItem(), JSON.stringify(prj));
             observer.next();
         });
     }
 
-    setServerProjectData(cmd: ProjectDataCmdType, data: any) {
+    setServerProjectData(cmd: ProjectDataCmdType, data: any, prj: ProjectData) {
         return new Observable((observer) => {
-            observer.next('Not supported!');
+            // localStorage.setItem(this.prjpart, JSON.stringify(data));
+            localStorage.setItem(this.getProjectItem(), JSON.stringify(prj));
+            observer.next();
         });
     }
     
@@ -77,5 +81,9 @@ export class ResClientService implements ResourceStorageService {
         return new Observable((observer) => {
             observer.next();
         });
+    }
+
+    private getProjectItem() {
+        return this.AppId + this.prjresource;
     }
 }

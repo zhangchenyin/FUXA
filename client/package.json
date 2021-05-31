@@ -12,7 +12,7 @@
     "ng": "ng",
     "start": "ng serve",
     "demo": "ng serve -c demo",
-    "client": "ng serve -c client",
+    "client": "ng serve -c client --aot",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
@@ -55,7 +55,7 @@
     "panzoom": "^9.2.5",
     "rxjs": "6.0.0",
     "socket.io-client": "^2.2.0",
-    "uplot": "^1.6.7",
+    "uplot": "1.6.7",
     "zone.js": "^0.8.26"
   },
   "devDependencies": {

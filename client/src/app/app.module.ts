@@ -1,12 +1,13 @@
 // the start/root module that tells Angular how to assemble the application.
 
-import { NgModule, Provider } from '@angular/core';
+import { NgModule, Injector, ApplicationRef, ComponentFactoryResolver } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { MaterialModule } from './material.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ColorPickerModule } from 'ngx-color-picker';
+import { createCustomElement } from '@angular/elements';
 
 import { Ng5SliderModule } from 'ng5-slider';
 import { ToastrModule } from 'ngx-toastr';
@@ -303,8 +304,17 @@ export function createTranslateLoader(http: HttpClient) {
         DialogUserInfo,
         DialogItemText,
         ChartUplotComponent,
-        NgxUplotComponent
-    ],
-    bootstrap: [AppComponent]
+        NgxUplotComponent,
+        AppComponent
+    ]
+    // bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+    constructor(private resolver: ComponentFactoryResolver, private injector: Injector) { 
+    }
+
+    ngDoBootstrap(appRef: ApplicationRef) {
+        const custom = createCustomElement(AppComponent, {injector: this.injector});
+        customElements.define('app-fuxa', custom);
+    }
+}

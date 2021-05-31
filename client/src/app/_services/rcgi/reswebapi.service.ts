@@ -7,12 +7,11 @@ import { EndPointApi } from '../../_helpers/endpointapi';
 import { ProjectData, ProjectDataCmdType } from '../../_models/project';
 import { ResourceStorageService } from './resource-storage.service';
 
-@Injectable({
-	providedIn: "root"
-})
+@Injectable()
 export class ResWebApiService implements ResourceStorageService {
 
     private endPointConfig: string = EndPointApi.getURL();
+    public AppId: string = '';
 
     constructor(private http: HttpClient) {
     }

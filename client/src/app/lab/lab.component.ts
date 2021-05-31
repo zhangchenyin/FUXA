@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, ViewContainerRef, ChangeDetectorRef  } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, ViewContainerRef, ChangeDetectorRef, Input } from '@angular/core';
 import { Subscription } from "rxjs";
 
 import { ProjectService } from '../_services/project.service';
@@ -11,13 +11,14 @@ declare var SVG: any;
 declare var Raphael: any;
 
 @Component({
-    moduleId: module.id,
+    selector: 'app-lab',
     templateUrl: 'lab.component.html',
     styleUrls: ['lab.component.css']
 })
 
 export class LabComponent implements OnInit, AfterViewInit, OnDestroy {
 
+    @Input() projectSrv: ProjectService;
     @ViewChild('messagecontainer', { read: ViewContainerRef }) entry: ViewContainerRef;
     @ViewChild('tester') tester: TesterComponent;
 
@@ -27,13 +28,13 @@ export class LabComponent implements OnInit, AfterViewInit, OnDestroy {
     svgMain: any;
     componentRef: any;
     labView: View = null;
-	backgroudColor = 'unset';
+    backgroudColor = 'unset';
 
-	private subscriptionLoad: Subscription;
+    private subscriptionLoad: Subscription;
 
     constructor(private projectService: ProjectService,
         private gaugesManager: GaugesManager,
-        private changeDetector: ChangeDetectorRef,        
+        private changeDetector: ChangeDetectorRef,
         private testerService: TesterService) {
     }
 
@@ -42,6 +43,7 @@ export class LabComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit() {
+        this.projectService = this.projectSrv;
         try {
             let hmi = this.projectService.getHmi();
             if (!hmi) {
@@ -94,8 +96,8 @@ export class LabComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private setBackground() {
-		if (this.currentView && this.currentView.profile) {
-			this.backgroudColor = this.currentView.profile.bkcolor;
-		}
-	}
+        if (this.currentView && this.currentView.profile) {
+            this.backgroudColor = this.currentView.profile.bkcolor;
+        }
+    }
 }

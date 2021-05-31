@@ -1,7 +1,17 @@
 <div id="main-container" class="container">
     <app-header class="header" [hidden]="isHidden()"></app-header>
     <div [ngClass]="getClass()">
-        <router-outlet></router-outlet>
+        <div [ngSwitch]="showMode">
+            <div *ngSwitchCase="'home'">
+                <app-home [projectSrv]="projectService"></app-home>
+            </div>
+            <div *ngSwitchCase="'lab'">
+                <app-lab [projectSrv]="projectService"></app-lab>
+            </div>
+            <div *ngSwitchCase="'editor'">
+                <app-editor [projectSrv]="projectService"></app-editor>
+            </div>
+        </div>
         <ngx-fab-button *ngIf="showDevNavigation()" #fabmenu icon="menu" iconOpen="menu" class="fab-button" color="rgba(68,138,255, 1)">
             <ngx-fab-item-button color="rgba(68,138,255, 1)" content="{{'app.editor' | translate}}" (click)="onGoTo('editor')" (touchend)="onGoTo('editor')"></ngx-fab-item-button>
             <ngx-fab-item-button color="rgba(68,138,255, 1)" content="{{'app.lab' | translate}}" (click)="onGoTo('lab')" (touchend)="onGoTo('lab')"></ngx-fab-item-button>

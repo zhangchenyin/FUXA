@@ -1,4 +1,4 @@
-﻿import { Component, Inject, OnInit, OnDestroy, AfterViewInit, ViewChild, ViewContainerRef, ComponentFactoryResolver, ElementRef } from '@angular/core';
+﻿import { Component, Inject, OnInit, OnDestroy, AfterViewInit, ViewChild, ViewContainerRef, ComponentFactoryResolver, Input, ElementRef } from '@angular/core';
 import { ChangeDetectorRef } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -55,7 +55,7 @@ declare var mysvgeditor: any;
 declare var initSvgEditor: any;
 
 @Component({
-    moduleId: module.id,
+	selector: 'app-editor',
     templateUrl: 'editor.component.html',
     styleUrls: ['editor.component.css']
 })
@@ -64,6 +64,7 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
     // currentUser: User;
     // users: User[] = [];
     // @ViewChild('fillcolor') fillcolor: ElementRef;
+    @Input() projectSrv: ProjectService;
     @ViewChild('gaugepanel') gaugePanelComponent: GaugeBaseComponent;
     @ViewChild('viewFileImportInput') viewFileImportInput: any;
 
@@ -121,6 +122,7 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
      * Init Save Project event and clear gauge memory (to manage event signal/gauge)
      */
     ngOnInit() {
+        this.projectService = this.projectSrv;
         try {
             this.subscriptionSave = this.projectService.onSaveCurrent.subscribe(saveas => {
                 this.onSaveProject();

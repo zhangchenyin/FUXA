@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, AfterViewInit, OnDestroy, ViewChild, ChangeDetectorRef, ElementRef } from '@angular/core';
+import { Component, Inject, OnInit, AfterViewInit, OnDestroy, ViewChild, ChangeDetectorRef, ElementRef, Input } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Subscription } from "rxjs";
 import { MatSidenav } from '@angular/material';
@@ -26,6 +26,7 @@ import panzoom from 'panzoom';
 })
 export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
+	@Input() projectSrv: ProjectService;
 	@ViewChild('sidenav') sidenav: SidenavComponent;
 	@ViewChild('matsidenav') matsidenav: MatSidenav;
 	@ViewChild('fuxaview') fuxaview: FuxaViewComponent;
@@ -43,7 +44,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 	showHomeLink = false;
 	securityEnabled = false;
 	backgroudColor = 'unset';
-	title = '';	
+	title = '';
 	alarms = { show: false, count: 0, mode: '' };
 	infos = { show: false, count: 0, mode: '' };
 	headerButtonMode = NotificationModeType;
@@ -59,13 +60,15 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 		private router: Router,
 		private hmiService: HmiService,
 		private authService: AuthService,
-		private gaugesManager: GaugesManager) { }
+		private gaugesManager: GaugesManager) {
+	}
 
 	ngOnInit() {
 
 	}
 
 	ngAfterViewInit() {
+		this.projectService = this.projectSrv;
 		try {
 			let hmi = this.projectService.getHmi();
 			if (hmi) {
@@ -78,9 +81,9 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 			});
 			this.subscriptionAlarmsStatus = this.hmiService.onAlarmsStatus.subscribe(event => {
 				this.setAlarmsStatus(event);
-            });
-            this.hmiService.askAlarmsStatus();
-            this.changeDetector.detectChanges();
+			});
+			this.hmiService.askAlarmsStatus();
+			this.changeDetector.detectChanges();
 		}
 		catch (err) {
 			console.log(err);
@@ -101,9 +104,9 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	onGoToPage(event: string) {
 		const view = this.hmi.views.find(x => x.id === event);
-        this.showHomeView = (this.homeView) ? true : false;
-        this.showHomeLink = false;
-        this.changeDetector.detectChanges();
+		this.showHomeView = (this.homeView) ? true : false;
+		this.showHomeLink = false;
+		this.changeDetector.detectChanges();
 		if (view) {
 			this.homeView = view;
 			this.setBackground();
@@ -114,8 +117,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 	onGoToLink(event: string) {
 		if (event.indexOf('://') >= 0) {
 			this.showHomeView = false;
-            this.showHomeLink = true;
-            this.changeDetector.detectChanges();
+			this.showHomeLink = true;
+			this.changeDetector.detectChanges();
 			this.iframeview.loadLink(event);
 
 		} else {
@@ -238,9 +241,9 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 							panzoom(element, {
 								bounds: true,
 								boundsPadding: 0.05,
-							});		
+							});
 						}
-                		this.container.nativeElement.style.overflow = 'hidden';
+						this.container.nativeElement.style.overflow = 'hidden';
 					}, 1000);
 				}
 			}
@@ -264,22 +267,22 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 		let float = <NotificationModeType>Object.keys(NotificationModeType)[Object.values(NotificationModeType).indexOf(NotificationModeType.float)];
 		if (this.alarms.mode === fix || (this.alarms.mode === float && this.alarms.count > 0)) {
 			this.alarms.show = true;
-        }
-        else {
-            this.alarms.show = false;
-        }
+		}
+		else {
+			this.alarms.show = false;
+		}
 		if (this.infos.mode === fix || (this.infos.mode === float && this.infos.count > 0)) {
 			this.infos.show = true;
 		} else {
-            this.infos.show = false;
-        }
+			this.infos.show = false;
+		}
 	}
 
 	private setAlarmsStatus(status: any) {
 		if (status) {
 			this.alarms.count = status.highhigh + status.high + status.low;
-            this.infos.count = status.info;
-            this.checkHeaderButton();
+			this.infos.count = status.info;
+			this.checkHeaderButton();
 		}
 	}
 
