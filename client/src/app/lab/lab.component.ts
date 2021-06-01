@@ -18,7 +18,6 @@ declare var Raphael: any;
 
 export class LabComponent implements OnInit, AfterViewInit, OnDestroy {
 
-    @Input() projectSrv: ProjectService;
     @ViewChild('messagecontainer', { read: ViewContainerRef }) entry: ViewContainerRef;
     @ViewChild('tester') tester: TesterComponent;
 
@@ -43,7 +42,6 @@ export class LabComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit() {
-        this.projectService = this.projectSrv;
         try {
             let hmi = this.projectService.getHmi();
             if (!hmi) {

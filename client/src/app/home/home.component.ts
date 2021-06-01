@@ -26,7 +26,6 @@ import panzoom from 'panzoom';
 })
 export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
-	@Input() projectSrv: ProjectService;
 	@ViewChild('sidenav') sidenav: SidenavComponent;
 	@ViewChild('matsidenav') matsidenav: MatSidenav;
 	@ViewChild('fuxaview') fuxaview: FuxaViewComponent;
@@ -68,7 +67,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 	}
 
 	ngAfterViewInit() {
-		this.projectService = this.projectSrv;
 		try {
 			let hmi = this.projectService.getHmi();
 			if (hmi) {

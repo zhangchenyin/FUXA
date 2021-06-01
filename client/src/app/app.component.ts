@@ -31,7 +31,10 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     @Input() id: string;
     @ViewChild('fabmenu') fabmenu: any;
     @ViewChild('home') home: HomeComponent;
+
     private subscriptionLoad: Subscription;
+    private subscriptionShowModeChanged: Subscription;
+
     showMode = 'home';
 
     constructor(private elementRef: ElementRef,
@@ -40,6 +43,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         private appService: AppService) {
 
         this.projectService.AppId = this.elementRef.nativeElement.getAttribute('id');
+        this.appService.todelete = this.projectService.AppId;
     }
 
     ngOnInit() {
@@ -60,6 +64,11 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
             }, error => {
                 console.log('Error loadHMI');
             });
+
+            this.subscriptionShowModeChanged = this.appService.onShowModeChanged.subscribe((mode) => {
+                this.showMode = mode;
+            });
+    
             this.projectService.reload();
         }
         catch (err) {
@@ -71,6 +80,9 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         try {
             if (this.subscriptionLoad) {
                 this.subscriptionLoad.unsubscribe();
+            }
+            if (this.subscriptionShowModeChanged) {
+                this.subscriptionShowModeChanged.unsubscribe();
             }
         } catch (e) {
         }

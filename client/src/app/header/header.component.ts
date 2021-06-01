@@ -82,6 +82,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     onSetup() {
         let dialogRef = this.dialog.open(SetupComponent, {
             position: { top: '60px' },
+			data: { appService: this.appService },
         });
     }
 

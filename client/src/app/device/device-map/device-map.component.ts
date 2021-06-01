@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, Output, EventEmitter, ElementRef } from '@angular/core';
 import { Subscription } from "rxjs";
 import { MatDialog } from '@angular/material';
 
@@ -44,10 +44,14 @@ export class DeviceMapComponent implements OnInit, OnDestroy, AfterViewInit {
 
 	devicesStatus = {};
 	dirty: boolean = false;
+	domArea: any;
 
 	constructor(private dialog: MatDialog,
+		private elementRef: ElementRef,
         private pluginService: PluginService,
-		private projectService: ProjectService) { }
+		private projectService: ProjectService) { 
+			this.domArea = this.elementRef.nativeElement.parent;
+		}
 
 	ngOnInit() {
 		this.loadCurrentProject();
@@ -127,9 +131,12 @@ export class DeviceMapComponent implements OnInit, OnDestroy, AfterViewInit {
 	}
 
 	private getWindowWidth() {
-		let result = window.innerWidth;
+		if (!this.elementRef.nativeElement || !this.elementRef.nativeElement.parentElement) {
+			return 0;
+		}
+		let result = this.elementRef.nativeElement.parentElement.clientWidth;
 		if (this.devices) {
-			if (window.innerWidth < (this.plcs().length + 2) * this.deviceWidth) {
+			if (result < (this.plcs().length + 2) * this.deviceWidth) {
 				result = (this.plcs().length + 2) * this.deviceWidth;
 			}
 			if (result < (this.flows().length + 2) * this.deviceWidth) {

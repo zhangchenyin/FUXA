@@ -3,13 +3,13 @@
     <div [ngClass]="getClass()">
         <div [ngSwitch]="showMode">
             <div *ngSwitchCase="'home'">
-                <app-home [projectSrv]="projectService"></app-home>
+                <app-home></app-home>
             </div>
             <div *ngSwitchCase="'lab'">
-                <app-lab [projectSrv]="projectService"></app-lab>
+                <app-lab></app-lab>
             </div>
             <div *ngSwitchCase="'editor'">
-                <app-editor [projectSrv]="projectService"></app-editor>
+                <app-editor></app-editor>
             </div>
             <div *ngSwitchCase="'device'">
                 <app-device></app-device>

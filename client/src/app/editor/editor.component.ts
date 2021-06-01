@@ -30,6 +30,7 @@ import { ValueComponent } from '../gauges/controls/value/value.component';
 import { GaugeProgressComponent } from '../gauges/controls/gauge-progress/gauge-progress.component';
 import { GaugeSemaphoreComponent } from '../gauges/controls/gauge-semaphore/gauge-semaphore.component';
 import { HtmlSwitchPropertyComponent } from '../gauges/controls/html-switch/html-switch-property/html-switch-property.component';
+import { AppService } from '../_services/app.service';
 
 declare var Gauge: any;
 
@@ -59,12 +60,10 @@ declare var initSvgEditor: any;
     templateUrl: 'editor.component.html',
     styleUrls: ['editor.component.css']
 })
-
 export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
     // currentUser: User;
     // users: User[] = [];
     // @ViewChild('fillcolor') fillcolor: ElementRef;
-    @Input() projectSrv: ProjectService;
     @ViewChild('gaugepanel') gaugePanelComponent: GaugeBaseComponent;
     @ViewChild('viewFileImportInput') viewFileImportInput: any;
 
@@ -103,6 +102,7 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
 
     constructor(private projectService: ProjectService,
         private winRef: WindowRef,
+        private appSettings: AppService,
         public dialog: MatDialog,
         private changeDetector: ChangeDetectorRef,
         private translateService: TranslateService,
@@ -122,7 +122,6 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
      * Init Save Project event and clear gauge memory (to manage event signal/gauge)
      */
     ngOnInit() {
-        this.projectService = this.projectSrv;
         try {
             this.subscriptionSave = this.projectService.onSaveCurrent.subscribe(saveas => {
                 this.onSaveProject();

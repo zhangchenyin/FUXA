@@ -1,5 +1,5 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { Component, OnInit, AfterViewInit, Inject } from '@angular/core';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Router } from '@angular/router';
 
 import { ProjectService } from '../../_services/project.service';
@@ -8,6 +8,7 @@ import { ChartConfigComponent } from '../../editor/chart-config/chart-config.com
 import { LayoutPropertyComponent } from '../../editor/layout-property/layout-property.component';
 import { PluginsComponent } from '../../editor/plugins/plugins.component';
 import { AppSettingsComponent } from '../../editor/app-settings/app-settings.component';
+import { AppService } from '../../_services/app.service';
 
 @Component({
     selector: 'app-setup',
@@ -16,10 +17,15 @@ import { AppSettingsComponent } from '../../editor/app-settings/app-settings.com
 })
 export class SetupComponent implements OnInit, AfterViewInit {
 
+    appService: AppService;
+
     constructor(private router: Router,
         public dialog: MatDialog,
         private projectService: ProjectService,
-        public dialogRef: MatDialogRef<SetupComponent>) { }
+        public dialogRef: MatDialogRef<SetupComponent>,
+        @Inject(MAT_DIALOG_DATA) public data: any) { 
+            this.appService = data.appService;
+        }
 
     ngOnInit() {
     }
@@ -34,6 +40,9 @@ export class SetupComponent implements OnInit, AfterViewInit {
     goTo(destination:string) {
         this.onNoClick();
         this.router.navigate([destination]);
+        if (this.appService) {
+            this.appService.setShowMode(destination);
+        }
     }
 
     /**
