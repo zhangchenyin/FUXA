@@ -42,7 +42,7 @@
 					{{'msg.home-welcome' | translate}}.
 				</p>
 			</div>
-			<div id="alarms-panel">
+			<div class="alarms-panel" #alarmspanel>
 				<app-alarm-view #alarmsview [fullview]="false" (showMode)="onAlarmsShowMode($event)"></app-alarm-view>
 			</div>
 		</div>

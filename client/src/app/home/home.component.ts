@@ -31,6 +31,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 	@ViewChild('fuxaview') fuxaview: FuxaViewComponent;
 	@ViewChild('alarmsview') alarmsview: AlarmViewComponent;
 	@ViewChild('container') container: ElementRef;
+	@ViewChild('alarmspanel') alarmspanel: ElementRef;
 
 	@ViewChild('iframeview') iframeview: IframeComponent;
 
@@ -168,7 +169,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 	}
 
 	onAlarmsShowMode(mode: string) {
-		let ele = document.getElementById("alarms-panel");
+		let ele = this.alarmspanel.nativeElement;
 		if (mode === 'expand') {
 			ele.classList.add("is-full-active");
 			// ele.classList.remove('is-active');			
