@@ -4,7 +4,6 @@ import { Subscription, Subject, timer, Observable, empty } from 'rxjs';
 import { takeUntil, switchMap, catchError } from 'rxjs/operators';
 
 import { HmiService } from '../../_services/hmi.service';
-import { ProjectService } from '../../_services/project.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Alarm, AlarmSubProperty } from '../../_models/alarm';
 

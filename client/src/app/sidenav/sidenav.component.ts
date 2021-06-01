@@ -1,5 +1,4 @@
 import { Component, AfterViewInit, Input, Output, EventEmitter, ChangeDetectorRef, AfterContentChecked } from '@angular/core';
-import { Router } from '@angular/router';
 import { MatSidenav } from '@angular/material';
 
 import { LayoutSettings, NaviItem, NaviModeType, NavigationSettings } from '../_models/hmi';
@@ -19,8 +18,7 @@ export class SidenavComponent implements AfterViewInit, AfterContentChecked {
     showSidenav = false;
     layoutNavigation = new NavigationSettings();
 
-    constructor(private router: Router,
-        private changeDetector: ChangeDetectorRef) { }
+    constructor(private changeDetector: ChangeDetectorRef) { }
 
     ngAfterViewInit() {
     }

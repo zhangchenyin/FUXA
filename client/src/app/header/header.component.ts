@@ -1,5 +1,4 @@
 import { Component, Inject, ViewChild, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
 import { Subscription } from "rxjs";
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
@@ -32,8 +31,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     savededitor = false;
     private subscriptionShowHelp: Subscription;
 
-    constructor(private router: Router,
-        public dialog: MatDialog,
+    constructor(public dialog: MatDialog,
         private appService: AppService,
         private translateService: TranslateService,
         private projectService: ProjectService) {
@@ -44,13 +42,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
             this.savededitor = (mode.indexOf('device') >= 0 || mode.indexOf('users') >= 0 ||
                 mode.indexOf('text') >= 0 || mode.indexOf('messages') >= 0) ? true : false;
         });
-
-        // this.router.events.subscribe(() => {
-        //     this.ineditor = (this.router.url.indexOf('editor') >= 0 || this.router.url.indexOf('device') >= 0 ||
-        //         this.router.url.indexOf('users') >= 0 || this.router.url.indexOf('text') >= 0 || this.router.url.indexOf('messages') >= 0) ? true : false;
-        //     this.savededitor = (this.router.url.indexOf('device') >= 0 || this.router.url.indexOf('users') >= 0 ||
-        //         this.router.url.indexOf('text') >= 0 || this.router.url.indexOf('messages') >= 0) ? true : false;
-        // });
     }
 
     ngOnInit() {
@@ -82,7 +73,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     onSetup() {
         let dialogRef = this.dialog.open(SetupComponent, {
             position: { top: '60px' },
-			data: { appService: this.appService },
+			data: { appService: this.appService, projectService: this.projectService },
         });
     }
 
@@ -101,10 +92,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
         dialogRef.afterClosed().subscribe(result => {
         });
-    }
-
-    goTo(destination: string) {
-        this.router.navigate([destination]);//, this.ID]);
     }
 
     //#region Project Events

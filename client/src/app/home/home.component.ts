@@ -148,7 +148,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 		} else {
 			let dialogRef = this.dialog.open(LoginComponent, {
 				// minWidth: '250px',
-				data: {}
+				data: { projectService: this.projectService }
 			});
 			dialogRef.afterClosed().subscribe(result => {
 			});

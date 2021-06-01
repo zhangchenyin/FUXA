@@ -19,8 +19,8 @@ const appRoutes: Routes = [
     { path: 'lab', component: LabComponent, canActivate: [AuthGuard] },
     { path: 'device', component: DeviceComponent, canActivate: [AuthGuard] },
     { path: 'users', component: UsersComponent, canActivate: [AuthGuard] },
-    { path: 'alarms', component: AlarmViewComponent, canActivate: [AuthGuard] },
-    { path: 'messages', component: AlarmListComponent, canActivate: [AuthGuard] },
+    // { path: 'alarms', component: AlarmViewComponent, canActivate: [AuthGuard] },
+    // { path: 'messages', component: AlarmListComponent, canActivate: [AuthGuard] },
     { path: 'text', component: TextListComponent, canActivate: [AuthGuard] },
     { path: 'view', component: ViewComponent },
 

@@ -38,7 +38,7 @@
             z-index: 9;
             background-color: #f1f1f1;
             border: 1px solid #d3d3d3;
-            text-align: center;
+            /* text-align: center; */
         }
 
         .mydivheader {
@@ -54,7 +54,9 @@
 
 <body>
     <div id="mydiv1" class="mydiv">
-        <div id="mydiv1header" class="mydivheader">Click here to move</div>
+        <div id="mydiv1header" class="mydivheader">Click here to move
+            <div style="float: right; cursor: pointer;">X</div>
+        </div>
         <div style="position: relative; width:1000px; height: 900px">
             <app-fuxa id="fuxa1">
                 <div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);">
@@ -70,7 +72,9 @@
         </div>
     </div>
     <div id="mydiv2" class="mydiv">
-        <div id="mydiv2header" class="mydivheader">Click here to move</div>
+        <div id="mydiv2header" class="mydivheader">Click here to move
+            <div style="float: right; cursor: pointer;">X</div>
+        </div>
         <div style="position: relative; width:1000px; height: 900px">
             <app-fuxa id="fuxa2" >
                 <div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);">

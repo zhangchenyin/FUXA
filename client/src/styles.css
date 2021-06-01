@@ -665,7 +665,7 @@ mat-toolbar-row {
 }
 
 .fab-add {
-    position: fixed !important;
+    position: absolute !important;
     right: 20px !important;
     bottom: 30px !important;
     z-index: 9999 !important;

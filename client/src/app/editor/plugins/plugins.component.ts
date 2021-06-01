@@ -20,13 +20,15 @@ export class PluginsComponent implements OnInit {
     installed: string;
     removed: string;
     error: string;
+    private projectService: ProjectService;
 
     constructor(@Inject(MAT_DIALOG_DATA) public data: any,
         public dialog: MatDialog,
         public dialogRef: MatDialogRef<PluginsComponent>,
         private translateService: TranslateService,
-        private pluginService: PluginService,
-        private projectService: ProjectService) { }
+        private pluginService: PluginService) { 
+            this.projectService = data.projectService;
+        }
 
     ngOnInit() {
         this.translateService.get('dlg.plugins-status-installing').subscribe((txt: string) => { this.installing = txt });

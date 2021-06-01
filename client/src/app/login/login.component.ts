@@ -20,12 +20,14 @@ export class LoginComponent implements OnInit {
 	username: FormControl = new FormControl();
 	password: FormControl = new FormControl();
 	errorEnabled = false;
+    private projectService: ProjectService;
 
 	constructor(private authService: AuthService,
-		private projectService: ProjectService,
 		private translateService: TranslateService,
 		private dialogRef: MatDialogRef<LoginComponent>,
-		@Inject(MAT_DIALOG_DATA) private data: any) { }
+		@Inject(MAT_DIALOG_DATA) private data: any) { 
+        this.projectService = data.projectService;
+    }
 
 	ngOnInit() {
 	}
@@ -50,7 +52,6 @@ export class LoginComponent implements OnInit {
 	signIn() {
 		this.submitLoading = true;
 		this.authService.signIn(this.username.value, this.password.value).subscribe(result => {
-			// 		this.router.navigate([this.returnUrl]);
 			this.submitLoading = false;
 			this.dialogRef.close(this.data.user);
 			this.projectService.reload();

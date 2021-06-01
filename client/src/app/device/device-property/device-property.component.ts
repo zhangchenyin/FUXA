@@ -48,12 +48,15 @@ export class DevicePropertyComponent implements OnInit, OnDestroy {
 	private subscriptionHostInterfaces: Subscription;
 	private subscriptionDeviceWebApiRequest: Subscription;
 
+    private projectService: ProjectService;
+
 	constructor(
 		private hmiService: HmiService,
-		private projectService: ProjectService,
         private translateService: TranslateService,
 		public dialogRef: MatDialogRef<DevicePropertyComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: any) { }
+		@Inject(MAT_DIALOG_DATA) public data: any) { 
+            this.projectService = data.projectService;
+        }
 
 	ngOnInit() {
 		this.isToRemove = this.data.remove;

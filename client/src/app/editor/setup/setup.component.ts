@@ -1,6 +1,5 @@
 import { Component, OnInit, AfterViewInit, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { Router } from '@angular/router';
 
 import { ProjectService } from '../../_services/project.service';
 
@@ -18,13 +17,13 @@ import { AppService } from '../../_services/app.service';
 export class SetupComponent implements OnInit, AfterViewInit {
 
     appService: AppService;
+    projectService: ProjectService;
 
-    constructor(private router: Router,
-        public dialog: MatDialog,
-        private projectService: ProjectService,
+    constructor(public dialog: MatDialog,
         public dialogRef: MatDialogRef<SetupComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any) { 
             this.appService = data.appService;
+            this.projectService = data.projectService;
         }
 
     ngOnInit() {
@@ -39,7 +38,6 @@ export class SetupComponent implements OnInit, AfterViewInit {
 
     goTo(destination:string) {
         this.onNoClick();
-        this.router.navigate([destination]);
         if (this.appService) {
             this.appService.setShowMode(destination);
         }
@@ -96,6 +94,7 @@ export class SetupComponent implements OnInit, AfterViewInit {
         this.onNoClick();
         let dialogRef = this.dialog.open(PluginsComponent, {
             position: { top: '60px' },
+            data: { projectService: this.projectService }
         });
         dialogRef.afterClosed().subscribe(result => {
         });

@@ -14,6 +14,12 @@
             <div *ngSwitchCase="'device'">
                 <app-device></app-device>
             </div>
+            <div *ngSwitchCase="'messages'">
+                <app-alarm-list></app-alarm-list>
+            </div>
+            <div *ngSwitchCase="'alarms'">
+                <app-alarm-view></app-alarm-view>
+            </div>
         </div>
         <ngx-fab-button *ngIf="showDevNavigation()" #fabmenu icon="menu" iconOpen="menu" class="fab-button" color="rgba(68,138,255, 1)">
             <ngx-fab-item-button color="rgba(68,138,255, 1)" content="{{'app.editor' | translate}}" (click)="onGoTo('editor')" (touchend)="onGoTo('editor')"></ngx-fab-item-button>
