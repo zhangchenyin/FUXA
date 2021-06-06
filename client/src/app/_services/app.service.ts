@@ -8,7 +8,6 @@ export class AppService {
 
     private showMode: string;
 
-    public todelete: string;
     constructor() {
     }
 

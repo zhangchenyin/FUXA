@@ -51,8 +51,128 @@
     </style>
 </head>
 <!-- 3. Display the application -->
+<script>
+    class FuxaBridge {
+        disposing = false;
+        constructor(id) {
+            this._id = id;
+        }
+
+        get id() {
+            return this._id;
+        }
+
+        invoke = (func, arg) => {
+            if (typeof func === "function" && !this.disposing) {
+                return func(arg);
+            }
+            return
+        }
+
+        // Triggers Fuxa to reload the project. In the (re)load flow Fuxa will invoke the 'onRefreshProject' callback and receives the actual project JSON.
+        refreshProject = () => {
+            return this.invoke(this.onRefreshProject);
+        }
+
+        onRefreshProject = function () {
+            console.log("onRefreshProject NOT supported!");
+        }
+
+        // This callback gets invoked when Fuxa loads the project
+        loadProject = () => {
+            return this.invoke(this.onLoadProject);
+        }
+
+        onLoadProject = function () {
+            console.log("onLoadProject NOT supported!");
+        };
+
+        saveProject = (project) => {
+            return this.invoke(this.onSaveProject, project);
+        }
+
+        // This callback gets invoked when Fuxa saves the project
+        onSaveProject = function () {
+            console.log("onSaveProject NOT supported!");
+        }
+    }
+
+    class FuxaBridgeManager {
+        bridges = {};
+
+        createBridge = (widgetId) => {
+            let bridge = this.bridges[widgetId];
+            if (!bridge) {
+                bridge = new FuxaBridge(widgetId);
+                this.bridges[widgetId] = bridge;
+                // this.bridge.onRefreshProject = () => {
+                //     console.log("onLoad Project is running")
+                //     return this.workModel.project// return the project from the work model
+                // }
+            }
+            return bridge;
+        }
+
+        getBridge = (widgetId) => {
+            return this.bridges[widgetId];
+        }
+
+        removeBridge = (widgetId) => {
+            const bridge = this.bridges[widgetId];
+            if (bridge) bridge.disposing = true
+            delete this.bridges[widgetId];
+        }
+    }
+
+    const fuxaBridgeManager = new FuxaBridgeManager();
+    window["fuxa"] = fuxaBridgeManager;
+
+    const bridge1 = fuxaBridgeManager.createBridge('fuxa1');
+    bridge1.onLoadProject = () => {
+        console.log("onLoad Project is running");
+        let prj = localStorage.getItem(bridge1.id);
+        return JSON.parse(prj);
+        // return 'prj: ' + bridge._id;
+    }
+
+    bridge1.onSaveProject = (project) => {
+        if (project) {
+            console.log("onSave Project is running: " + project);
+            localStorage.setItem(bridge1.id, JSON.stringify(project));
+            return true;// return if it's saved
+        }
+        return false;
+    }
+    const bridge2 = fuxaBridgeManager.createBridge('fuxa2');
+    bridge2.onLoadProject = () => {
+        console.log("onLoad Project is running");
+        let prj = localStorage.getItem(bridge2.id);
+        return JSON.parse(prj);
+        // return 'prj: ' + bridge._id;
+    }
+
+    bridge2.onSaveProject = (project) => {
+        if (project) {
+            console.log("onSave Project is running: " + project);
+            localStorage.setItem(bridge2.id, JSON.stringify(project));
+            return true;// return if it's saved
+        }
+        return false;
+    }
+    function refresh(p) {
+        if (p) {
+            let r = bridge2.refreshProject();
+            console.log('refresh 2: ' + r);
+        } else {
+            let r = bridge1.refreshProject();
+            console.log('refresh 1: ' + r);
+        }
+    }
+</script>
 
 <body>
+    <div onclick="refresh(0)">refresh 0</div>
+    <div onclick="refresh(1)">refresh 1</div>
     <div id="mydiv1" class="mydiv">
         <div id="mydiv1header" class="mydivheader">Click here to move
             <div style="float: right; cursor: pointer;">X</div>
@@ -76,7 +196,7 @@
             <div style="float: right; cursor: pointer;">X</div>
         </div>
         <div style="position: relative; width:1000px; height: 900px">
-            <app-fuxa id="fuxa2" >
+            <app-fuxa id="fuxa2">
                 <div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);">
                     <div class="logo" style="display: inline-block;width:40px;height:40px;background-size:40px 40px;"></div>
                     <div style="display: inline-block;padding-left:10px">
@@ -136,4 +256,5 @@
         }
     }
 </script>
+
 </html>

@@ -27,7 +27,8 @@ export class ProjectService {
     @Output() onLoadHmi: EventEmitter<boolean> = new EventEmitter();
 
     private projectData = new ProjectData();            // Project data
-
+    private static readonly DEMO_TYPE = 'demo';
+    private static readonly CLIENT_TYPE = 'client';
     public AppId = '';
 
     public serverSettings: ServerSettings;
@@ -44,16 +45,16 @@ export class ProjectService {
 
         this.storage = resewbApiService;
         switch (environment.type) {
-            case "demo":
-                console.log("mode:", "demo");
+            case ProjectService.DEMO_TYPE:
                 this.storage = resDemoService;
             break;
-            case "client":
-                console.log("mode:", "client");
+            case ProjectService.CLIENT_TYPE:
                 this.storage = resClientService;
             break;
         }
-        this.storage.getProjectName = () => { return this.getProjectName(); }
+        console.log("mode:", environment.type);
+        this.storage.getAppId = () => { return this.getAppId(); }
+        this.storage.onRefreshProject = (): boolean => { return this.onRefreshProject() };
         this.storage.checkServer().subscribe(result => {
             if (result) {
                 this.serverSettings = result;
@@ -66,8 +67,35 @@ export class ProjectService {
         });
     }
 
-    getProjectName() {
+    getAppId() {
         return this.AppId;
+    }
+
+    init() {
+        this.storage.init();            
+        if (environment.type === ProjectService.CLIENT_TYPE) {
+        }
+        this.reload();
+    }
+
+    onRefreshProject(): boolean {
+        console.log("onRefresh Project is running: " + this.AppId);
+        this.storage.getStorageProject().subscribe(prj => {
+            if (prj) {
+                this.projectData = prj;
+                // copy to check before save
+                this.projectOld = JSON.parse(JSON.stringify(this.projectData));
+                this.ready = true;
+                this.notifyToLoadHmi();
+            } else {
+                let msg = '';
+                this.translateService.get('msg.get-project-void').subscribe((txt: string) => { msg = txt });
+                this.notifySaveError(msg);
+            }
+        }, err => {
+            console.log('Refresh Project err: ' + err);
+        });
+        return true;
     }
 
     //#region Load and Save
@@ -77,11 +105,10 @@ export class ProjectService {
      */
     private load() {
         this.storage.getStorageProject().subscribe(prj => {
-            if (environment.type === 'demo' && !prj) {
+            if (!prj && environment.type === ProjectService.DEMO_TYPE) {
                 console.log('create demo');
                 this.setNewProject();
-            } else if (environment.type === 'client' && !prj) {
-                console.log('create client');
+            } else if (!prj && environment.type === ProjectService.CLIENT_TYPE) {
                 this.setNewProject();
             } else {
                 this.projectData = prj;

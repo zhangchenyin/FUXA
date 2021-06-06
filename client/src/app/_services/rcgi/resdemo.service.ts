@@ -9,7 +9,13 @@ import { ResourceStorageService } from './resource-storage.service';
 @Injectable()
 export class ResDemoService implements ResourceStorageService {
 
+    public onRefreshProject: () => boolean;
+
     constructor(private http: HttpClient) {
+    }
+
+    init(): boolean {
+        return true;
     }
 
     getDemoProject(): Observable<any> {
@@ -18,7 +24,7 @@ export class ResDemoService implements ResourceStorageService {
 
     getStorageProject(): Observable<any> {
         return new Observable((observer) => {
-            let prj = localStorage.getItem(this.getProjectName());
+            let prj = localStorage.getItem(this.getAppId());
             if (prj) {
                 observer.next(JSON.parse(prj));
                 console.log('get localStorage');
@@ -35,7 +41,7 @@ export class ResDemoService implements ResourceStorageService {
 
     setServerProject(prj: ProjectData) {
         return new Observable((observer) => {
-            localStorage.setItem(this.getProjectName(), JSON.stringify(prj));
+            localStorage.setItem(this.getAppId(), JSON.stringify(prj));
             observer.next();
         });
     }
@@ -76,7 +82,7 @@ export class ResDemoService implements ResourceStorageService {
         });
     }
 
-    getProjectName() {
+    getAppId() {
         return ResourceStorageService.prjresource;
     }
 }

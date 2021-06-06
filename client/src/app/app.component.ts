@@ -43,7 +43,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         private appService: AppService) {
 
         this.projectService.AppId = this.elementRef.nativeElement.getAttribute('id');
-        this.appService.todelete = this.projectService.AppId;
     }
 
     ngOnInit() {
@@ -69,7 +68,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.showMode = mode;
             });
     
-            this.projectService.reload();
+            this.projectService.init();
         }
         catch (err) {
             console.log(err);
