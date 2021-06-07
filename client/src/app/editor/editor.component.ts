@@ -102,7 +102,7 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
 
     constructor(private projectService: ProjectService,
         private winRef: WindowRef,
-        private appSettings: AppService,
+        private appService: AppService,
         public dialog: MatDialog,
         private changeDetector: ChangeDetectorRef,
         private translateService: TranslateService,
@@ -133,6 +133,7 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
         } catch (err) {
             console.log(err);
         }
+        this.appService.lockEditMode();
     }
 
     /**
@@ -163,6 +164,7 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
             }
         } catch (e) {
         }
+        this.appService.unlockEditMode();
         if (this.currentView) {
             this.currentView.svgcontent = this.winRef.nativeWindow.svgEditor.getSvgString();
             this.saveView(this.currentView);

@@ -117,7 +117,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
     onGoTo(goto) {
         this.fabmenu.toggle();
-        this.showMode = goto;
-        this.appService.setShowMode(this.showMode);
+        this.showMode = this.appService.setShowMode(goto);
     }
 }

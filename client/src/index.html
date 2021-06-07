@@ -168,6 +168,11 @@
             console.log('refresh 1: ' + r);
         }
     }
+
+    function closeWidget(id) {
+        var el = document.getElementById(id);
+        el.remove();
+    }
 </script>
 
 <body>
@@ -175,7 +180,7 @@
     <div onclick="refresh(1)">refresh 1</div>
     <div id="mydiv1" class="mydiv">
         <div id="mydiv1header" class="mydivheader">Click here to move
-            <div style="float: right; cursor: pointer;">X</div>
+            <div style="float: right; cursor: pointer;" onclick="closeWidget('mydiv1')">X</div>
         </div>
         <div style="position: relative; width:1000px; height: 900px">
             <app-fuxa id="fuxa1">
@@ -193,7 +198,7 @@
     </div>
     <div id="mydiv2" class="mydiv">
         <div id="mydiv2header" class="mydivheader">Click here to move
-            <div style="float: right; cursor: pointer;">X</div>
+            <div style="float: right; cursor: pointer;" onclick="closeWidget('mydiv2')">X</div>
         </div>
         <div style="position: relative; width:1000px; height: 900px">
             <app-fuxa id="fuxa2">
