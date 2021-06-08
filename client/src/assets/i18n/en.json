@@ -656,5 +656,6 @@
     "msg.login-username-required": "Enter a username",
     "msg.login-password-required": "Enter a password",
     "msg.signin-failed": "Unauthorized",
-    "msg.get-project-void": "Project not found!"
+    "msg.get-project-void": "Project not found!",
+    "msg.editor-mode-locked": "The editor is already open!"
 }
