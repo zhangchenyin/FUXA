@@ -18,28 +18,34 @@ class FuxaBridge {
 
     // Triggers Fuxa to reload the project. In the (re)load flow Fuxa will invoke the 'onRefreshProject' callback and receives the actual project JSON.
     refreshProject = () => {
+        addToLogger(`APP invoke refreshProject to FUXA ${this.id}`);
         return this.invoke(this.onRefreshProject);
     }
 
     onRefreshProject = function () {
+        addToLogger('onRefreshProject NOT supported!');
         console.log("onRefreshProject NOT supported!");
     }
 
     // This callback gets invoked when Fuxa loads the project
     loadProject = () => {
+        addToLogger(`FUXA ${this.id} invoke loadProject`);
         return this.invoke(this.onLoadProject);
     }
 
     onLoadProject = function () {
+        addToLogger('onLoadProject NOT supported!');
         console.log("onLoadProject NOT supported!");
     };
 
     saveProject = (project) => {
+        addToLogger(`FUXA ${this.id} invoke saveProject`);
         return this.invoke(this.onSaveProject, project);
     }
 
     // This callback gets invoked when Fuxa saves the project
     onSaveProject = function () {
+        addToLogger('onSaveProject NOT supported!');
         console.log("onSaveProject NOT supported!");
     }
 }
@@ -72,13 +78,18 @@ class FuxaBridgeManager {
 }
 
 const fuxaBridgeManager = new FuxaBridgeManager();
-window["fuxa"] = fuxaBridgeManager;
+
+function addToLogger(msg) {
+    var logger = document.getElementById("logger");
+    document.querySelector('#logger').innerHTML += '<span style="font-size: 10px;display:block;">' + msg + '</span>'; 
+}
 
 function refresh(id) {
     const bridge = fuxaBridgeManager.getBridge('fuxa' + id);
     if (bridge) {
+        addToLogger(`APP command refresh FUXA ${bridge.id}`);
+        console.log(`APP command refresh FUXA ${bridge.id}`);
         let r = bridge.refreshProject();
-        console.log('refresh' + id + ': ' + r);
     }
 }
 
@@ -96,7 +107,8 @@ function create(id) {
     }
     const bridge = fuxaBridgeManager.createBridge('fuxa' + id);
     bridge.onLoadProject = () => {
-        console.log("onLoad Project is running");
+        addToLogger(`FUXA ${bridge.id} query project to load`);
+        console.log(`FUXA ${bridge.id} query project to load`);
         let prj = localStorage.getItem(bridge.id);
         return JSON.parse(prj);
         // return 'prj: ' + bridge._id;
@@ -104,7 +116,8 @@ function create(id) {
 
     bridge.onSaveProject = (project) => {
         if (project) {
-            console.log("onSave Project is running: " + project);
+            addToLogger(`FUXA ${bridge.id} ask to save project`);
+            console.log(`FUXA ${bridge.id} ask to save project`);
             localStorage.setItem(bridge.id, JSON.stringify(project));
             return true;// return if it's saved
         }
@@ -116,7 +129,7 @@ function create(id) {
                 <div style="float: right; cursor: pointer;" onclick="closeWidget('mydiv${id}')">X</div>
             </div>
             <div style="position: relative; width:1000px; height: 900px">
-                <app-fuxa id="fuxa${id}">
+                <app-fuxa id="fuxa${id}" refresh="">
                     <div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);">
                         <div class="logo" style="display: inline-block;width:40px;height:40px;background-size:40px 40px;"></div>
                         <div style="display: inline-block;padding-left:10px">
@@ -130,6 +143,12 @@ function create(id) {
             </div>
         </div>`;
     dragElement(document.getElementById("mydiv" + id));
+    const fuxa = document.querySelector('#fuxa' + id);
+    fuxa.bridge = bridge; // It works!    
+    // setTimeout(() => {
+    //     const fuxa = document.querySelector('#fuxa' + id);
+    //     fuxa.bridge = bridge; // It works!    
+    // }, 100);
 }
 
 function dragElement(elmnt) {

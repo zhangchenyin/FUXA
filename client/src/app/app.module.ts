@@ -1,6 +1,6 @@
 // the start/root module that tells Angular how to assemble the application.
 
-import { NgModule, Injector, ApplicationRef, ComponentFactoryResolver } from '@angular/core';
+import { NgModule, Injector, ApplicationRef, ComponentFactoryResolver, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -307,15 +307,16 @@ export function createTranslateLoader(http: HttpClient) {
         ChartUplotComponent,
         NgxUplotComponent,
         AppComponent
-    ]
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
     // bootstrap: [AppComponent]
 })
 export class AppModule {
     constructor(private resolver: ComponentFactoryResolver, private injector: Injector) { 
+        const custom = createCustomElement(AppComponent, {injector: this.injector});
+        customElements.define('app-fuxa', custom);
     }
 
     ngDoBootstrap(appRef: ApplicationRef) {
-        const custom = createCustomElement(AppComponent, {injector: this.injector});
-        customElements.define('app-fuxa', custom);
     }
 }

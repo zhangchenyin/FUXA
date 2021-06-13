@@ -12,29 +12,30 @@ export class ResClientService implements ResourceStorageService {
 
     bridge: any = null;     
     id: string = null;
-    
+    get isReady() { return (this.bridge) ? true : false; } 
+
     public onRefreshProject: () => boolean;
 
     constructor(private http: HttpClient) {
     }
 
-    init(): boolean {
+    init(bridge?: any): boolean {
         this.id = this.getAppId();
-        if (!this.bindBridge()) {
+        if (!this.bindBridge(bridge)) {
             return false;
         }
         return true;
     }
 
-    private bindBridge(): boolean {
-        if (this.bridge) return true;
-        if (window['fuxa'] && window['fuxa'].getBridge) {
-            this.bridge = window['fuxa'].getBridge(this.id);
-            if (this.bridge) {
-                this.bridge.onRefreshProject = this.onRefreshProject;
-            }
+    private bindBridge(bridge?: any): boolean {
+        console.log('bindBridge: ', (bridge) ? true : false);
+        if (!bridge) return false;
+        this.bridge = bridge;
+        if (this.bridge) {
+            this.bridge.onRefreshProject = this.onRefreshProject;
+            return true;
         }
-        return (this.bridge) ? true : false;
+        return false;
     }
 
     getDemoProject(): Observable<any> {

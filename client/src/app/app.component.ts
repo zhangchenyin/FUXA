@@ -12,7 +12,7 @@ import { AppService } from './_services/app.service';
 import { HomeComponent } from './home/home.component';
 
 @Component({
-    selector: 'app-root',
+    selector: 'app-fuxa',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css'],
     providers: [
@@ -27,13 +27,20 @@ import { HomeComponent } from './home/home.component';
 export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     title = 'app';
     showdev = false;
-
+    
     @Input() id: string;
+    @Input('bridge')
+    set bridge(b: any) {
+        this.storageBridge = b;
+        this.projectService.init(b);
+    }
+  
     @ViewChild('fabmenu') fabmenu: any;
     @ViewChild('home') home: HomeComponent;
 
     private subscriptionLoad: Subscription;
     private subscriptionShowModeChanged: Subscription;
+    private storageBridge: any;
 
     showMode = 'home';
 
@@ -68,7 +75,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.showMode = mode;
             });
     
-            this.projectService.init();
+            this.projectService.init(this.storageBridge);
         }
         catch (err) {
             console.log(err);

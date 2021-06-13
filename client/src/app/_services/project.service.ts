@@ -58,8 +58,8 @@ export class ProjectService {
         this.storage.checkServer().subscribe(result => {
             if (result) {
                 this.serverSettings = result;
+                this.load();
             }
-            this.load();
         }, error => {
             console.error('project.service err: ' + error);
             this.load();
@@ -71,8 +71,8 @@ export class ProjectService {
         return this.AppId;
     }
 
-    init() {
-        this.storage.init();            
+    init(bridge?: any) {
+        this.storage.init(bridge);            
         if (environment.type === ProjectService.CLIENT_TYPE) {
         }
         this.reload();
@@ -108,8 +108,14 @@ export class ProjectService {
             if (!prj && environment.type === ProjectService.DEMO_TYPE) {
                 console.log('create demo');
                 this.setNewProject();
-            } else if (!prj && environment.type === ProjectService.CLIENT_TYPE) {
-                this.setNewProject();
+            } else if (environment.type === ProjectService.CLIENT_TYPE) {
+                if (!prj && (this.storage as ResClientService).isReady) {
+                    this.setNewProject();
+                } else {
+                    this.projectData = prj;
+                }
+                this.ready = true;
+                this.notifyToLoadHmi();
             } else {
                 this.projectData = prj;
                 // copy to check before save

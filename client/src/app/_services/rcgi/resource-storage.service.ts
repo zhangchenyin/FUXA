@@ -10,7 +10,7 @@ export abstract class ResourceStorageService {
     
     public static prjresource = 'prj-data';
 
-    public abstract init(onLoadProject?: (prj: ProjectData) => void, refreshCallback?: () => boolean, saveCallback?: (prj: ProjectData) => boolean): boolean;
+    public abstract init(bridge?: any): boolean;
 
     public abstract onRefreshProject(): boolean;
     
@@ -33,8 +33,4 @@ export abstract class ResourceStorageService {
     public abstract checkServer(): Observable<any>;
 
     public abstract getAppId(): string;
-
-	// public abstract get<T>( key: string ) : Promise<T | null>;
-	// public abstract remove( key: string ) : void;
-	// public abstract set( key: string, value: any ) : void;
 }
