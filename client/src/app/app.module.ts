@@ -313,10 +313,10 @@ export function createTranslateLoader(http: HttpClient) {
 })
 export class AppModule {
     constructor(private resolver: ComponentFactoryResolver, private injector: Injector) { 
-        const custom = createCustomElement(AppComponent, {injector: this.injector});
-        customElements.define('app-fuxa', custom);
     }
 
     ngDoBootstrap(appRef: ApplicationRef) {
+        const custom = createCustomElement(AppComponent, {injector: this.injector});
+        customElements.define('app-fuxa', custom);
     }
 }

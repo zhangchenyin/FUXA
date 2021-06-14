@@ -44,8 +44,10 @@ export class ResClientService implements ResourceStorageService {
 
     getStorageProject(): Observable<any> {
         return new Observable((observer) => {
+            console.log('getStorageProject in');
             if (this.bridge) {
                 let prj = this.bridge.loadProject();
+                console.log('getStorageProject ', prj);
                 observer.next(prj);
             } else {
                 let prj = localStorage.getItem(this.getAppId());
