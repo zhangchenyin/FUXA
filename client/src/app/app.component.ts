@@ -12,7 +12,7 @@ import { AppService } from './_services/app.service';
 import { HomeComponent } from './home/home.component';
 
 @Component({
-    selector: 'app-fuxa',
+    selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css'],
     providers: [

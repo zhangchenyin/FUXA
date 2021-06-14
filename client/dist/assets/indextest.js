@@ -129,7 +129,7 @@ function create(id) {
                 <div style="float: right; cursor: pointer;" onclick="closeWidget('mydiv${id}')">X</div>
             </div>
             <div style="position: relative; width:1000px; height: 900px">
-                <app-fuxa id="fuxa${id}" refresh="">
+                <app-fuxa id="fuxa${id}">
                     <div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);">
                         <div class="logo" style="display: inline-block;width:40px;height:40px;background-size:40px 40px;"></div>
                         <div style="display: inline-block;padding-left:10px">
