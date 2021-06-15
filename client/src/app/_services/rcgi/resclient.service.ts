@@ -28,7 +28,7 @@ export class ResClientService implements ResourceStorageService {
     }
 
     private bindBridge(bridge?: any): boolean {
-        console.log('bindBridge: ', (bridge) ? true : false);
+        console.log('FUXA bindBridge: ', (bridge) ? true : false);
         if (!bridge) return false;
         this.bridge = bridge;
         if (this.bridge) {
@@ -44,10 +44,9 @@ export class ResClientService implements ResourceStorageService {
 
     getStorageProject(): Observable<any> {
         return new Observable((observer) => {
-            console.log('getStorageProject in');
             if (this.bridge) {
                 let prj = this.bridge.loadProject();
-                console.log('getStorageProject ', prj);
+                console.log('FUXA bridge.loadProject (getStorageProject): ', prj);
                 observer.next(prj);
             } else {
                 let prj = localStorage.getItem(this.getAppId());
@@ -63,6 +62,7 @@ export class ResClientService implements ResourceStorageService {
     setServerProject(prj: ProjectData) {
         return new Observable((observer) => {
             if (this.bridge) {
+                console.log('FUXA bridge.saveProject (setServerProject): ', prj);
                 if (this.bridge.saveProject(prj)) {
                     observer.next(); 
                 } else {
@@ -78,6 +78,7 @@ export class ResClientService implements ResourceStorageService {
     setServerProjectData(cmd: ProjectDataCmdType, data: any, prj: ProjectData) {
         return new Observable((observer) => {
             if (this.bridge) {
+                console.log('FUXA bridge.saveProject (setServerProjectData): ', prj);
                 if (this.bridge.saveProject(prj)) {
                     observer.next(); 
                 } else {

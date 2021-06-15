@@ -317,6 +317,8 @@ export class AppModule {
 
     ngDoBootstrap(appRef: ApplicationRef) {
         const custom = createCustomElement(AppComponent, {injector: this.injector});
-        customElements.define('app-fuxa', custom);
+        if (!customElements.get('app-fuxa')) {
+            customElements.define('app-fuxa', custom);
+        }
     }
 }

@@ -79,7 +79,7 @@ export class ProjectService {
     }
 
     onRefreshProject(): boolean {
-        console.log("onRefresh Project is running: " + this.AppId);
+        console.log('FUXA onRefreshProject: ', this.AppId);
         this.storage.getStorageProject().subscribe(prj => {
             if (prj) {
                 this.projectData = prj;
@@ -109,6 +109,7 @@ export class ProjectService {
                 console.log('create demo');
                 this.setNewProject();
             } else if (environment.type === ProjectService.CLIENT_TYPE) {
+                console.log('FUXA load project: ', prj);
                 if (!prj && (this.storage as ResClientService).isReady) {
                     this.setNewProject();
                 } else {
