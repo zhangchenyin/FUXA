@@ -93,7 +93,7 @@ export class ProjectService {
                 this.notifySaveError(msg);
             }
         }, err => {
-            console.log('Refresh Project err: ' + err);
+            console.error('FUXA onRefreshProject error', err);
         });
         return true;
     }
@@ -125,7 +125,7 @@ export class ProjectService {
                 this.notifyToLoadHmi();
             }
         }, err => {
-            console.log('Load Server Project err: ' + err);
+            console.error('FUXA load error', err);
         });
     }
 
@@ -138,7 +138,7 @@ export class ProjectService {
             this.load();
             this.toastr.success('Project save successful!');
         }, err => {
-            console.log(err);
+            console.error('FUXA save error', err);
             var msg = '';
             this.translateService.get('msg.project-save-error').subscribe((txt: string) => { msg = txt });
             this.toastr.error(msg, '', {
@@ -469,6 +469,7 @@ export class ProjectService {
     }
 
     private notifySaveError(err: any) {
+        console.error('FUXA notifySaveError error', err);
         let msg = '';
         this.translateService.get('msg.project-save-error').subscribe((txt: string) => { msg = txt });
         if (err.status === 401) {
@@ -482,6 +483,7 @@ export class ProjectService {
     }
 
     private notifyServerError() {
+        console.error('FUXA notifyServerError error');
         let msg = '';
         this.translateService.get('msg.server-connection-error').subscribe((txt: string) => { msg = txt });
         this.toastr.error(msg, '', {

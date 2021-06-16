@@ -87,9 +87,9 @@ function addToLogger(msg) {
 function refresh(id) {
     const bridge = fuxaBridgeManager.getBridge('fuxa' + id);
     if (bridge) {
+        let r = bridge.refreshProject();
         addToLogger(`APP command refresh FUXA ${bridge.id}`);
         console.log(`APP command refresh FUXA ${bridge.id}`);
-        let r = bridge.refreshProject();
     }
 }
 
@@ -144,7 +144,9 @@ function create(id) {
         </div>`;
     dragElement(document.getElementById("mydiv" + id));
     const fuxa = document.querySelector('#fuxa' + id);
-    fuxa.bridge = bridge; // It works!    
+    refresh(id);
+    fuxa.bridge = bridge; // It works!
+    refresh(id);
     // setTimeout(() => {
     //     const fuxa = document.querySelector('#fuxa' + id);
     //     fuxa.bridge = bridge; // It works!    
