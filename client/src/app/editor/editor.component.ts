@@ -271,11 +271,16 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
             if (!oldsel && this.hmi.views.length) {
                 oldsel = this.hmi.views[0].name;
             }
+            let found = false;
             for (let i = 0; i < this.hmi.views.length; i++) {
                 if (this.hmi.views[i].name === oldsel) {
                     this.onSelectView(this.hmi.views[i]);
+                    found = true;
                     break;
                 }
+            }
+            if (!found && this.hmi.views.length) {
+                this.onSelectView(this.hmi.views[0]);
             }
         }
         this.loadPanelState();

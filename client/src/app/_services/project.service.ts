@@ -470,27 +470,31 @@ export class ProjectService {
 
     private notifySaveError(err: any) {
         console.error('FUXA notifySaveError error', err);
-        let msg = '';
+        let msg = null;
         this.translateService.get('msg.project-save-error').subscribe((txt: string) => { msg = txt });
         if (err.status === 401) {
             this.translateService.get('msg.project-save-unauthorized').subscribe((txt: string) => { msg = txt });
         }
-        this.toastr.error(msg, '', {
-            timeOut: 3000,
-            closeButton: true,
-            disableTimeOut: true
-        });
+        if (msg) {
+            this.toastr.error(msg, '', {
+                timeOut: 3000,
+                closeButton: true,
+                disableTimeOut: true
+            });
+        }
     }
 
     private notifyServerError() {
         console.error('FUXA notifyServerError error');
-        let msg = '';
+        let msg = null;
         this.translateService.get('msg.server-connection-error').subscribe((txt: string) => { msg = txt });
-        this.toastr.error(msg, '', {
-            timeOut: 3000,
-            closeButton: true,
-            disableTimeOut: true
-        });
+        if (msg) {
+            this.toastr.error(msg, '', {
+                timeOut: 3000,
+                closeButton: true,
+                disableTimeOut: true
+            });
+        }
     }
     //#endregion
 

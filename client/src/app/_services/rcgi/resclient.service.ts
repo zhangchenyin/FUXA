@@ -69,7 +69,7 @@ export class ResClientService implements ResourceStorageService {
                     observer.error();
                 }
             } else {
-                localStorage.setItem(this.getAppId(), JSON.stringify(prj));
+                this.saveInLocalStorage(prj);
                 observer.next();
             }
         });
@@ -85,12 +85,18 @@ export class ResClientService implements ResourceStorageService {
                     observer.error();
                 }
             } else {
-                localStorage.setItem(this.getAppId(), JSON.stringify(prj));
+                this.saveInLocalStorage(prj);
                 observer.next();
             }
         });
     }
     
+    saveInLocalStorage(prj: any) {
+        if (this.getAppId()) {
+            localStorage.setItem(this.getAppId(), JSON.stringify(prj));
+        }
+    }
+
     getDeviceSecurity(name: string): Observable<any> {
         return new Observable((observer) => {
             observer.error('Not supported!');
