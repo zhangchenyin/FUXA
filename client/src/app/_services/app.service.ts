@@ -1,11 +1,15 @@
 import { Injectable, Output, EventEmitter } from '@angular/core';
 
+import { environment } from '../../environments/environment';
 import { SettingsService } from './settings.service';
 
 @Injectable()
 export class AppService {
 
     @Output() onShowModeChanged: EventEmitter<string> = new EventEmitter();
+
+    private static APP_DEMO = 'demo';
+    private static APP_CLIENT = 'client';
 
     private showMode: string;
 
@@ -29,5 +33,13 @@ export class AppService {
 
     unlockEditMode() {
         this.settingsService.unlockEditMode();
+    }
+
+    get isDemoApp() {
+        return (environment.type === AppService.APP_DEMO);
+    }
+
+    get isClientApp() {
+        return (environment.type === AppService.APP_CLIENT);
     }
 }

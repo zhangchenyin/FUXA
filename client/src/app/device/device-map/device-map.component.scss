@@ -98,9 +98,15 @@ $flowline-color: #3C3C3C;//rgb(117, 117, 117);
     font-size: 17px;
     cursor:pointer;
 }
+
 .device-edit {
     bottom: 0px;
     right: 2px;
+}
+
+.device-edit-disabled {
+    color:rgb(136, 136, 136) !important;
+    cursor:default;
 }
 
 .device-delete {

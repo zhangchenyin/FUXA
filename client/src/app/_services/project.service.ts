@@ -17,6 +17,8 @@ import { ResourceStorageService } from './rcgi/resource-storage.service';
 import { ResDemoService } from './rcgi/resdemo.service';
 import { ResClientService } from './rcgi/resclient.service';
 import { ResWebApiService } from './rcgi/reswebapi.service';
+import { AppService } from './app.service';
+import { Utils } from '../_helpers/utils';
 
 import * as FileSaver from 'file-saver';
 
@@ -27,8 +29,6 @@ export class ProjectService {
     @Output() onLoadHmi: EventEmitter<boolean> = new EventEmitter();
 
     private projectData = new ProjectData();            // Project data
-    private static readonly DEMO_TYPE = 'demo';
-    private static readonly CLIENT_TYPE = 'client';
     public AppId = '';
 
     public serverSettings: ServerSettings;
@@ -40,17 +40,15 @@ export class ProjectService {
     constructor(private resewbApiService: ResWebApiService,
         private resDemoService: ResDemoService,
         private resClientService: ResClientService,
+        private appService: AppService,
         private translateService: TranslateService,        
         private toastr: ToastrService) {
 
         this.storage = resewbApiService;
-        switch (environment.type) {
-            case ProjectService.DEMO_TYPE:
-                this.storage = resDemoService;
-            break;
-            case ProjectService.CLIENT_TYPE:
-                this.storage = resClientService;
-            break;
+        if (appService.isDemoApp) {
+            this.storage = resDemoService;
+        } else if (appService.isClientApp) {
+            this.storage = resClientService;
         }
         console.log("mode:", environment.type);
         this.storage.getAppId = () => { return this.getAppId(); }
@@ -73,7 +71,7 @@ export class ProjectService {
 
     init(bridge?: any) {
         this.storage.init(bridge);            
-        if (environment.type === ProjectService.CLIENT_TYPE) {
+        if (this.appService.isClientApp) {
         }
         this.reload();
     }
@@ -90,7 +88,8 @@ export class ProjectService {
             } else {
                 let msg = '';
                 this.translateService.get('msg.get-project-void').subscribe((txt: string) => { msg = txt });
-                this.notifySaveError(msg);
+                console.warn(msg);
+                // this.notifySaveError(msg);
             }
         }, err => {
             console.error('FUXA onRefreshProject error', err);
@@ -105,10 +104,10 @@ export class ProjectService {
      */
     private load() {
         this.storage.getStorageProject().subscribe(prj => {
-            if (!prj && environment.type === ProjectService.DEMO_TYPE) {
+            if (!prj && this.appService.isDemoApp) {
                 console.log('create demo');
                 this.setNewProject();
-            } else if (environment.type === ProjectService.CLIENT_TYPE) {
+            } else if (this.appService.isClientApp) {
                 console.log('FUXA load project: ', prj);
                 if (!prj && (this.storage as ResClientService).isReady) {
                     this.setNewProject();
@@ -512,11 +511,21 @@ export class ProjectService {
     setNewProject() {
         this.projectData = new ProjectData();
         let server = new Device();
-        server.name = 'FUXA Server';
+        server.name = 'FUXA';
         server.id = '0';
         server.type = DeviceType.FuxaServer;
         server.property = new DeviceNetProperty();
         this.projectData.server = server;
+        if (this.appService.isClientApp) {
+            let clientDevice = new Device();
+            clientDevice.type = DeviceType.inmation;
+            clientDevice.id = Utils.getGUID();
+            clientDevice.name = 'inmation';
+            clientDevice.enabled = true;
+            clientDevice.property = new DeviceNetProperty();
+            clientDevice.tags = {};
+            this.setDevice(clientDevice, null, null);
+        }
         this.save();
     }
 

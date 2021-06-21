@@ -38,8 +38,9 @@
         <span class="device-pro" style="padding-bottom: 10px;">{{ getDevicePropertyToShow(device) }}</span>
         <div class="device-status" *ngIf="device.enabled" [style.background-color]="getDeviceStatusColor(device)"></div>
         <mat-icon (click)="onListDevice(device)" class="device-icon device-list">list_alt</mat-icon>
-        <mat-icon (click)="onEditDevice(device)" class="device-icon device-edit">edit</mat-icon>
-        <mat-icon (click)="onRemoveDevice(device)" class="device-icon device-delete">clear</mat-icon>
+        <mat-icon (click)="onEditDevice(device)" class="device-icon device-edit" *ngIf="!isClientDevice(device)">edit</mat-icon>
+        <mat-icon class="device-icon device-edit device-edit-disabled" *ngIf="isClientDevice(device)">edit</mat-icon>
+        <mat-icon (click)="onRemoveDevice(device)" class="device-icon device-delete" *ngIf="!isClientDevice(device)">clear</mat-icon>
     </div>
 </div>
 

@@ -34,6 +34,7 @@ export class HmiService {
     alarms = { highhigh: 0, high: 0, low: 0, info: 0 };
     private socket;
     private endPointConfig: string = EndPointApi.getURL();//"http://localhost:1881";
+    private bridge: any = null;     
 
     constructor(private projectService: ProjectService,
         private translateService: TranslateService,
@@ -66,6 +67,8 @@ export class HmiService {
             this.variables[sigId].value = value;
             if (this.socket) {
                 this.socket.emit('device-values', { cmd: 'set', var: this.variables[sigId] });
+            } else if (this.bridge) {
+                this.bridge.setDeviceValue(this.variables[sigId]);
             } else if (!environment.serverEnabled) {
                 // for demo, only frontend
                 this.setSignalValue(this.variables[sigId]);
@@ -73,12 +76,40 @@ export class HmiService {
         }
     }
 
-
     public getAllSignals() {
         return this.variables;
     }
 
-    //#region Scket.io
+    //#region Communication Socket.io and Bridge
+    /**
+     * Init the bridge for client communication
+     * @param bridge 
+     * @returns 
+     */
+    initClient(bridge?: any) {
+        console.log('FUXA init client bridge: ', (bridge) ? true : false);
+        if (!bridge) return false;
+        this.bridge = bridge;
+        if (this.bridge) {
+            this.bridge.onDeviceValues = (tags: Variable[]) => this.onDeviceValues(tags);
+            this.askDeviceValues();
+            return true;
+        }
+        return false;
+    }
+
+    private onDeviceValues(tags: Variable[]) {
+        console.log('FUXA onDeviceValues: ', tags);
+        for (let idx = 0; idx < tags.length; idx++) {
+            let varid = tags[idx].source + HmiService.separator + tags[idx].id;
+            if (!this.variables[varid]) {
+                this.variables[varid] = new Variable(varid, tags[idx].source, tags[idx].id);
+            }
+            this.variables[varid].value = tags[idx].value;
+            this.setSignalValue(this.variables[varid]);
+        }
+    }
+
     /**
      * Init the socket and subsribe to device status and signal value change
      */
@@ -186,6 +217,8 @@ export class HmiService {
     public askDeviceValues() {
         if (this.socket) {
             this.socket.emit('device-values', 'get');
+        } else if (this.bridge) {
+            this.bridge.getDeviceValues(null);
         }
     }
 

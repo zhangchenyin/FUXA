@@ -177,7 +177,7 @@ export class TagPropertyComponent implements OnInit, OnDestroy {
                     this.data.nodes.push(t);
                 }
             });
-        } else if (this.isModbus()) {
+        } else if (this.isModbus() || this.isInmation()) {
         } else {
             Object.keys(this.treetable.nodes).forEach((key) => {
                 let n: Node = this.treetable.nodes[key];

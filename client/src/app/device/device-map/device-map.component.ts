@@ -8,6 +8,7 @@ import { PluginService } from '../../_services/plugin.service';
 import { Device, DeviceType, DeviceNetProperty } from './../../_models/device';
 import { Utils } from '../../_helpers/utils';
 import { Plugin } from '../../_models/plugin';
+import { AppService } from '../../_services/app.service';
 
 @Component({
 	selector: 'app-device-map',
@@ -48,6 +49,7 @@ export class DeviceMapComponent implements OnInit, OnDestroy, AfterViewInit {
 
 	constructor(private dialog: MatDialog,
 		private elementRef: ElementRef,
+        private appService: AppService,
         private pluginService: PluginService,
 		private projectService: ProjectService) { 
 			this.domArea = this.elementRef.nativeElement.parent;
@@ -100,14 +102,16 @@ export class DeviceMapComponent implements OnInit, OnDestroy, AfterViewInit {
 	loadAvailableType() {
 		// define available device type (plugins)
 		this.plugins = [];
-		this.pluginService.getPlugins().subscribe(plugins => {
-			Object.values(plugins).forEach((pg) => {
-				if (pg.current.length) {
-					this.plugins.push(pg.type);
-				}
+		if (!this.appService.isClientApp && !this.appService.isDemoApp) {
+			this.pluginService.getPlugins().subscribe(plugins => {
+				Object.values(plugins).forEach((pg) => {
+					if (pg.current.length) {
+						this.plugins.push(pg.type);
+					}
+				});
+			}, error => {
 			});
-        }, error => {
-		});
+		}
 		this.plugins.push(DeviceType.WebAPI);
 		this.plugins.push(DeviceType.MQTTclient);
 		this.plugins.push(DeviceType.inmation);
@@ -322,6 +326,10 @@ export class DeviceMapComponent implements OnInit, OnDestroy, AfterViewInit {
 		if (device.property && device.type !== 'OPCUA') {
 			return true;
 		}
+	}
+
+	isClientDevice(device) {
+		return (device.type === DeviceType.inmation && this.appService.isClientApp);
 	}
 
 	getDevicePropertyToShow(device) {

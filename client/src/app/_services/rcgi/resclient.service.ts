@@ -61,7 +61,9 @@ export class ResClientService implements ResourceStorageService {
 
     setServerProject(prj: ProjectData) {
         return new Observable((observer) => {
-            if (this.bridge) {
+            if (!prj) {
+                observer.next(); 
+            } else if (this.bridge) {
                 console.log('FUXA bridge.saveProject (setServerProject): ', prj);
                 if (this.bridge.saveProject(prj)) {
                     observer.next(); 
@@ -77,7 +79,9 @@ export class ResClientService implements ResourceStorageService {
 
     setServerProjectData(cmd: ProjectDataCmdType, data: any, prj: ProjectData) {
         return new Observable((observer) => {
-            if (this.bridge) {
+            if (!prj) {
+                observer.next(); 
+            } else if (this.bridge) {
                 console.log('FUXA bridge.saveProject (setServerProjectData): ', prj);
                 if (this.bridge.saveProject(prj)) {
                     observer.next(); 

@@ -48,6 +48,56 @@ class FuxaBridge {
         addToLogger('onSaveProject NOT supported!');
         console.log("onSaveProject NOT supported!");
     }
+
+    // Device communications
+
+    // call from WebStudio subscrptions callback
+    emitDeviceValues = (tags) => {
+        addToLogger(`=> APP invoke onDeviceValues`);
+        return this.invoke(this.onDeviceValues, tags);
+    }
+
+    // to define in FUXA
+    // tags: array of DeviceValue
+    onDeviceValues = function (tags) {
+        addToLogger('=> onDeviceValues NOT supported!');
+        console.error("=> onDeviceValues NOT supported!");
+    }
+
+    // call from FUXA to set value in WebStudio
+    setDeviceValue = (tag) => {
+        addToLogger(`=> FUXA invoke setDeviceValue`);
+        return this.invoke(this.onSetDeviceValue, tag);
+    }
+
+    // to define in WebStudio
+    // tag: DeviceValue
+    onSetDeviceValue = function (tag) {
+        addToLogger('=> onSetDeviceValue NOT supported!');
+        console.error("=> onSetDeviceValue NOT supported!");
+    }
+
+    // call from FUXA to get values from WebStudio
+    getDeviceValues = (tags) => {
+        addToLogger(`=> FUXA invoke setDeviceValue`);
+        return this.invoke(this.onGetDeviceValues, tags);
+    }
+
+    // to define in WebStudio
+    // tags: DeviceValue, if null then return all devices tags value
+    onGetDeviceValues = function (tags) {
+        addToLogger('=> onGetDeviceValues NOT supported!');
+        console.error("=> onGetDeviceValues NOT supported!");
+    }
+}
+
+// class used to pass device value
+class DeviceValue {
+    constructor(deviceId, tagId, value) {
+        this.source = deviceId;
+        this.id = tagId;
+        this.value = value;
+    }
 }
 
 class FuxaBridgeManager {
@@ -93,6 +143,16 @@ function refresh(id) {
     }
 }
 
+function send(id) {
+    var seltag = JSON.parse(document.getElementById("tags").value);
+    var value = document.getElementById("tvalue").value;
+    seltag.value = value;
+    const bridge = fuxaBridgeManager.getBridge('fuxa' + id);
+    if (bridge) {
+        bridge.emitDeviceValues([seltag]);
+    }
+}
+
 function closeWidget(id) {
     var el = document.getElementById(id);
     el.remove();
@@ -109,8 +169,11 @@ function create(id) {
     bridge.onLoadProject = () => {
         addToLogger(`FUXA ${bridge.id} query project to load`);
         console.log(`FUXA ${bridge.id} query project to load`);
-        let prj = localStorage.getItem(bridge.id);
-        return JSON.parse(prj);
+        let prj = JSON.parse(localStorage.getItem(bridge.id));
+        if (prj) {
+            checkProjectDevices(prj.devices);
+        }
+        return prj;
         // return 'prj: ' + bridge._id;
     }
 
@@ -119,10 +182,35 @@ function create(id) {
             addToLogger(`FUXA ${bridge.id} ask to save project`);
             console.log(`FUXA ${bridge.id} ask to save project`);
             localStorage.setItem(bridge.id, JSON.stringify(project));
+            checkProjectDevices(project.devices);
             return true;// return if it's saved
         }
         return false;
     }
+
+    // to manage the device tags subscription
+    checkProjectDevices = (devices) => {
+        var selectTags = document.getElementById("tags");
+        // remove current device subscriptions
+        selectTags.innerHTML = "";
+        // add devices subscriptions
+        if (!devices) {
+            return;
+        }
+        for (const [dkey, dvalue] of Object.entries(devices)) {
+            var device = devices[dkey];
+            if (device.tags) {
+                for (const [key, value] of Object.entries(device.tags)) {
+                    console.log(`${key}: ${value}`);
+                    var opt = document.createElement('option');
+                    opt.value = JSON.stringify(new DeviceValue(device.name, key, null));
+                    opt.innerHTML = key;
+                    selectTags.appendChild(opt);
+                }
+            }
+        }
+    }
+
     document.body.innerHTML += `
         <div id="mydiv${id}" style="position: absolute; z-index: 9; background-color: #f1f1f1; border: 1px solid #d3d3d3;">
             <div id="mydiv${id}header" style="padding: 10px; cursor: move; z-index: 10; background-color: #2196F3; color: #fff;">Click here to move

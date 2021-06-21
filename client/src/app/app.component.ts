@@ -3,6 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from "rxjs";
 
 import { ProjectService } from './_services/project.service';
+import { HmiService } from './_services/hmi.service';
 import { SettingsService } from './_services/settings.service';
 import { ResWebApiService } from './_services/rcgi/reswebapi.service';
 import { ResDemoService } from './_services/rcgi/resdemo.service';
@@ -31,20 +32,22 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     @Input() id: string;
     @Input('bridge')
     set bridge(b: any) {
-        this.storageBridge = b;
+        this.clientBridge = b;
         this.projectService.init(b);
+        this.hmiService.initClient(b);
     }
-  
+
     @ViewChild('fabmenu') fabmenu: any;
     @ViewChild('home') home: HomeComponent;
 
     private subscriptionLoad: Subscription;
     private subscriptionShowModeChanged: Subscription;
-    private storageBridge: any;
+    private clientBridge: any;
 
     showMode = 'home';
 
     constructor(private elementRef: ElementRef,
+        public hmiService: HmiService,
         public projectService: ProjectService,
         private settingsService: SettingsService,
         private appService: AppService) {
@@ -75,7 +78,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.showMode = mode;
             });
     
-            this.projectService.init(this.storageBridge);
+            this.projectService.init(this.clientBridge);
+            this.hmiService.initClient(this.clientBridge);
         }
         catch (err) {
             console.log(err);
