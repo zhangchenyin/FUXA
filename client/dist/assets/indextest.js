@@ -49,6 +49,19 @@ class FuxaBridge {
         console.log("onSaveProject NOT supported!");
     }
 
+    // call from FUXA to notify a device change to WebStudio
+    deviceChange = (device) => {
+        addToLogger(`FUXA ${this.id} invoke deviceChange`);
+        return this.invoke(this.onDeviceChange, device);
+    }
+
+    // This callback gets invoked when Fuxa saves device and tags (add tag, remove tag)
+    // device contain the list of tags
+    onDeviceChange = function (device) {
+        addToLogger('onDeviceChange NOT supported!');
+        console.log("onDeviceChange NOT supported!");
+    }
+
     // Device communications
 
     // call from WebStudio subscrptions callback

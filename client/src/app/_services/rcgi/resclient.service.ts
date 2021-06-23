@@ -84,6 +84,9 @@ export class ResClientService implements ResourceStorageService {
             } else if (this.bridge) {
                 console.log('FUXA bridge.saveProject (setServerProjectData): ', prj);
                 if (this.bridge.saveProject(prj)) {
+                    if (this.isDataCmdForDevice(cmd)) {
+                        this.bridge.deviceChange(data);
+                    }
                     observer.next(); 
                 } else {
                     observer.error();
@@ -95,6 +98,10 @@ export class ResClientService implements ResourceStorageService {
         });
     }
     
+    private isDataCmdForDevice(cmd: ProjectDataCmdType): boolean {
+        return (cmd === ProjectDataCmdType.DelDevice || cmd === ProjectDataCmdType.SetDevice);
+    }
+
     saveInLocalStorage(prj: any) {
         if (this.getAppId()) {
             localStorage.setItem(this.getAppId(), JSON.stringify(prj));
