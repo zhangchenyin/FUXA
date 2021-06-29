@@ -41,6 +41,8 @@ export class DeviceComponent implements OnInit, OnDestroy, AfterViewInit {
 		this.subscriptionSave = this.projectService.onSaveCurrent.subscribe(saveas => {
 			if (saveas) {
 				this.projectService.saveAs();
+			} else {
+				this.projectService.save();
 			}
 		});
 		this.askStatusTimer = setInterval(() => {

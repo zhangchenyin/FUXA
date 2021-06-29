@@ -124,9 +124,11 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
     ngOnInit() {
         try {
             this.subscriptionSave = this.projectService.onSaveCurrent.subscribe(saveas => {
-                this.onSaveProject();
+                this.onSaveProject(false);
                 if (saveas) {
                     this.projectService.saveAs();
+                } else {
+                    this.projectService.save();
                 }
             });
             this.gaugesManager.clearMemory();
@@ -746,7 +748,7 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
      * save current project and launch the Test in new Windows 'lab'
      */
     onStartCurrent() {
-        this.onSaveProject();
+        this.onSaveProject(true);
         this.winRef.nativeWindow.open('lab', 'MyTest', 'width=800,height=640,menubar=0');
     }
     //#endregion
@@ -756,10 +758,12 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
      * Save Project
      * Save the current View
      */
-    onSaveProject() {
+    onSaveProject(saveView: boolean = false) {
         if (this.currentView) {
             this.currentView.svgcontent = this.winRef.nativeWindow.svgEditor.getSvgString();
-            this.saveView(this.currentView);
+            if (saveView) {
+                this.saveView(this.currentView);
+            }
         }
     }
 

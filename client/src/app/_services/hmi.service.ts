@@ -69,6 +69,7 @@ export class HmiService {
                 this.socket.emit('device-values', { cmd: 'set', var: this.variables[sigId] });
             } else if (this.bridge) {
                 this.bridge.setDeviceValue(this.variables[sigId]);
+                this.setSignalValue(this.variables[sigId]);
             } else if (!environment.serverEnabled) {
                 // for demo, only frontend
                 this.setSignalValue(this.variables[sigId]);

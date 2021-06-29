@@ -114,7 +114,7 @@ export class DeviceMapComponent implements OnInit, OnDestroy, AfterViewInit {
 		}
 		this.plugins.push(DeviceType.WebAPI);
 		this.plugins.push(DeviceType.MQTTclient);
-		this.plugins.push(DeviceType.inmation);
+		// this.plugins.push(DeviceType.inmation);
 	}
 
 	addDevice() {
@@ -220,7 +220,13 @@ export class DeviceMapComponent implements OnInit, OnDestroy, AfterViewInit {
 	}
 
 	getDeviceTopPosition(type = null) {
-		if (type === 'flow') {
+		if (!this.server) {
+			if (type === 'flow') {
+				return this.getVerticalCenter() - (this.mainHeight * 2);
+			} else {
+				return this.getVerticalCenter() + (this.mainHeight / 2);
+			}
+		} else if (type === 'flow') {
 			return this.getDeviceLineTopPosition(type) - (this.flowHeight + this.flowBorder * 2);
 		} else {
 			return this.getVerticalCenter() + (this.mainHeight / 2 + this.deviceLineHeight + this.mainDeviceLineHeight);

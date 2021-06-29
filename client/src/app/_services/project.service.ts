@@ -131,7 +131,7 @@ export class ProjectService {
     /**
      * Save Project
      */
-    private save(): boolean {
+    save(): boolean {
         // check project change don't work some svg object change the order and this to check isn't easy...boooo
         this.storage.setServerProject(this.projectData).subscribe(result => {
             this.load();
