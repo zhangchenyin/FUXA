@@ -89,7 +89,7 @@ export enum DeviceType {
     ModbusTCP = 'ModbusTCP',
     WebAPI = 'WebAPI',
     MQTTclient = 'MQTTclient',
-    inmation = 'inmation'
+    internal = 'internal'
 }
 
 export enum TagType {

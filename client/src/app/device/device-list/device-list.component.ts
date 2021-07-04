@@ -20,13 +20,19 @@ import { Utils } from '../../_helpers/utils';
 
 export class DeviceListComponent implements OnInit {
 
+    readonly defAllColumns = ['select', 'name', 'address', 'device', 'type', 'min', 'max', 'value', 'remove'];
+    readonly defClientColumns = ['select', 'name', 'device', 'type', 'min', 'max', 'value', 'remove'];
+    readonly defAllRowWidth = 1560;
+    readonly defClientRowWidth = 1300;
 
-    displayedColumns = ['select', 'name', 'address', 'device', 'type', 'min', 'max', 'value', 'remove'];
+    displayedColumns = this.defAllColumns;
+
     dataSource = new MatTableDataSource([]);
     selection = new SelectionModel<Element>(true, []);
     devices: Device[];
     dirty: boolean = false;
     deviceType = DeviceType;
+    tableWidth = this.defAllRowWidth;
 
     @Input() deviceSelected: Device;
     @Output() save = new EventEmitter();
@@ -78,6 +84,14 @@ export class DeviceListComponent implements OnInit {
                 this.bindToTable(this.deviceSelected.tags);
             }
         });
+        if (this.deviceSelected.type === DeviceType.internal) {
+            this.displayedColumns = this.defClientColumns;
+            this.tableWidth = this.defClientRowWidth;
+        } else {
+            this.displayedColumns = this.defAllColumns;
+            this.tableWidth = this.defAllRowWidth;
+        }
+
     }
 
     onGoBack() {
@@ -208,7 +222,7 @@ export class DeviceListComponent implements OnInit {
     }
 
     isToEdit(type) {
-        return (type === DeviceType.SiemensS7 || type === DeviceType.ModbusTCP || type === DeviceType.ModbusRTU || type === DeviceType.inmation);
+        return (type === DeviceType.SiemensS7 || type === DeviceType.ModbusTCP || type === DeviceType.ModbusRTU || type === DeviceType.internal);
     }
 
     editTag(tag: Tag, checkToAdd: boolean) {

@@ -100,7 +100,7 @@ export class HmiService {
     }
 
     private onDeviceValues(tags: Variable[]) {
-        console.log('FUXA onDeviceValues: ', tags);
+        // console.log('FUXA onDeviceValues: ', tags);
         for (let idx = 0; idx < tags.length; idx++) {
             let varid = tags[idx].source + HmiService.separator + tags[idx].id;
             if (!this.variables[varid]) {

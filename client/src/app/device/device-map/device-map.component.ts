@@ -111,10 +111,11 @@ export class DeviceMapComponent implements OnInit, OnDestroy, AfterViewInit {
 				});
 			}, error => {
 			});
+			this.plugins.push(DeviceType.WebAPI);
+			this.plugins.push(DeviceType.MQTTclient);
+		} else {
+			this.plugins.push(DeviceType.internal);
 		}
-		this.plugins.push(DeviceType.WebAPI);
-		this.plugins.push(DeviceType.MQTTclient);
-		// this.plugins.push(DeviceType.inmation);
 	}
 
 	addDevice() {
@@ -335,7 +336,7 @@ export class DeviceMapComponent implements OnInit, OnDestroy, AfterViewInit {
 	}
 
 	isClientDevice(device) {
-		return (device.type === DeviceType.inmation && this.appService.isClientApp);
+		return (device.type === DeviceType.internal && this.appService.isClientApp);
 	}
 
 	getDevicePropertyToShow(device) {

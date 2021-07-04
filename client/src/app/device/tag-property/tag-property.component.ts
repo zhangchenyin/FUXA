@@ -51,7 +51,7 @@ export class TagPropertyComponent implements OnInit, OnDestroy {
             this.config.type = (this.isWebApi()) ? 'todefine' : '';
         } else if (this.isMqtt()) {
             this.dialogType = EditTagDialogType.List;
-        } else if (this.data.device.type === DeviceType.inmation) {
+        } else if (this.isInternal()) {
             this.dialogType = EditTagDialogType.Simple;
         } else {
             if (this.isModbus()) {
@@ -177,7 +177,7 @@ export class TagPropertyComponent implements OnInit, OnDestroy {
                     this.data.nodes.push(t);
                 }
             });
-        } else if (this.isModbus() || this.isInmation()) {
+        } else if (this.isModbus() || this.isInternal()) {
         } else {
             Object.keys(this.treetable.nodes).forEach((key) => {
                 let n: Node = this.treetable.nodes[key];
@@ -420,8 +420,8 @@ export class TagPropertyComponent implements OnInit, OnDestroy {
         return (this.data.device.type === DeviceType.BACnet) ? true : false;
     }
     
-    isInmation() {
-		return (this.data.device.type === DeviceType.inmation) ? true : false;
+    isInternal() {
+		return (this.data.device.type === DeviceType.internal) ? true : false;
     }
 
     checkMemAddress(memaddress) {
@@ -437,7 +437,7 @@ export class TagPropertyComponent implements OnInit, OnDestroy {
             return true;
         } else if (this.isMqtt()) {
             return true;
-        } else if (this.isInmation()) {
+        } else if (this.isInternal()) {
             return true;
         } else if (this.data.tag && !this.data.tag.name) {
             return false;

@@ -70,6 +70,10 @@ export class DevicePropertyComponent implements OnInit, OnDestroy {
 				}
 			}
 		}
+		// set default is only one type
+		if (this.data.availableType.length === 1) {
+			this.data.device.type = this.data.availableType[0];
+		}
 
 		this.subscriptionDeviceProperty = this.hmiService.onDeviceProperty.subscribe(res => {
 			if (res.type === DeviceType.OPCUA) {
@@ -114,7 +118,7 @@ export class DevicePropertyComponent implements OnInit, OnDestroy {
 		});		
 		// check security
 		if (this.data.device.name && (this.data.device.type === DeviceType.OPCUA || this.data.device.type === DeviceType.MQTTclient || 
-			this.data.device.type === DeviceType.inmation)) {
+			this.data.device.type === DeviceType.internal)) {
 			this.projectService.getDeviceSecurity(this.data.device.name).subscribe(result => {
 				this.setSecurity(result.value);
 			}, err => {
@@ -207,7 +211,7 @@ export class DevicePropertyComponent implements OnInit, OnDestroy {
 	}
 
 	isValid(device): boolean {
-        if (!device.name) {
+        if (!device.name || !device.type) {
             return false;
         }
 		return (this.data.exist.find((n) => n === device.name)) ? false : true;
@@ -223,7 +227,7 @@ export class DevicePropertyComponent implements OnInit, OnDestroy {
 
 	getSecurity(): any {
 		if (!this.propertyExpanded || (this.data.device.type !== DeviceType.OPCUA && this.data.device.type !== DeviceType.MQTTclient && 
-										this.data.device.type !== DeviceType.inmation)) {
+										this.data.device.type !== DeviceType.internal)) {
 			return null;
 		} else {
 			if (this.data.device.type === DeviceType.OPCUA) {
@@ -236,7 +240,7 @@ export class DevicePropertyComponent implements OnInit, OnDestroy {
 					let result = { clientId: this.security.clientId, uid: this.security.username, pwd: this.security.password };
 					return result;
 				}
-			} else if (this.data.device.type === DeviceType.inmation) {
+			} else if (this.data.device.type === DeviceType.internal) {
 				if (this.security.clientId || this.security.username || this.security.password || this.security.grant_type) {
 					let result = { clientId: this.security.clientId, uid: this.security.username, pwd: this.security.password, gt: this.security.grant_type };
 					return result;

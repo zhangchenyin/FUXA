@@ -66,7 +66,7 @@ class FuxaBridge {
 
     // call from WebStudio subscrptions callback
     emitDeviceValues = (tags) => {
-        addToLogger(`=> APP invoke onDeviceValues`);
+        // addToLogger(`=> APP invoke onDeviceValues`);
         return this.invoke(this.onDeviceValues, tags);
     }
 
@@ -167,8 +167,12 @@ function send(id) {
 }
 
 function closeWidget(id) {
-    var el = document.getElementById(id);
+    var el = document.getElementById('mydiv' + id);
     el.remove();
+    const bridge = fuxaBridgeManager.getBridge('fuxa' + id);
+    if (bridge['fuxa']) {
+        bridge['fuxa'].stopSimulator();
+    }
     fuxaBridgeManager.removeBridge('fuxa' + id);
 }
 
@@ -179,26 +183,71 @@ function create(id) {
         return;
     }
     const bridge = fuxaBridgeManager.createBridge('fuxa' + id);
-    bridge.onLoadProject = () => {
-        addToLogger(`FUXA ${bridge.id} query project to load`);
-        console.log(`FUXA ${bridge.id} query project to load`);
-        let prj = JSON.parse(localStorage.getItem(bridge.id));
-        if (prj) {
-            checkProjectDevices(prj.devices);
-        }
-        return prj;
-        // return 'prj: ' + bridge._id;
-    }
+    var instance = new FuxaInstance(id, bridge);
+    bridge['fuxa'] = instance;
+}
 
-    bridge.onSaveProject = (project) => {
-        if (project) {
-            addToLogger(`FUXA ${bridge.id} ask to save project`);
-            console.log(`FUXA ${bridge.id} ask to save project`);
-            localStorage.setItem(bridge.id, JSON.stringify(project));
-            checkProjectDevices(project.devices);
-            return true;// return if it's saved
+class FuxaInstance {
+    simulator;
+    bridge;
+    constructor(id, bridge) {
+        this.bridge = bridge;
+        // const tbridge = fuxaBridgeManager.getBridge('fuxa' + id);
+        // if (tbridge) {
+        //     dragElement(document.getElementById("mydiv" + id));
+        //     return;
+        // }
+        // const bridge = fuxaBridgeManager.createBridge('fuxa' + id);
+        bridge.onLoadProject = () => {
+            addToLogger(`FUXA ${bridge.id} query project to load`);
+            console.log(`FUXA ${bridge.id} query project to load`);
+            let prj = JSON.parse(localStorage.getItem(bridge.id));
+            if (prj) {
+                this.checkProjectDevices(prj.devices);
+            }
+            return prj;
+            // return 'prj: ' + bridge._id;
         }
-        return false;
+
+        bridge.onSaveProject = (project) => {
+            if (project) {
+                addToLogger(`FUXA ${bridge.id} ask to save project`);
+                console.log(`FUXA ${bridge.id} ask to save project`);
+                localStorage.setItem(bridge.id, JSON.stringify(project));
+                this.checkProjectDevices(project.devices);
+                return true;// return if it's saved
+            }
+            return false;
+        }
+
+        var elem = document.createElement('div');
+        elem.innerHTML += 
+        // document.body.innerHTML += `
+        elem.innerHTML = `
+            <div id="mydiv${id}" style="position: absolute; z-index: 9; background-color: #f1f1f1; border: 1px solid #d3d3d3;">
+                <div id="mydiv${id}header" style="padding: 10px; cursor: move; z-index: 10; background-color: #2196F3; color: #fff;">Click here to move
+                    <div style="float: right; cursor: pointer;" onclick="closeWidget('${id}')">X</div>
+                </div>
+                <div style="position: relative; width:1400px; height: 900px">
+                    <app-fuxa id="fuxa${id}">
+                        <div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);">
+                            <div class="logo" style="display: inline-block;width:40px;height:40px;background-size:40px 40px;"></div>
+                            <div style="display: inline-block;padding-left:10px">
+                                <div style="display:inline-block;font-size: 18px">FUXA Loading...</div>
+                                <div style="display: block;font-size: 9px;padding-top: 3px;">
+                                    powered by <span><b>frango</b>team</span>
+                                </div>
+                            </div>
+                        </div>
+                    </app-fuxa>
+                </div>
+            </div>`;
+        document.body.appendChild(elem);
+        dragElement(document.getElementById("mydiv" + id));
+        const fuxa = document.querySelector('#fuxa' + id);
+        refresh(id);
+        fuxa.bridge = bridge; // It works!
+        refresh(id);   
     }
 
     // to manage the device tags subscription
@@ -206,10 +255,12 @@ function create(id) {
         var selectTags = document.getElementById("tags");
         // remove current device subscriptions
         selectTags.innerHTML = "";
+        this.stopSimulator();
         // add devices subscriptions
         if (!devices) {
             return;
         }
+        var simTags = [];
         for (const [dkey, dvalue] of Object.entries(devices)) {
             var device = devices[dkey];
             if (device.tags) {
@@ -219,39 +270,42 @@ function create(id) {
                     opt.value = JSON.stringify(new DeviceValue(device.name, key, null));
                     opt.innerHTML = key;
                     selectTags.appendChild(opt);
+                    simTags.push(new DeviceValue(device.name, key, 0))
                 }
             }
         }
+        if (simTags.length) {
+            this.startSimulator(simTags);
+        }
     }
 
-    document.body.innerHTML += `
-        <div id="mydiv${id}" style="position: absolute; z-index: 9; background-color: #f1f1f1; border: 1px solid #d3d3d3;">
-            <div id="mydiv${id}header" style="padding: 10px; cursor: move; z-index: 10; background-color: #2196F3; color: #fff;">Click here to move
-                <div style="float: right; cursor: pointer;" onclick="closeWidget('mydiv${id}')">X</div>
-            </div>
-            <div style="position: relative; width:1000px; height: 900px">
-                <app-fuxa id="fuxa${id}">
-                    <div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);">
-                        <div class="logo" style="display: inline-block;width:40px;height:40px;background-size:40px 40px;"></div>
-                        <div style="display: inline-block;padding-left:10px">
-                            <div style="display:inline-block;font-size: 18px">FUXA Loading...</div>
-                            <div style="display: block;font-size: 9px;padding-top: 3px;">
-                                powered by <span><b>frango</b>team</span>
-                            </div>
-                        </div>
-                    </div>
-                </app-fuxa>
-            </div>
-        </div>`;
-    dragElement(document.getElementById("mydiv" + id));
-    const fuxa = document.querySelector('#fuxa' + id);
-    refresh(id);
-    fuxa.bridge = bridge; // It works!
-    refresh(id);
-    // setTimeout(() => {
-    //     const fuxa = document.querySelector('#fuxa' + id);
-    //     fuxa.bridge = bridge; // It works!    
-    // }, 100);
+    startSimulator = (tags) => {
+        var count = 0;
+        this.simulator = setInterval(() => {
+            count++;
+            if (tags) {
+                for (var i = 0; i < tags.length; i++) {
+                    if (count % 10 !== 0 && i >= 3) {
+                        break;
+                    }
+                    tags[i].value++;
+                }
+                if (this.bridge) {
+                    var result = Object.values(tags);
+                    this.bridge.emitDeviceValues(result);
+
+                    // for (var x = 0; x < result.length; x++) {
+                    //     this.bridge.emitDeviceValues([result[x]]);
+                    // }
+                }
+            }
+        }, 100);
+    }
+
+    stopSimulator = () => {
+        clearInterval(this.simulator);
+        this.simulator = null;
+    }
 }
 
 function dragElement(elmnt) {

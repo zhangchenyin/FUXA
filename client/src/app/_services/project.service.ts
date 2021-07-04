@@ -515,17 +515,19 @@ export class ProjectService {
         server.id = '0';
         server.type = DeviceType.FuxaServer;
         server.property = new DeviceNetProperty();
-        this.projectData.server = server;
-        if (this.appService.isClientApp) {
-            let clientDevice = new Device();
-            clientDevice.type = DeviceType.inmation;
-            clientDevice.id = Utils.getGUID();
-            clientDevice.name = 'inmation';
-            clientDevice.enabled = true;
-            clientDevice.property = new DeviceNetProperty();
-            clientDevice.tags = {};
-            this.setDevice(clientDevice, null, null);
+        if (!this.appService.isClientApp) {
+            this.projectData.server = server;
         }
+        // if (this.appService.isClientApp) {
+        //     let clientDevice = new Device();
+        //     clientDevice.type = DeviceType.internal;
+        //     clientDevice.id = Utils.getGUID();
+        //     clientDevice.name = 'inmation';
+        //     clientDevice.enabled = true;
+        //     clientDevice.property = new DeviceNetProperty();
+        //     clientDevice.tags = {};
+        //     this.setDevice(clientDevice, null, null);
+        // }
         this.save();
     }
 
