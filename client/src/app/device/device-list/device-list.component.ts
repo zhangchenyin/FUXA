@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
+import { ChangeDetectorRef } from '@angular/core';
 import { MatTable, MatTableDataSource, MatSort, MatMenuTrigger } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatDialog } from '@angular/material';
@@ -45,6 +46,7 @@ export class DeviceListComponent implements OnInit {
     constructor(private dialog: MatDialog,
         private hmiService: HmiService,
         private translateService: TranslateService,
+        private changeDetector: ChangeDetectorRef,
         private projectService: ProjectService) { }
 
     ngOnInit() {
@@ -307,6 +309,7 @@ export class DeviceListComponent implements OnInit {
                 this.devices[vartoken[0]].tags[vartoken[1]].value = sigs[id].value;
             }
         }
+        this.changeDetector.detectChanges();
     }
 
     devicesValue(): Array<Device> {
