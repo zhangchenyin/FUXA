@@ -4,7 +4,7 @@ import { Subscription } from "rxjs";
 import { DeviceListComponent } from './device-list/device-list.component';
 import { DeviceMapComponent } from './device-map/device-map.component';
 import { Device } from './../_models/device';
-import { ProjectService } from '../_services/project.service';
+import { ProjectService, SaveMode } from '../_services/project.service';
 import { HmiService } from '../_services/hmi.service';
 
 @Component({
@@ -38,8 +38,8 @@ export class DeviceComponent implements OnInit, OnDestroy, AfterViewInit {
 		this.subscriptionVariableChange = this.hmiService.onVariableChanged.subscribe(event => {
 			this.deviceList.updateDeviceValue();
 		});
-		this.subscriptionSave = this.projectService.onSaveCurrent.subscribe(saveas => {
-			if (saveas) {
+		this.subscriptionSave = this.projectService.onSaveCurrent.subscribe((mode: SaveMode) => {
+			if (mode === SaveMode.SaveAs) {
 				this.projectService.saveAs();
 			} else {
 				this.projectService.save();

@@ -6,7 +6,7 @@ import { MatIconRegistry } from '@angular/material';
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
-import { ProjectService } from '../_services/project.service';
+import { ProjectService, SaveMode } from '../_services/project.service';
 import { Hmi, View, GaugeSettings, SelElement, LayoutSettings } from '../_models/hmi';
 import { WindowRef } from '../_helpers/windowref';
 import { Output } from '@angular/core/src/metadata/directives';
@@ -123,11 +123,11 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
      */
     ngOnInit() {
         try {
-            this.subscriptionSave = this.projectService.onSaveCurrent.subscribe(saveas => {
+            this.subscriptionSave = this.projectService.onSaveCurrent.subscribe((mode: SaveMode) => {
                 this.onSaveProject(false);
-                if (saveas) {
+                if (mode === SaveMode.SaveAs) {
                     this.projectService.saveAs();
-                } else {
+                } else if (mode === SaveMode.Save) {
                     this.projectService.save();
                 }
             });

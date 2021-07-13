@@ -639,7 +639,7 @@
     "msg.textproperty-missing-value": "Some values are missing!",
     "msg.device-remove": "Would you like to remove Device ",
     "msg.device-tag-remove": "Would you like to remove Tag ",
-    "msg.device-tag-exist": "Tag name exist!",
+    "msg.device-tag-exist": "Tag exist!",
 
     "msg.home-welcome": "Wait...go to editor, map the devices, design your visualization and bind the devices variables",
     "msg.project-load-error": "Unable to read '{{value}}'",

@@ -15,7 +15,6 @@ import { TranslateService } from '@ngx-translate/core';
 @Injectable()
 export class HmiService {
 
-    // @Output() onSaveCurrent: EventEmitter<boolean> = new EventEmitter();
     @Output() onVariableChanged: EventEmitter<Variable> = new EventEmitter();
     @Output() onDeviceChanged: EventEmitter<boolean> = new EventEmitter();
     @Output() onDeviceBrowse: EventEmitter<any> = new EventEmitter();

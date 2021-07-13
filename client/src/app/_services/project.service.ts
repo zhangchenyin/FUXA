@@ -25,7 +25,7 @@ import * as FileSaver from 'file-saver';
 @Injectable()
 export class ProjectService {
 
-    @Output() onSaveCurrent: EventEmitter<boolean> = new EventEmitter();
+    @Output() onSaveCurrent: EventEmitter<SaveMode> = new EventEmitter();
     @Output() onLoadHmi: EventEmitter<boolean> = new EventEmitter();
 
     private projectData = new ProjectData();            // Project data
@@ -576,8 +576,8 @@ export class ProjectService {
      * Send Save Project to to editor component
      * @param saveas 
      */
-    saveProject(saveas?: boolean) {
-        this.onSaveCurrent.emit(saveas);
+    saveProject(mode = SaveMode.Save) {
+        this.onSaveCurrent.emit(mode);
     }
 
     isSecurityEnabled() {
@@ -679,4 +679,10 @@ export class ProjectService {
 export class ServerSettings {
     version: string;
     secureEnabled: boolean;
+}
+
+export enum SaveMode {
+    Current,
+    Save,
+    SaveAs
 }
