@@ -14,10 +14,14 @@ export class Device {
     polling: number;
     /** Tags list of Tag */
     tags: any;
+
+    constructor(_id: string) {
+        this.id = _id;
+    }
 }
 
 export class Tag {
-    /** Tag id, is like the name */
+    /** Tag id, GUID */
     id: string;
     /** Tag name, is like the id  */
     name: string;
@@ -43,6 +47,10 @@ export class Tag {
     options: any;
     /** not used yet */
     format: any;
+
+    constructor(_id: string) {
+        this.id = _id;
+    }
 }
 
 export class DeviceNetProperty {
@@ -89,6 +97,7 @@ export enum DeviceType {
     ModbusTCP = 'ModbusTCP',
     WebAPI = 'WebAPI',
     MQTTclient = 'MQTTclient',
+    INMATION = 'INMATION',
     internal = 'internal'
 }
 
@@ -160,3 +169,5 @@ export enum BACnetObjectType {
 }
 
 export const USER_DEFINED_VARIABLE = 'user-defined';
+export const DEVICE_PREFIX = 'd_';
+export const TAG_PREFIX = 't_';

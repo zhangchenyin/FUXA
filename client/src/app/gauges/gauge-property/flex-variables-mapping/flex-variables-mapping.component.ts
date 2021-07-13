@@ -38,7 +38,7 @@ export class FlexVariablesMappingComponent implements OnInit, OnChanges {
         let viewVariables = {};
         if (this.view) {
             Object.values(this.view.items).forEach((item) => {
-                if (item && item.property && item.property.variableSrc === USER_DEFINED_VARIABLE) {
+                if (item && item.property) {// && item.property.variableSrc === USER_DEFINED_VARIABLE) {
                     if (item.property.variableId) {
                         this.assignVariableTo(item.property, viewVariables)
                     }
@@ -65,9 +65,9 @@ export class FlexVariablesMappingComponent implements OnInit, OnChanges {
 
     protected assignVariableTo(object, target) {
         let variable = {
-            variableId: object['variableId'],
-            variableSrc: object['variableSrc'],
-            variable: object['variable']
+            variableId: object['variableId']
+            // variableSrc: object['variableSrc'],
+            // variable: object['variable']
         }
         target[variable.variableId] = variable
     }

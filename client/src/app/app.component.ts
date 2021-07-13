@@ -53,6 +53,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         private appService: AppService) {
 
         this.projectService.AppId = this.elementRef.nativeElement.getAttribute('id');
+        this.hmiService.projectService = this.projectService;
     }
 
     ngOnInit() {

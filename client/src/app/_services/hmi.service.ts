@@ -36,7 +36,7 @@ export class HmiService {
     private endPointConfig: string = EndPointApi.getURL();//"http://localhost:1881";
     private bridge: any = null;     
 
-    constructor(private projectService: ProjectService,
+    constructor(public projectService: ProjectService,
         private translateService: TranslateService,
         private toastr: ToastrService) {
         if (environment.serverEnabled) {
@@ -102,7 +102,7 @@ export class HmiService {
     private onDeviceValues(tags: Variable[]) {
         // console.log('FUXA onDeviceValues: ', tags);
         for (let idx = 0; idx < tags.length; idx++) {
-            let varid = tags[idx].source + HmiService.separator + tags[idx].id;
+            let varid = tags[idx].id;
             if (!this.variables[varid]) {
                 this.variables[varid] = new Variable(varid, tags[idx].source, tags[idx].id);
             }
@@ -340,11 +340,11 @@ export class HmiService {
                 let toadd = this.variables[sigid];
                 if (fulltext) {
                     toadd = Object.assign({}, this.variables[sigid]);
-                    let device = this.projectService.getDeviceFromSource(toadd.source);
+                    let device = this.projectService.getDeviceFromTagId(toadd.id);
                     if (device) {
                         toadd['source'] = device.name;
-                        if (device.tags[toadd.name]) {
-                            toadd['name'] = this.getTagLabel(device.tags[toadd.name]);
+                        if (device.tags[toadd.id]) {
+                            toadd['name'] = this.getTagLabel(device.tags[toadd.id]);
                         }
                     }
                 }
@@ -364,7 +364,7 @@ export class HmiService {
             let result = this.variables[sigid];
             if (fulltext) {
                 result = Object.assign({}, this.variables[sigid]);
-                let device = this.projectService.getDeviceFromSource(result.source);
+                let device = this.projectService.getDeviceFromTagId(result.id);
                 if (device) {
                     result['source'] = device.name;
                     if (device.tags[result.name]) {
@@ -396,7 +396,7 @@ export class HmiService {
         if (chart) {
             let varsId = [];
             chart.lines.forEach(line => {
-                varsId.push(HmiService.toVariableId(line.device, line.id));
+                varsId.push(line.id);
             });
             return varsId;
         }
@@ -421,17 +421,6 @@ export class HmiService {
 
     //#endregion
     //#region My Static functions
-    public static fromVariableId(variableId: string) {
-        if (!variableId) {
-            return {};
-        }
-        let parts = variableId.split(HmiService.separator);
-        return {
-            variableId: variableId,
-            variableSrc: parts[0],
-            variable: parts[1],
-        }
-    }
     //#endregion
 
     //#region My Static functions

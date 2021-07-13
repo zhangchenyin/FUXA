@@ -9,7 +9,7 @@ import { Hmi, View, LayoutSettings } from '../_models/hmi';
 import { Chart } from '../_models/chart';
 import { Alarm } from '../_models/alarm';
 import { Text } from '../_models/text';
-import { Device, DeviceType, DeviceNetProperty } from '../_models/device';
+import { Device, DeviceType, DeviceNetProperty, DEVICE_PREFIX } from '../_models/device';
 import { EndPointApi } from '../_helpers/endpointapi';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
@@ -510,13 +510,15 @@ export class ProjectService {
 
     setNewProject() {
         this.projectData = new ProjectData();
-        let server = new Device();
+        let server = new Device(Utils.getGUID(DEVICE_PREFIX));
         server.name = 'FUXA';
         server.id = '0';
         server.type = DeviceType.FuxaServer;
         server.property = new DeviceNetProperty();
         if (!this.appService.isClientApp) {
             this.projectData.server = server;
+        } else {
+            delete this.projectData.server;
         }
         // if (this.appService.isClientApp) {
         //     let clientDevice = new Device();
@@ -557,8 +559,13 @@ export class ProjectService {
         return result;
     }
 
-    getDeviceFromSource(source: string): any {
-        return this.projectData.devices[source];
+    getDeviceFromTagId(tagId: string): any {
+        let devices = <Device[]>Object.values(this.projectData.devices);
+        for (let i = 0; i < devices.length; i++) {
+            if (devices[i].tags[tagId]) {
+                return devices[i];
+            }
+        }
     }
 
     setDevices(devices: any, nosave?: boolean): boolean {

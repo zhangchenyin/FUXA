@@ -8,7 +8,8 @@ import {
     OnInit,
     Output,
     ViewChild,
-    ViewContainerRef
+    ViewContainerRef,
+    ChangeDetectorRef
 } from '@angular/core';
 import { Subscription } from "rxjs";
 
@@ -50,6 +51,7 @@ export class FuxaViewComponent implements OnInit, AfterViewInit {
 
     constructor(private el: ElementRef,
         private viewContainerRef: ViewContainerRef,
+        private changeDetector: ChangeDetectorRef,
         private resolver: ComponentFactoryResolver) {
     }
 
@@ -95,7 +97,9 @@ export class FuxaViewComponent implements OnInit, AfterViewInit {
                         gs.actionRef.timer = null;
                     }
                     if (gs.actionRef.animr) {
-                        gs.actionRef.animr.reset();
+                        if (gs.actionRef.animr.reset) {
+                            gs.actionRef.animr.reset();
+                        }
                         delete gs.actionRef.animr;
                     }
                 }
@@ -412,6 +416,7 @@ export class FuxaViewComponent implements OnInit, AfterViewInit {
         if (view.profile.bkcolor) {
             this.dialog.bkcolor = view.profile.bkcolor;
         }
+        this.changeDetector.detectChanges();
     }
 
     onOpenCard(id: string, event, viewref: string, options: any = {}) {
@@ -441,6 +446,7 @@ export class FuxaViewComponent implements OnInit, AfterViewInit {
         } else {
             this.cards.push(card);
         }
+        this.changeDetector.detectChanges();
     }
 
     openIframe(id: string, event: any, link: string, options: any) {
@@ -503,10 +509,12 @@ export class FuxaViewComponent implements OnInit, AfterViewInit {
 
     onCloseCard(card: CardModel) {
         this.cards.splice(this.cards.indexOf(card), 1);
+        this.changeDetector.detectChanges();
     }
 
     onCloseDialog() {
         delete this.dialog;
+        this.changeDetector.detectChanges();
     }
 
     private onClose($event) {

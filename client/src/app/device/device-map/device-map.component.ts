@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material';
 import { DevicePropertyComponent } from './../device-property/device-property.component';
 import { ProjectService } from '../../_services/project.service';
 import { PluginService } from '../../_services/plugin.service';
-import { Device, DeviceType, DeviceNetProperty } from './../../_models/device';
+import { Device, DeviceType, DeviceNetProperty, DEVICE_PREFIX } from './../../_models/device';
 import { Utils } from '../../_helpers/utils';
 import { Plugin } from '../../_models/plugin';
 import { AppService } from '../../_services/app.service';
@@ -113,14 +113,15 @@ export class DeviceMapComponent implements OnInit, OnDestroy, AfterViewInit {
 			});
 			this.plugins.push(DeviceType.WebAPI);
 			this.plugins.push(DeviceType.MQTTclient);
+            this.plugins.push(DeviceType.internal);
 		} else {
-			this.plugins.push(DeviceType.internal);
+            this.plugins.push(DeviceType.INMATION);
+            this.plugins.push(DeviceType.internal);
 		}
 	}
 
 	addDevice() {
-		let device = new Device();
-		device.id = Utils.getGUID();
+		let device = new Device(Utils.getGUID(DEVICE_PREFIX));
 		device.property = new DeviceNetProperty();
 		device.enabled = false;
 		device.tags = {};
@@ -336,7 +337,7 @@ export class DeviceMapComponent implements OnInit, OnDestroy, AfterViewInit {
 	}
 
 	isClientDevice(device) {
-		return (device.type === DeviceType.internal && this.appService.isClientApp);
+		return (device.type === DeviceType.INMATION && this.appService.isClientApp);
 	}
 
 	getDevicePropertyToShow(device) {

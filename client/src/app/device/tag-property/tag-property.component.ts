@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Inject, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Subscription } from "rxjs";
 
-import { Device, TagType, Tag, DeviceType, ModbusTagType, BACnetObjectType } from './../../_models/device';
+import { Device, TagType, Tag, DeviceType, ModbusTagType, BACnetObjectType, TAG_PREFIX } from './../../_models/device';
 import { TreetableComponent, Node, NodeType } from '../../gui-helpers/treetable/treetable.component';
 import { HmiService } from '../../_services/hmi.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -51,6 +51,8 @@ export class TagPropertyComponent implements OnInit, OnDestroy {
             this.config.type = (this.isWebApi()) ? 'todefine' : '';
         } else if (this.isMqtt()) {
             this.dialogType = EditTagDialogType.List;
+        } else if (this.isBridge()) {
+            this.dialogType = EditTagDialogType.Simple;
         } else if (this.isInternal()) {
             this.dialogType = EditTagDialogType.Simple;
         } else {
@@ -160,8 +162,7 @@ export class TagPropertyComponent implements OnInit, OnDestroy {
             Object.values(this.topicsList).forEach((topic:any) => {
                 if (topic.checked && topic.enabled) {
                     listcheck[topic.name] = 1;
-                    let t = new Tag();
-                    t.id = topic.name;
+                    let t = new Tag(Utils.getGUID(TAG_PREFIX));
                     t.name = topic.name;
                     t.address = topic.name;                    
                     this.data.nodes.push(t);
@@ -170,14 +171,23 @@ export class TagPropertyComponent implements OnInit, OnDestroy {
             Object.values(this.topicsToAdd).forEach((topic:any) => {
                 if (!listcheck[topic.name]) {
                     listcheck[topic.name] = 1;
-                    let t = new Tag();
-                    t.id = topic.name;
+                    let t = new Tag(Utils.getGUID(TAG_PREFIX));
                     t.name = topic.name;
                     t.address = topic.name;                    
                     this.data.nodes.push(t);
                 }
             });
         } else if (this.isModbus() || this.isInternal()) {
+        } else if (this.isBridge()) {
+            let tags =  <Tag[]>Object.values(this.data.device.tags);
+            this.error = '';
+            for (let i = 0; i < tags.length; i++) {
+                if (tags[i].id !== this.data.tag.id && tags[i].address === this.data.tag.address) {
+                    this.error = '';
+                    this.translateService.get('msg.device-tag-exist').subscribe((txt: string) => { this.error = txt });                    
+                    return;
+                }
+            }
         } else {
             Object.keys(this.treetable.nodes).forEach((key) => {
                 let n: Node = this.treetable.nodes[key];
@@ -186,6 +196,7 @@ export class TagPropertyComponent implements OnInit, OnDestroy {
                 }
             });
         }
+        this.dialogRef.close(this.data);
     }
 
     onCheckValue(tag) {
@@ -420,6 +431,10 @@ export class TagPropertyComponent implements OnInit, OnDestroy {
         return (this.data.device.type === DeviceType.BACnet) ? true : false;
     }
     
+    isBridge() {
+        return (this.data.device.type === DeviceType.INMATION) ? true : false;
+    }
+
     isInternal() {
 		return (this.data.device.type === DeviceType.internal) ? true : false;
     }
@@ -437,8 +452,10 @@ export class TagPropertyComponent implements OnInit, OnDestroy {
             return true;
         } else if (this.isMqtt()) {
             return true;
+        } else if (this.isBridge()) {
+            return (this.data.tag.address) ? true : false;
         } else if (this.isInternal()) {
-            return true;
+            return (this.data.tag.name) ? true : false;
         } else if (this.data.tag && !this.data.tag.name) {
             return false;
         } else if (this.isModbus() && (!this.data.tag.address || parseInt(this.data.tag.address) <= 0)) {

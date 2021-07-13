@@ -6,7 +6,7 @@ import { MatDialog } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 
 import { TagPropertyComponent } from './../tag-property/tag-property.component';
-import { Tag, Device, DeviceType } from '../../_models/device';
+import { Tag, Device, DeviceType, TAG_PREFIX } from '../../_models/device';
 import { ProjectService } from '../../_services/project.service';
 import { HmiService } from '../../_services/hmi.service';
 import { Node, NodeType } from '../../gui-helpers/treetable/treetable.component';
@@ -22,7 +22,7 @@ import { Utils } from '../../_helpers/utils';
 export class DeviceListComponent implements OnInit {
 
     readonly defAllColumns = ['select', 'name', 'address', 'device', 'type', 'min', 'max', 'value', 'remove'];
-    readonly defClientColumns = ['select', 'name', 'device', 'type', 'min', 'max', 'value', 'remove'];
+    readonly defClientColumns = ['select', 'name', 'address', 'device', 'type', 'min', 'max', 'value', 'remove'];
     readonly defAllRowWidth = 1560;
     readonly defClientRowWidth = 1300;
 
@@ -34,6 +34,7 @@ export class DeviceListComponent implements OnInit {
     dirty: boolean = false;
     deviceType = DeviceType;
     tableWidth = this.defAllRowWidth;
+    tagsMap = {};
 
     @Input() deviceSelected: Device;
     @Output() save = new EventEmitter();
@@ -54,6 +55,11 @@ export class DeviceListComponent implements OnInit {
         if (!this.deviceSelected && this.devices) {
             this.deviceSelected = this.devices[0];
         }
+        Object.values(this.devices).forEach(d => {
+            Object.values(d.tags).forEach((t: Tag) => {
+                this.tagsMap[t.id] = t;
+            })
+        });
     }
 
     ngAfterViewInit() {
@@ -86,7 +92,7 @@ export class DeviceListComponent implements OnInit {
                 this.bindToTable(this.deviceSelected.tags);
             }
         });
-        if (this.deviceSelected.type === DeviceType.internal) {
+        if (this.deviceSelected.type === DeviceType.INMATION || this.deviceSelected.type === DeviceType.internal) {
             this.displayedColumns = this.defClientColumns;
             this.tableWidth = this.defClientRowWidth;
         } else {
@@ -163,7 +169,7 @@ export class DeviceListComponent implements OnInit {
         } else if (this.deviceSelected.type === DeviceType.MQTTclient) {
             this.addTopic();
         } else {
-            let tag = new Tag();
+            let tag = new Tag(Utils.getGUID(TAG_PREFIX));
             this.editTag(tag, true);
         }
     }
@@ -181,8 +187,7 @@ export class DeviceListComponent implements OnInit {
                     this.clearTags();
                 }
                 result.nodes.forEach((n: Node) => {
-                    let tag: Tag = new Tag();
-                    tag.id = n.id;
+                    let tag = new Tag(Utils.getGUID(TAG_PREFIX));
                     tag.name = n.id;
                     tag.type = n.type;
                     if (this.deviceSelected.type === DeviceType.BACnet) {
@@ -224,7 +229,8 @@ export class DeviceListComponent implements OnInit {
     }
 
     isToEdit(type) {
-        return (type === DeviceType.SiemensS7 || type === DeviceType.ModbusTCP || type === DeviceType.ModbusRTU || type === DeviceType.internal);
+        return (type === DeviceType.SiemensS7 || type === DeviceType.ModbusTCP || type === DeviceType.ModbusRTU || type === DeviceType.INMATION || 
+                type === DeviceType.internal);
     }
 
     editTag(tag: Tag, checkToAdd: boolean) {
@@ -244,8 +250,6 @@ export class DeviceListComponent implements OnInit {
                     this.projectService.setDeviceTags(this.deviceSelected);
                 } else {
                     this.dirty = true;
-                    // tag.id = (tag.id) ? tag.id : Utils.getShortGUID();
-                    tag.id = temptag.name;
                     tag.name = temptag.name;
                     tag.type = temptag.type;
                     tag.address = temptag.address;
@@ -291,23 +295,27 @@ export class DeviceListComponent implements OnInit {
                 if (device.tags[key].id === tag.id) {
                     exist = true;
                 }
-            } else if (device.tags[key].name === tag.id) {
+            } else if (device.tags[key].name === tag.name) {
                 exist = true;
             }
         })
         if (!exist) {
             device.tags[tag.id] = tag;
         }
+        this.tagsMap[tag.id] = tag;
         this.bindToTable(this.deviceSelected.tags);
     }
 
     updateDeviceValue() {
         let sigs = this.hmiService.getAllSignals();
         for (let id in sigs) {
-            let vartoken = id.split(HmiService.separator);
-            if (vartoken.length > 1 && this.devices[vartoken[0]] && this.devices[vartoken[0]].tags[vartoken[1]]) {
-                this.devices[vartoken[0]].tags[vartoken[1]].value = sigs[id].value;
+            if (this.tagsMap[id]) {
+                this.tagsMap[id].value = sigs[id].value;
             }
+            // let vartoken = id.split(HmiService.separator);
+            // if (vartoken.length > 1 && this.devices[vartoken[0]] && this.devices[vartoken[0]].tags[vartoken[1]]) {
+            //     this.devices[vartoken[0]].tags[vartoken[1]].value = sigs[id].value;
+            // }
         }
         this.changeDetector.detectChanges();
     }

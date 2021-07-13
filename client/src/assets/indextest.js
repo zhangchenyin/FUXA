@@ -263,7 +263,7 @@ class FuxaInstance {
         var simTags = [];
         for (const [dkey, dvalue] of Object.entries(devices)) {
             var device = devices[dkey];
-            if (device.tags) {
+            if (device.type === 'INMATION' && device.tags) {
                 for (const [key, value] of Object.entries(device.tags)) {
                     console.log(`${key}: ${value}`);
                     var opt = document.createElement('option');

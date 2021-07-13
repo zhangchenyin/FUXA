@@ -52,8 +52,8 @@
 
         <!-- Address Column -->
         <ng-container matColumnDef="address">
-            <mat-header-cell *matHeaderCellDef mat-sort-header [hidden]="true"> {{'device.list-address' | translate}} </mat-header-cell>
-            <mat-cell *matCellDef="let element" [hidden]="true"> {{getAddress(element)}} </mat-cell>
+            <mat-header-cell *matHeaderCellDef mat-sort-header> {{'device.list-address' | translate}} </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{getAddress(element)}} </mat-cell>
         </ng-container>
 
         <!-- Device Column -->
