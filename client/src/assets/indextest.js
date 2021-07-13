@@ -261,16 +261,16 @@ class FuxaInstance {
             return;
         }
         var simTags = [];
-        for (const [dkey, dvalue] of Object.entries(devices)) {
-            var device = devices[dkey];
-            if (device.type === 'INMATION' && device.tags) {
-                for (const [key, value] of Object.entries(device.tags)) {
-                    console.log(`${key}: ${value}`);
+        for (var i = 0; i < devices.length; i++) {
+            var device = devices[i];
+            if (device.type === 'external' && device.tags) {
+                for (var x = 0 ; x < device.tags.length; x++) {
+                    console.log(`${device.tags[x].id}: ${device.tags[x].address}`);
                     var opt = document.createElement('option');
-                    opt.value = JSON.stringify(new DeviceValue(device.name, key, null));
-                    opt.innerHTML = key;
+                    opt.value = JSON.stringify(new DeviceValue(device.name, device.tags[x].id, null));
+                    opt.innerHTML = device.tags[x].id;
                     selectTags.appendChild(opt);
-                    simTags.push(new DeviceValue(device.name, key, 0))
+                    simTags.push(new DeviceValue(device.name, device.tags[x].id, 0));
                 }
             }
         }

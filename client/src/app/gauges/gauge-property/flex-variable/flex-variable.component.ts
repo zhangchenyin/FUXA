@@ -3,7 +3,7 @@ import { ReplaySubject, Subject } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
 
-import { Device, DeviceType, Tag, TAG_PREFIX, USER_DEFINED_VARIABLE } from '../../../_models/device';
+import { Device, DeviceType, Tag, TAG_PREFIX } from '../../../_models/device';
 import { HmiService } from '../../../_services/hmi.service';
 import { Utils } from '../../../_helpers/utils';
 
@@ -91,22 +91,13 @@ export class FlexVariableComponent implements OnInit {
     }
 
     getVariableLabel(vari) {
-        if (this.deviceCtrl.value.type !== DeviceType.INMATION) {
-            return vari.label || vari.name;
-        }
-        let result = vari.label || vari.name;
-        if (result && vari.address) {
-            return '(' + result + ') ' + vari.address;
-        }
-        return  result || vari.address;
+        return vari.label || vari.name;
+
     }
 
     toggleView(event) {
         event.stopPropagation();
         this.manualEdit = !this.manualEdit;
-        // if (this.manualEdit) {
-        //     this.value.variableSrc = USER_DEFINED_VARIABLE;
-        // }
         this.onChanged();
     }
 
@@ -217,7 +208,7 @@ export class FlexVariableComponent implements OnInit {
             search = search.toLowerCase();
         }
         // filter the variable
-        if (this.deviceCtrl.value.type === DeviceType.INMATION) {
+        if (this.deviceCtrl.value.type === DeviceType.external) {
             this.filteredVariable.next(
                 this.variableList.filter(vari => (vari.name && vari.name.toLowerCase().indexOf(search) > -1) || (vari.address && vari.address.toLowerCase().indexOf(search) > -1))
             );

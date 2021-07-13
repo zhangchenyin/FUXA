@@ -115,7 +115,7 @@ export class DeviceMapComponent implements OnInit, OnDestroy, AfterViewInit {
 			this.plugins.push(DeviceType.MQTTclient);
             this.plugins.push(DeviceType.internal);
 		} else {
-            this.plugins.push(DeviceType.INMATION);
+            this.plugins.push(DeviceType.external);
             this.plugins.push(DeviceType.internal);
 		}
 	}
@@ -133,7 +133,7 @@ export class DeviceMapComponent implements OnInit, OnDestroy, AfterViewInit {
 	}
 
 	removeDevice(device: Device) {
-		delete this.devices[device.name];
+		delete this.devices[device.id];
 	}
 
 	private getWindowWidth() {
@@ -337,7 +337,7 @@ export class DeviceMapComponent implements OnInit, OnDestroy, AfterViewInit {
 	}
 
 	isClientDevice(device) {
-		return (device.type === DeviceType.INMATION && this.appService.isClientApp);
+        return (device.type === DeviceType.external && this.appService.isClientApp);
 	}
 
 	getDevicePropertyToShow(device) {
@@ -390,6 +390,13 @@ export class DeviceMapComponent implements OnInit, OnDestroy, AfterViewInit {
 			}
 		}
 	}
+
+    getNodeClass(device: Device) {
+        if (device.type === DeviceType.internal) {
+            return 'node-internal';
+        }
+        return 'node-device';
+    }
 
 	setDeviceStatus(event) {
 		this.devicesStatus[event.id] = { status: event.status, last: new Date().getTime() };

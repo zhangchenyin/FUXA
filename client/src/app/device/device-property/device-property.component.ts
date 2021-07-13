@@ -118,8 +118,8 @@ export class DevicePropertyComponent implements OnInit, OnDestroy {
 		});		
 		// check security
 		if (this.data.device.name && (this.data.device.type === DeviceType.OPCUA || this.data.device.type === DeviceType.MQTTclient || 
-			this.data.device.type === DeviceType.INMATION)) {
-			this.projectService.getDeviceSecurity(this.data.device.name).subscribe(result => {
+            this.data.device.type === DeviceType.external)) {
+			this.projectService.getDeviceSecurity(this.data.device.id).subscribe(result => {
 				this.setSecurity(result.value);
 			}, err => {
 				console.log('get Device Security err: ' + err);
@@ -227,7 +227,7 @@ export class DevicePropertyComponent implements OnInit, OnDestroy {
 
 	getSecurity(): any {
 		if (!this.propertyExpanded || (this.data.device.type !== DeviceType.OPCUA && this.data.device.type !== DeviceType.MQTTclient && 
-										this.data.device.type !== DeviceType.INMATION)) {
+            this.data.device.type !== DeviceType.external)) {
 			return null;
 		} else {
 			if (this.data.device.type === DeviceType.OPCUA) {
@@ -240,7 +240,7 @@ export class DevicePropertyComponent implements OnInit, OnDestroy {
 					let result = { clientId: this.security.clientId, uid: this.security.username, pwd: this.security.password };
 					return result;
 				}
-			} else if (this.data.device.type === DeviceType.INMATION) {
+            } else if (this.data.device.type === DeviceType.external) {
 				if (this.security.clientId || this.security.username || this.security.password || this.security.grant_type) {
 					let result = { clientId: this.security.clientId, uid: this.security.username, pwd: this.security.password, gt: this.security.grant_type };
 					return result;

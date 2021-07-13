@@ -150,7 +150,7 @@ export class ProjectService {
     }
 
     saveAs() {
-        let filename = 'MyProject.fuxap';
+        let filename = 'fuxa-project.json';
         let date = new Date();
         let content = JSON.stringify(this.convertToSave(this.getProject()));
         let blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
@@ -168,6 +168,10 @@ export class ProjectService {
      */
     private convertToSave(prj: ProjectData) {
         let result = JSON.parse(JSON.stringify(prj));
+        if (this.appService.isClientApp) {
+            let sprj = ResourceStorageService.sanitizeProject(prj);
+            result = JSON.parse(JSON.stringify(sprj));
+        }
         for (let devid in result.devices) {
             for (let tagid in result.devices[devid].tags) {
                 delete result.devices[devid].tags[tagid].value;
@@ -186,10 +190,10 @@ export class ProjectService {
      */
     setDevice(device: Device, old: Device, security?: any) {
         if (this.projectData.devices) {
-            this.projectData.devices[device.name] = device;
-            this.storage.setDeviceSecurity(device.name, security).subscribe(() => {
+            this.projectData.devices[device.id] = device;
+            this.storage.setDeviceSecurity(device.id, security).subscribe(() => {
                 this.storage.setServerProjectData(ProjectDataCmdType.SetDevice, device, this.projectData).subscribe(result => {
-                    if (old && old.name && old.name !== device.name && old.id === device.id) {
+                    if (old && old.id !== device.id) {
                         this.removeDevice(old);
                     }
                 }, err => {
@@ -204,7 +208,7 @@ export class ProjectService {
     }
 
     setDeviceTags(device: Device) {
-        this.projectData.devices[device.name] = device;
+        this.projectData.devices[device.id] = device;
         this.storage.setServerProjectData(ProjectDataCmdType.SetDevice, device, this.projectData).subscribe(result => {
         }, err => {
             console.log(err);
@@ -218,21 +222,21 @@ export class ProjectService {
      * @param device
      */
     removeDevice(device: Device) {
-        delete this.projectData.devices[device.name];
+        delete this.projectData.devices[device.id];
         this.storage.setServerProjectData(ProjectDataCmdType.DelDevice, device, this.projectData).subscribe(result => {
         }, err => {
             console.log(err);
             this.notifySaveError(err);
         });
-        this.storage.setDeviceSecurity(device.name, '').subscribe(() => {
+        this.storage.setDeviceSecurity(device.id, '').subscribe(() => {
         }, err => {
             console.log(err);
             this.notifySaveError(err);
         });
     }
 
-    getDeviceSecurity(name: string): Observable<any> {
-        return this.storage.getDeviceSecurity(name);
+    getDeviceSecurity(id: string): Observable<any> {
+        return this.storage.getDeviceSecurity(id);
     }
     //#endregion
 
@@ -503,8 +507,10 @@ export class ProjectService {
      * @param prj project data to save
      */
     setProject(prj: ProjectData, notify?: boolean) {
-
         this.projectData = prj;
+        if (this.appService.isClientApp) {
+            this.projectData = ResourceStorageService.defileProject(prj);
+        }
         this.save();
     }
 
@@ -520,16 +526,6 @@ export class ProjectService {
         } else {
             delete this.projectData.server;
         }
-        // if (this.appService.isClientApp) {
-        //     let clientDevice = new Device();
-        //     clientDevice.type = DeviceType.internal;
-        //     clientDevice.id = Utils.getGUID();
-        //     clientDevice.name = 'inmation';
-        //     clientDevice.enabled = true;
-        //     clientDevice.property = new DeviceNetProperty();
-        //     clientDevice.tags = {};
-        //     this.setDevice(clientDevice, null, null);
-        // }
         this.save();
     }
 
@@ -574,15 +570,6 @@ export class ProjectService {
             return true;
         }
         return this.save();
-    }
-
-    addDevice(d: Device): boolean {
-        let dev = this.projectData.devices[d.name];
-        if (dev) {
-            this.projectData.devices[d.name];
-            return this.save();
-        }
-        return false;
     }
 
     /**

@@ -23,8 +23,10 @@ export class DeviceListComponent implements OnInit {
 
     readonly defAllColumns = ['select', 'name', 'address', 'device', 'type', 'min', 'max', 'value', 'remove'];
     readonly defClientColumns = ['select', 'name', 'address', 'device', 'type', 'min', 'max', 'value', 'remove'];
-    readonly defAllRowWidth = 1560;
-    readonly defClientRowWidth = 1300;
+    readonly defInternalColumns = ['select', 'name', 'device', 'type', 'min', 'max', 'value', 'remove'];
+    readonly defAllRowWidth = 1400;
+    readonly defClientRowWidth = 1400;
+    readonly defInternalRowWidth = 1200;
 
     displayedColumns = this.defAllColumns;
 
@@ -77,13 +79,11 @@ export class DeviceListComponent implements OnInit {
     onDeviceChange(source) {
         this.dataSource.data = [];
         this.deviceSelected = source.value;
-        if (this.deviceSelected.tags) {
-            this.bindToTable(this.deviceSelected.tags);
-        }
+        this.setSelectedDevice(this.deviceSelected);
     }
 
     setSelectedDevice(device: Device) {
-        this.devices = this.projectService.getDevices();//JSON.parse(JSON.stringify(this.projectService.getDevices()));
+        this.devices = this.projectService.getDevices();
         this.updateDeviceValue();
         // this.devices = JSON.parse(JSON.stringify(this.projectService.getDevices()));
         Object.values(this.devices).forEach(d => {
@@ -92,9 +92,12 @@ export class DeviceListComponent implements OnInit {
                 this.bindToTable(this.deviceSelected.tags);
             }
         });
-        if (this.deviceSelected.type === DeviceType.INMATION || this.deviceSelected.type === DeviceType.internal) {
+        if (this.deviceSelected.type === DeviceType.external) {
             this.displayedColumns = this.defClientColumns;
             this.tableWidth = this.defClientRowWidth;
+        } else if (this.deviceSelected.type === DeviceType.internal) {
+            this.displayedColumns = this.defInternalColumns;
+            this.tableWidth = this.defInternalRowWidth;
         } else {
             this.displayedColumns = this.defAllColumns;
             this.tableWidth = this.defAllRowWidth;
@@ -229,7 +232,7 @@ export class DeviceListComponent implements OnInit {
     }
 
     isToEdit(type) {
-        return (type === DeviceType.SiemensS7 || type === DeviceType.ModbusTCP || type === DeviceType.ModbusRTU || type === DeviceType.INMATION || 
+        return (type === DeviceType.SiemensS7 || type === DeviceType.ModbusTCP || type === DeviceType.ModbusRTU || type === DeviceType.external ||
                 type === DeviceType.internal);
     }
 
@@ -257,6 +260,9 @@ export class DeviceListComponent implements OnInit {
                     tag.min = temptag.min;
                     tag.max = temptag.max;
                     tag.divisor = temptag.divisor;
+                    if (this.deviceSelected.type === DeviceType.internal) {
+                        tag.value = '0';
+                    }
                     if (checkToAdd) {
                         this.checkToAdd(tag, result.device);
                     } else if (tag.id !== oldtag) {

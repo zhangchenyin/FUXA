@@ -51,7 +51,7 @@ export class TagPropertyComponent implements OnInit, OnDestroy {
             this.config.type = (this.isWebApi()) ? 'todefine' : '';
         } else if (this.isMqtt()) {
             this.dialogType = EditTagDialogType.List;
-        } else if (this.isBridge()) {
+        } else if (this.isExternal()) {
             this.dialogType = EditTagDialogType.Simple;
         } else if (this.isInternal()) {
             this.dialogType = EditTagDialogType.Simple;
@@ -177,8 +177,18 @@ export class TagPropertyComponent implements OnInit, OnDestroy {
                     this.data.nodes.push(t);
                 }
             });
-        } else if (this.isModbus() || this.isInternal()) {
-        } else if (this.isBridge()) {
+        } else if (this.isModbus()) {
+        } else if (this.isInternal()) {
+            let tags = <Tag[]>Object.values(this.data.device.tags);
+            this.error = '';
+            for (let i = 0; i < tags.length; i++) {
+                if (tags[i].id !== this.data.tag.id && tags[i].name === this.data.tag.name) {
+                    this.error = '';
+                    this.translateService.get('msg.device-tag-exist').subscribe((txt: string) => { this.error = txt });
+                    return;
+                }
+            }
+        } else if (this.isExternal()) {
             let tags =  <Tag[]>Object.values(this.data.device.tags);
             this.error = '';
             for (let i = 0; i < tags.length; i++) {
@@ -187,6 +197,9 @@ export class TagPropertyComponent implements OnInit, OnDestroy {
                     this.translateService.get('msg.device-tag-exist').subscribe((txt: string) => { this.error = txt });                    
                     return;
                 }
+            }
+            if (!this.data.tag.name) {
+                this.data.tag.name = this.data.tag.address;
             }
         } else {
             Object.keys(this.treetable.nodes).forEach((key) => {
@@ -431,8 +444,8 @@ export class TagPropertyComponent implements OnInit, OnDestroy {
         return (this.data.device.type === DeviceType.BACnet) ? true : false;
     }
     
-    isBridge() {
-        return (this.data.device.type === DeviceType.INMATION) ? true : false;
+    isExternal() {
+        return (this.data.device.type === DeviceType.external) ? true : false;
     }
 
     isInternal() {
@@ -452,7 +465,7 @@ export class TagPropertyComponent implements OnInit, OnDestroy {
             return true;
         } else if (this.isMqtt()) {
             return true;
-        } else if (this.isBridge()) {
+        } else if (this.isExternal()) {
             return (this.data.tag.address) ? true : false;
         } else if (this.isInternal()) {
             return (this.data.tag.name) ? true : false;

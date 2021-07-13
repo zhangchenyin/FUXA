@@ -52,7 +52,7 @@ export class ResDemoService implements ResourceStorageService {
         });
     }
     
-    getDeviceSecurity(name: string): Observable<any> {
+    getDeviceSecurity(id: string): Observable<any> {
         return new Observable((observer) => {
             observer.error('Not supported!');
         });

@@ -97,7 +97,7 @@ export enum DeviceType {
     ModbusTCP = 'ModbusTCP',
     WebAPI = 'WebAPI',
     MQTTclient = 'MQTTclient',
-    INMATION = 'INMATION',
+    external = 'external',
     internal = 'internal'
 }
 
@@ -168,6 +168,5 @@ export enum BACnetObjectType {
     DEVICE = ''                                 // 8
 }
 
-export const USER_DEFINED_VARIABLE = 'user-defined';
 export const DEVICE_PREFIX = 'd_';
 export const TAG_PREFIX = 't_';

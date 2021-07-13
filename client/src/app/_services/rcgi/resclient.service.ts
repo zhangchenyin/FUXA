@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { ProjectData, ProjectDataCmdType } from '../../_models/project';
+import { Device } from '../../_models/device';
 import { ResourceStorageService } from './resource-storage.service';
 import { Utils } from '../../_helpers/utils';
 
@@ -45,7 +46,8 @@ export class ResClientService implements ResourceStorageService {
     getStorageProject(): Observable<any> {
         return new Observable((observer) => {
             if (this.bridge) {
-                let prj = this.bridge.loadProject();
+                let sprj = this.bridge.loadProject();
+                let prj = ResourceStorageService.defileProject(sprj);
                 console.log('FUXA bridge.loadProject (getStorageProject): ', prj);
                 observer.next(prj);
             } else {
@@ -64,8 +66,9 @@ export class ResClientService implements ResourceStorageService {
             if (!prj) {
                 observer.next(); 
             } else if (this.bridge) {
-                console.log('FUXA bridge.saveProject (setServerProject): ', prj);
-                if (this.bridge.saveProject(prj)) {
+                let sprj = ResourceStorageService.sanitizeProject(prj);
+                console.log('FUXA bridge.saveProject (setServerProject): ', sprj);
+                if (this.bridge.saveProject(sprj)) {
                     observer.next(); 
                 } else {
                     observer.error();
@@ -82,10 +85,12 @@ export class ResClientService implements ResourceStorageService {
             if (!prj) {
                 observer.next(); 
             } else if (this.bridge) {
-                console.log('FUXA bridge.saveProject (setServerProjectData): ', prj);
-                if (this.bridge.saveProject(prj)) {
+                let sprj = ResourceStorageService.sanitizeProject(prj);
+                console.log('FUXA bridge.saveProject (setServerProjectData): ', sprj);
+                if (this.bridge.saveProject(sprj)) {
                     if (this.isDataCmdForDevice(cmd)) {
-                        this.bridge.deviceChange(data);
+                        let sdevice = ResourceStorageService.sanitizeDevice(data);
+                        this.bridge.deviceChange(sdevice);
                     }
                     observer.next(); 
                 } else {
@@ -108,7 +113,7 @@ export class ResClientService implements ResourceStorageService {
         }
     }
 
-    getDeviceSecurity(name: string): Observable<any> {
+    getDeviceSecurity(id: string): Observable<any> {
         return new Observable((observer) => {
             observer.error('Not supported!');
         });

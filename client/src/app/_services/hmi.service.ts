@@ -29,7 +29,6 @@ export class HmiService {
     public static separator = '^~^';
     public hmi: Hmi;
     viewSignalGaugeMap = new ViewSignalGaugeMap();
-    devices = {};
     variables = {};
     alarms = { highhigh: 0, high: 0, low: 0, info: 0 };
     private socket;
@@ -293,13 +292,6 @@ export class HmiService {
             let v = new Variable(signalId, sigsplit[0], sigsplit[1]);
             this.variables[signalId] = v;
         }
-        // add to device list
-        if (!this.devices[sigsplit[0]]) {
-            this.devices[sigsplit[0]] = {};
-            this.devices[sigsplit[0]] = sigsplit[1];
-        } else if (!this.devices[sigsplit[0]][sigsplit[1]]) {
-            this.devices[sigsplit[0]] = sigsplit[1];
-        }
     }
 
     /**
@@ -419,26 +411,6 @@ export class HmiService {
         return src + HmiService.separator + name;
     }
 
-    //#endregion
-    //#region My Static functions
-    //#endregion
-
-    //#region My Static functions
-    public static variableSrc(variableId: string) {
-        if (!variableId) {
-            return null;
-        }
-        return variableId.split(HmiService.separator)[0] || '';
-    }
-    //#endregion
-
-    //#region My Static functions
-    public static variable(variableId: string) {
-        if (!variableId) {
-            return null;
-        }
-        return variableId.split(HmiService.separator)[1] || '';
-    }
     //#endregion
 }
 
