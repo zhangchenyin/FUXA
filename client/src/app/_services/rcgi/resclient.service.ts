@@ -68,7 +68,7 @@ export class ResClientService implements ResourceStorageService {
             } else if (this.bridge) {
                 let sprj = ResourceStorageService.sanitizeProject(prj);
                 console.log('FUXA bridge.saveProject (setServerProject): ', sprj);
-                if (this.bridge.saveProject(sprj)) {
+                if (this.bridge.saveProject(sprj, true)) {
                     observer.next(); 
                 } else {
                     observer.error();
@@ -87,7 +87,7 @@ export class ResClientService implements ResourceStorageService {
             } else if (this.bridge) {
                 let sprj = ResourceStorageService.sanitizeProject(prj);
                 console.log('FUXA bridge.saveProject (setServerProjectData): ', sprj);
-                if (this.bridge.saveProject(sprj)) {
+                if (this.bridge.saveProject(sprj, false)) {
                     // if (this.isDataCmdForDevice(cmd)) {
                     //     let sdevice = ResourceStorageService.sanitizeDevice(data);
                     //     this.bridge.deviceChange(sdevice);

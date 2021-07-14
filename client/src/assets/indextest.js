@@ -9,9 +9,9 @@ class FuxaBridge {
         return this._id;
     }
 
-    invoke = (func, arg) => {
+    invoke = (func, arg1, arg2) => {
         if (typeof func === "function" && !this.disposing) {
-            return func(arg);
+            return func(arg1, arg2);
         }
         return
     }
@@ -38,9 +38,9 @@ class FuxaBridge {
         console.log("onLoadProject NOT supported!");
     };
 
-    saveProject = (project) => {
+    saveProject = (project, refresh) => {
         addToLogger(`FUXA ${this.id} invoke saveProject`);
-        return this.invoke(this.onSaveProject, project);
+        return this.invoke(this.onSaveProject, project, refresh);
     }
 
     // This callback gets invoked when Fuxa saves the project
@@ -209,13 +209,15 @@ class FuxaInstance {
             // return 'prj: ' + bridge._id;
         }
 
-        bridge.onSaveProject = (project) => {
+        bridge.onSaveProject = (project, refresh) => {
             if (project) {
-                addToLogger(`FUXA ${bridge.id} ask to save project`);
-                console.log(`FUXA ${bridge.id} ask to save project`);
+                addToLogger(`FUXA ${bridge.id} ask to save project ${refresh}`);
+                console.log(`FUXA ${bridge.id} ask to save project ${refresh}`);
                 localStorage.setItem(bridge.id, JSON.stringify(project));
                 this.checkProjectDevices(project.devices);
-                // this.bridge.refreshProject();
+                if (refresh) {
+                    this.bridge.refreshProject();
+                }
                 return true;// return if it's saved
             }
             return false;

@@ -564,14 +564,6 @@ export class ProjectService {
         }
     }
 
-    setDevices(devices: any, nosave?: boolean): boolean {
-        this.projectData.devices = devices;
-        if (nosave) {
-            return true;
-        }
-        return this.save();
-    }
-
     /**
      * Send Save Project to to editor component
      * @param saveas 
