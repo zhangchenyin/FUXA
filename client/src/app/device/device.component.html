@@ -7,3 +7,7 @@
         <app-device-map [hidden]="showMode === 'tags'" #devicemap (goto)="gotoList($event)"></app-device-map>
     </diV>
 </div>
+
+<button mat-fab color="primary" (click)="addItem()" class="fab-add">
+    <mat-icon class="">add</mat-icon>
+</button>

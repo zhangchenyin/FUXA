@@ -64,6 +64,14 @@ export class DeviceMapComponent implements OnInit, OnDestroy, AfterViewInit {
 	}
 
 	ngAfterViewInit() {
+		if (this.appService.isClientApp) {
+			this.mainDeviceLineHeight = 0;
+			this.mainHeight = 0;
+			this.flowLineHeight = 0;
+			this.flowHeight = 0;
+			this.lineFlowHeight = 0;
+			this.deviceLineHeight = 0;
+		}
 	}
 
 	ngOnDestroy() {

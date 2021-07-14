@@ -100,4 +100,12 @@ export class DeviceComponent implements OnInit, OnDestroy, AfterViewInit {
 		this.show('tags');
 		this.deviceList.setSelectedDevice(device);
 	}
+
+	addItem() {
+		if (this.showMode === 'tags') {
+			this.deviceList.onAddTag();
+		} else if (this.showMode === 'map') {
+			this.deviceMap.addDevice();
+		}
+	}
 }
