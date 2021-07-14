@@ -117,27 +117,28 @@ export class DevicePropertyComponent implements OnInit, OnDestroy {
 			this.propertyLoading = false;
 		});		
 		// check security
-		if (this.data.device.name && (this.data.device.type === DeviceType.OPCUA || this.data.device.type === DeviceType.MQTTclient || 
-            this.data.device.type === DeviceType.external)) {
+		if (this.data.device.id && (this.data.device.type === DeviceType.OPCUA || this.data.device.type === DeviceType.MQTTclient)) {
 			this.projectService.getDeviceSecurity(this.data.device.id).subscribe(result => {
 				this.setSecurity(result.value);
 			}, err => {
-				console.log('get Device Security err: ' + err);
+				console.error('get Device Security err: ' + err);
 			});
 		}
 
-		if (!this.data.device.property.baudrate) {
-			this.data.device.property.baudrate = 9600;
-		}
-		if (!this.data.device.property.databits) {
-			this.data.device.property.databits = 8;
-		}
-		if (!this.data.device.property.stopbits) {
-			this.data.device.property.stopbits = 1;
-		}
-		if (!this.data.device.property.parity) {
-			this.data.device.property.parity = 'None';
-		}
+        if (this.data.device.property) {
+            if (!this.data.device.property.baudrate) {
+                this.data.device.property.baudrate = 9600;
+            }
+            if (!this.data.device.property.databits) {
+                this.data.device.property.databits = 8;
+            }
+            if (!this.data.device.property.stopbits) {
+                this.data.device.property.stopbits = 1;
+            }
+            if (!this.data.device.property.parity) {
+                this.data.device.property.parity = 'None';
+            }
+        }
 		this.subscriptionHostInterfaces = this.hmiService.onHostInterfaces.subscribe(res => {
 			if (res.result) {
 				this.hostInterfaces = res;
@@ -226,8 +227,7 @@ export class DevicePropertyComponent implements OnInit, OnDestroy {
 	}
 
 	getSecurity(): any {
-		if (!this.propertyExpanded || (this.data.device.type !== DeviceType.OPCUA && this.data.device.type !== DeviceType.MQTTclient && 
-            this.data.device.type !== DeviceType.external)) {
+		if (!this.propertyExpanded || (this.data.device.type !== DeviceType.OPCUA && this.data.device.type !== DeviceType.MQTTclient)) {
 			return null;
 		} else {
 			if (this.data.device.type === DeviceType.OPCUA) {
@@ -240,12 +240,7 @@ export class DevicePropertyComponent implements OnInit, OnDestroy {
 					let result = { clientId: this.security.clientId, uid: this.security.username, pwd: this.security.password };
 					return result;
 				}
-            } else if (this.data.device.type === DeviceType.external) {
-				if (this.security.clientId || this.security.username || this.security.password || this.security.grant_type) {
-					let result = { clientId: this.security.clientId, uid: this.security.username, pwd: this.security.password, gt: this.security.grant_type };
-					return result;
-				}
-			}
+            }
 			return null;
 		}
 	}

@@ -102,7 +102,7 @@ export class HmiService {
         for (let idx = 0; idx < tags.length; idx++) {
             let varid = tags[idx].id;
             if (!this.variables[varid]) {
-                this.variables[varid] = new Variable(varid, tags[idx].source, tags[idx].id);
+                this.variables[varid] = new Variable(varid, null, null);
             }
             this.variables[varid].value = tags[idx].value;
             this.setSignalValue(this.variables[varid]);
@@ -136,9 +136,9 @@ export class HmiService {
             // devices values
             this.socket.on('device-values', (message) => {
                 for (let idx = 0; idx < message.values.length; idx++) {
-                    let varid = message.id + HmiService.separator + message.values[idx].id;
+                    let varid = message.id;
                     if (!this.variables[varid]) {
-                        this.variables[varid] = new Variable(varid, message.id, message.values[idx].id);
+                        this.variables[varid] = new Variable(varid, null, null);
                     }
                     this.variables[varid].value = message.values[idx].value;
                     this.setSignalValue(this.variables[varid]);
@@ -269,10 +269,9 @@ export class HmiService {
 
     //#region Signals Gauges Mapping
     addSignal(signalId: string, ga: GaugeSettings) {
-        let sigsplit = signalId.split(HmiService.separator);
         // add to variable list
         if (!this.variables[signalId]) {
-            let v = new Variable(signalId, sigsplit[0], sigsplit[1]);
+            let v = new Variable(signalId, null, null);
             this.variables[signalId] = v;
         }
     }
@@ -285,10 +284,9 @@ export class HmiService {
      */
     addSignalGaugeToMap(domViewId: string, signalId: string, ga: GaugeSettings) {
         this.viewSignalGaugeMap.add(domViewId, signalId, ga);
-        let sigsplit = signalId.split(HmiService.separator);
         // add to variable list
         if (!this.variables[signalId]) {
-            let v = new Variable(signalId, sigsplit[0], sigsplit[1]);
+            let v = new Variable(signalId, null, null);
             this.variables[signalId] = v;
         }
     }

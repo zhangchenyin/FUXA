@@ -88,10 +88,10 @@ export class ResClientService implements ResourceStorageService {
                 let sprj = ResourceStorageService.sanitizeProject(prj);
                 console.log('FUXA bridge.saveProject (setServerProjectData): ', sprj);
                 if (this.bridge.saveProject(sprj)) {
-                    if (this.isDataCmdForDevice(cmd)) {
-                        let sdevice = ResourceStorageService.sanitizeDevice(data);
-                        this.bridge.deviceChange(sdevice);
-                    }
+                    // if (this.isDataCmdForDevice(cmd)) {
+                    //     let sdevice = ResourceStorageService.sanitizeDevice(data);
+                    //     this.bridge.deviceChange(sdevice);
+                    // }
                     observer.next(); 
                 } else {
                     observer.error();

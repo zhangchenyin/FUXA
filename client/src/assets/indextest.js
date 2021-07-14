@@ -215,6 +215,7 @@ class FuxaInstance {
                 console.log(`FUXA ${bridge.id} ask to save project`);
                 localStorage.setItem(bridge.id, JSON.stringify(project));
                 this.checkProjectDevices(project.devices);
+                // this.bridge.refreshProject();
                 return true;// return if it's saved
             }
             return false;
@@ -267,10 +268,10 @@ class FuxaInstance {
                 for (var x = 0 ; x < device.tags.length; x++) {
                     console.log(`${device.tags[x].id}: ${device.tags[x].address}`);
                     var opt = document.createElement('option');
-                    opt.value = JSON.stringify(new DeviceValue(device.name, device.tags[x].id, null));
+                    opt.value = JSON.stringify(new DeviceValue(device.id, device.tags[x].id, null));
                     opt.innerHTML = device.tags[x].id;
                     selectTags.appendChild(opt);
-                    simTags.push(new DeviceValue(device.name, device.tags[x].id, 0));
+                    simTags.push(new DeviceValue(device.id, device.tags[x].id, 0));
                 }
             }
         }
@@ -289,6 +290,7 @@ class FuxaInstance {
                         break;
                     }
                     tags[i].value++;
+                    delete tags[i].source;
                 }
                 if (this.bridge) {
                     var result = Object.values(tags);

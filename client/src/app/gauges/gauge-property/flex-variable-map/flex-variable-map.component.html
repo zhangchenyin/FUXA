@@ -6,7 +6,13 @@
         </mat-select>
     </div> -->
     <flex-variable style="display: inline-block" [data]="data" [(value)]="value.from" (valueChange)="onValueChange()" [allowManualEdit]="true"></flex-variable>
-    =
+    <div style="display: inline-block; vertical-align: bottom; margin-left: 14px;">
+        <mat-icon>link</mat-icon>
+    </div>
+    <div style="height:6px;">&nbsp;</div>
     <flex-variable style="display: inline-block" [data]="data" [(value)]="value.to" (valueChange)="onValueChange()" [allowManualEdit]="false"></flex-variable>
+    <div style="display: inline-block; vertical-align: bottom; margin-left: 10px;">
+        <mat-icon>subdirectory_arrow_left</mat-icon>
+    </div>
     <ng-content></ng-content>
 </div>

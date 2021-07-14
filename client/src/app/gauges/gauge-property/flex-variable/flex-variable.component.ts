@@ -95,12 +95,6 @@ export class FlexVariableComponent implements OnInit {
 
     }
 
-    toggleView(event) {
-        event.stopPropagation();
-        this.manualEdit = !this.manualEdit;
-        this.onChanged();
-    }
-
     setDevice(event) {
         if (event.value) {
             this.variableList = [];

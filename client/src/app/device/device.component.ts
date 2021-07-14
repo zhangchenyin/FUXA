@@ -41,7 +41,7 @@ export class DeviceComponent implements OnInit, OnDestroy, AfterViewInit {
 		this.subscriptionSave = this.projectService.onSaveCurrent.subscribe((mode: SaveMode) => {
 			if (mode === SaveMode.SaveAs) {
 				this.projectService.saveAs();
-			} else {
+			} else if (mode === SaveMode.Save) {
 				this.projectService.save();
 			}
 		});

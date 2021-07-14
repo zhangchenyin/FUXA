@@ -101,7 +101,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
             let msg = '';
             this.translateService.get('msg.project-save-ask').subscribe((txt: string) => { msg = txt });
             if (window.confirm(msg)) {
-                this.projectService.saveProject();
+                this.projectService.saveProject(SaveMode.Save);
                 this.projectService.setNewProject();
             }
         } catch (e) {
@@ -157,7 +157,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
      */
     onSaveProject() {
         try {
-            this.projectService.saveProject();
+            this.projectService.saveProject(SaveMode.Save);
         } catch (e) {
 
         }
