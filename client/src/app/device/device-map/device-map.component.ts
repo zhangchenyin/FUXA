@@ -231,11 +231,16 @@ export class DeviceMapComponent implements OnInit, OnDestroy, AfterViewInit {
 
 	getDeviceTopPosition(type = null) {
 		if (!this.server) {
+			let pos = this.elementRef.nativeElement.parentElement.clientHeight / 2;
+            if (pos < 200) {
+                pos = 200;
+            }
 			if (type === 'flow') {
-				return this.getVerticalCenter() - (this.mainHeight * 2);
+				pos -= (this.mainHeight * 2);
 			} else {
-				return this.getVerticalCenter() + (this.mainHeight / 2);
+				pos += (this.mainHeight / 2);
 			}
+            return pos;
 		} else if (type === 'flow') {
 			return this.getDeviceLineTopPosition(type) - (this.flowHeight + this.flowBorder * 2);
 		} else {
