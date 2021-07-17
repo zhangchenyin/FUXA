@@ -253,7 +253,9 @@ export class DevicePropertyComponent implements OnInit, OnDestroy {
 			this.security.password = value.pwd;
 			this.security.clientId = value.clientId;
 			this.security.grant_type = value.gt;
-			this.panelProperty.open();
+			if (this.panelProperty) {
+				this.panelProperty.open();
+			}
 		}
 	}
 

@@ -135,9 +135,11 @@ export class ProjectService {
         // check project change don't work some svg object change the order and this to check isn't easy...boooo
         this.storage.setServerProject(this.projectData).subscribe(result => {
             this.load();
-            this.toastr.success('Project save successful!');
+            var msg = '';
+            this.translateService.get('msg.project-save-success').subscribe((txt: string) => { msg = txt });
+            this.toastr.success(msg);
         }, err => {
-            console.error('FUXA save error', err);
+            console.log(err);
             var msg = '';
             this.translateService.get('msg.project-save-error').subscribe((txt: string) => { msg = txt });
             this.toastr.error(msg, '', {

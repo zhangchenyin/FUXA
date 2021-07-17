@@ -231,7 +231,7 @@ class FuxaInstance {
                 <div id="mydiv${id}header" style="padding: 10px; cursor: move; z-index: 10; background-color: #2196F3; color: #fff;">Click here to move
                     <div style="float: right; cursor: pointer;" onclick="closeWidget('${id}')">X</div>
                 </div>
-                <div style="position: relative; width:1400px; height: 900px">
+                <div style="position: relative; width:1400px; height: 400px">
                     <app-fuxa id="fuxa${id}">
                         <div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);">
                             <div class="logo" style="display: inline-block;width:40px;height:40px;background-size:40px 40px;"></div>

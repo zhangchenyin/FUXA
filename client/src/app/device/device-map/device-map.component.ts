@@ -70,7 +70,6 @@ export class DeviceMapComponent implements OnInit, OnDestroy, AfterViewInit {
 			this.flowLineHeight = 0;
 			this.flowHeight = 0;
 			this.lineFlowHeight = 0;
-			this.deviceLineHeight = 0;
 		}
 	}
 
@@ -145,10 +144,10 @@ export class DeviceMapComponent implements OnInit, OnDestroy, AfterViewInit {
 	}
 
 	private getWindowWidth() {
-		if (!this.elementRef.nativeElement || !this.elementRef.nativeElement.parentElement) {
-			return 0;
+		let result = window.innerWidth;
+		if (this.appService.isClientApp && this.elementRef.nativeElement && this.elementRef.nativeElement.parentElement) {
+			result = this.elementRef.nativeElement.parentElement.clientWidth;
 		}
-		let result = this.elementRef.nativeElement.parentElement.clientWidth;
 		if (this.devices) {
 			if (result < (this.plcs().length + 2) * this.deviceWidth) {
 				result = (this.plcs().length + 2) * this.deviceWidth;
