@@ -124,6 +124,7 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
     ngOnInit() {
         try {
             this.subscriptionSave = this.projectService.onSaveCurrent.subscribe((mode: SaveMode) => {
+                this.clearSelection();
                 if (mode === SaveMode.Current) {
                     this.saveProjectView(true);
                 } else {
