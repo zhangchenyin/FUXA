@@ -37,7 +37,7 @@ import { AlarmListComponent } from './alarms/alarm-list/alarm-list.component';
 import { AlarmPropertyComponent } from './alarms/alarm-property/alarm-property.component';
 import { TextListComponent, DialogItemText } from './text-list/text-list.component';
 import { LabComponent } from './lab/lab.component';
-import { DeviceComponent } from './device/device.component';
+import { DeviceComponent, DeviceTagDialog } from './device/device.component';
 import { DevicePropertyComponent } from './device/device-property/device-property.component';
 import { TagPropertyComponent } from './device/tag-property/tag-property.component';
 import { TopicPropertyComponent } from './device/topic-property/topic-property.component';
@@ -149,6 +149,7 @@ export function createTranslateLoader(http: HttpClient) {
         AppComponent,
         LabComponent,
         DeviceComponent,
+        DeviceTagDialog,
         TagPropertyComponent,
         TopicPropertyComponent,
         DevicePropertyComponent,
@@ -279,6 +280,7 @@ export function createTranslateLoader(http: HttpClient) {
         DialogDocName,
         DialogLinkProperty,
         DialogInfo,
+        DeviceTagDialog,
         GaugePropertyComponent,
         DialogGaugePermission,
         ChartPropertyComponent,

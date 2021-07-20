@@ -114,6 +114,7 @@ export class GaugeSettings {
 
 export class GaugeProperty {
     variableId: string;
+    variableValue: string;
     permission: number;
     ranges: GaugeRangeProperty[];
     events: GaugeEvent[] = [];
@@ -191,6 +192,7 @@ export class GaugeRangeProperty {
     min: number;
     max: number;
     text: string;
+    textId: string;
     color: string;
     type: any;
     style: any;
@@ -208,6 +210,7 @@ export class Variable {
     name: string;
     source: string;
     value: string;
+    error: number;
     constructor(id: string, source: string, name: string) {
         this.id = id; this.name = name; this.source = source;
     }

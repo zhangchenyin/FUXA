@@ -105,6 +105,7 @@ export class HmiService {
                 this.variables[varid] = new Variable(varid, null, null);
             }
             this.variables[varid].value = tags[idx].value;
+            this.variables[varid].error = tags[idx].error;
             this.setSignalValue(this.variables[varid]);
         }
     }
@@ -136,7 +137,7 @@ export class HmiService {
             // devices values
             this.socket.on('device-values', (message) => {
                 for (let idx = 0; idx < message.values.length; idx++) {
-                    let varid = message.id;
+                    let varid = message.values[idx].id;
                     if (!this.variables[varid]) {
                         this.variables[varid] = new Variable(varid, null, null);
                     }

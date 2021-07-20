@@ -102,6 +102,22 @@ class FuxaBridge {
         addToLogger('=> onGetDeviceValues NOT supported!');
         console.error("=> onGetDeviceValues NOT supported!");
     }
+    
+    /**
+     * call from WebStudio to notify Message/Error to FUXA.
+     * @param {*} type: MessageType
+     * @param {*} message Message Object
+     * @returns 
+     */
+     notifyMessage = (type, message) => {
+        addToLogger(`APP invoke notifyMessage to FUXA ${this.id}`);
+        return this.invoke(this.onNotifyMessage, type, message);
+    }
+
+    onNotifyMessage = function (type, message) {
+        addToLogger('onNotifyMessage NOT supported!');
+        console.log("onNotifyMessage NOT supported!");
+    }
 }
 
 // class used to pass device value
@@ -110,6 +126,7 @@ class DeviceValue {
         this.source = deviceId;
         this.id = tagId;
         this.value = value;
+        this.error = 0;
     }
 }
 
@@ -190,7 +207,12 @@ function create(id) {
 class FuxaInstance {
     simulator;
     bridge;
+    height = 900;
     constructor(id, bridge) {
+        if (id === '2') {
+            this.height = 400;
+        }
+
         this.bridge = bridge;
         // const tbridge = fuxaBridgeManager.getBridge('fuxa' + id);
         // if (tbridge) {
@@ -231,7 +253,7 @@ class FuxaInstance {
                 <div id="mydiv${id}header" style="padding: 10px; cursor: move; z-index: 10; background-color: #2196F3; color: #fff;">Click here to move
                     <div style="float: right; cursor: pointer;" onclick="closeWidget('${id}')">X</div>
                 </div>
-                <div style="position: relative; width:1400px; height: 400px">
+                <div style="position: relative; width:1400px; height: ${this.height}px">
                     <app-fuxa id="fuxa${id}">
                         <div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);">
                             <div class="logo" style="display: inline-block;width:40px;height:40px;background-size:40px 40px;"></div>
@@ -266,14 +288,20 @@ class FuxaInstance {
         var simTags = [];
         for (var i = 0; i < devices.length; i++) {
             var device = devices[i];
-            if (device.type === 'external' && device.tags) {
+            if (device.tags) {
                 for (var x = 0 ; x < device.tags.length; x++) {
                     console.log(`${device.tags[x].id}: ${device.tags[x].address}`);
                     var opt = document.createElement('option');
                     opt.value = JSON.stringify(new DeviceValue(device.id, device.tags[x].id, null));
-                    opt.innerHTML = device.tags[x].id;
+                    opt.innerHTML = device.tags[x].name;
                     selectTags.appendChild(opt);
-                    simTags.push(new DeviceValue(device.id, device.tags[x].id, 0));
+                    if (device.type === 'WebStudio') { 
+                        var tag = new DeviceValue(device.id, device.tags[x].id, 0);
+                        if (x === 1) {
+                            tag.error = 1;
+                        }
+                        simTags.push(tag);
+                    }
                 }
             }
         }

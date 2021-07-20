@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import { Subscription } from "rxjs";
 
-import { Event, GaugeEvent, GaugeEventActionType, GaugeSettings, GaugeStatus, Hmi, View } from '../_models/hmi';
+import { Event, GaugeEvent, GaugeEventActionType, GaugeSettings, GaugeProperty, GaugeRangeProperty, GaugeStatus, Hmi, View, Variable } from '../_models/hmi';
 import { GaugesManager } from '../gauges/gauges.component';
 import { isUndefined } from 'util';
 import { Utils } from '../_helpers/utils';
@@ -156,6 +156,19 @@ export class FuxaViewComponent implements OnInit, AfterViewInit {
                         (gatobindhtmlevent) => {
                             this.onBindHtmlEvent(gatobindhtmlevent);
                         });
+                        // process the start value
+                        if (items[key].property && items[key].property.variableValue) {
+                            let gaugeSetting = items[key];
+                            let gaugeStatus = this.getGaugeStatus(gaugeSetting);
+                            let sig: Variable = <Variable>{ id: gaugeSetting.property.variableId, value: gaugeSetting.property.variableValue };
+                            if (this.checkStatusValue(gaugeSetting.id, gaugeStatus, sig)) {
+                                let svgeles = FuxaViewComponent.getSvgElements(gaugeSetting.id);
+                                for (let y = 0; y < svgeles.length; y++) {
+                                    this.gaugesManager.processValue(gaugeSetting, svgeles[y], sig, gaugeStatus);
+                                }
+                            }
+                        }
+    
                 } catch (err) {
                     console.log('loadWatch: ' + err);
                 }    
@@ -223,7 +236,7 @@ export class FuxaViewComponent implements OnInit, AfterViewInit {
             if (!items.hasOwnProperty(gaId)) {
                 continue;
             }
-            let property = items[gaId].property;
+            let property = <GaugeProperty> items[gaId].property;
             if (!property) {
                 continue;
             }
@@ -242,6 +255,14 @@ export class FuxaViewComponent implements OnInit, AfterViewInit {
                         } else {
                             this.applyVariableMappingTo(event.actoptions);
                         }
+                    }
+                })
+            }
+
+            if (property.ranges) {
+                property.ranges.forEach((range: GaugeRangeProperty) => {
+                    if (range.textId) {
+                        this.applyVariableMappingTo(range.textId);
                     }
                 })
             }
