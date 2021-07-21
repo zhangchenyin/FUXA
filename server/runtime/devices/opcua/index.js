@@ -25,7 +25,7 @@ function OpcUAclient(_data, _logger, _events) {
     var lastDaqInterval = 0;            // To manage minimum interval to save a DAQ value
     var getProperty = null;             // Function to ask property (security)
     var lastTimestampValue;             // Last Timestamp of asked values
-
+    var tagsIdMap = {};                 // Map of tag id with opc nodeId
     /**
      * Connect the client to OPC UA server
      * Open Session, Create Subscription, Emit connection status, Clear the memory Tags value
@@ -41,20 +41,18 @@ function OpcUAclient(_data, _logger, _events) {
                     // step 1 check property
                     function (callback) {
                         if (getProperty) {
-                            getProperty({query: 'security', name: data.name}).then(result => {
+                            getProperty({query: 'security', name: data.id}).then(result => {
                                 if (result && result.value && result.value !== 'null') {
                                     // property security mode
                                     property = JSON.parse(result.value);
-                                    var opts = { 
-                                        endpoint_must_exist: false, 
+                                    var opts = {
+                                        // applicationName: 'Myclient',
+                                        endpointMustExist: false,
                                         keepSessionAlive: true,
                                         connectionStrategy: { maxRetry: 1 } };
                                     if (property.mode) {
                                         if (property.mode.securityMode) {
                                             opts['securityMode'] = property.mode.securityMode;
-                                        }
-                                        if (property.mode.securityPolicy) {
-                                            opts['securityPolicy'] = property.mode.securityPolicy;
                                         }
                                         if (property.mode.securityPolicy) {
                                             opts['securityPolicy'] = property.mode.securityPolicy;
@@ -498,9 +496,11 @@ function OpcUAclient(_data, _logger, _events) {
      */
     var _startMonitor = async function (callback) {
         if (the_session && the_subscription) {
+            tagsIdMap = {};
             for (var id in data.tags) {
                 try {
-                    var nodeId = id;
+                    var nodeId = data.tags[id].address;
+                    tagsIdMap[nodeId] = id;
                     var monitoredItem = await the_subscription.monitor(
                         { nodeId: nodeId, attributeId: opcua.AttributeIds.Value },
                         { samplingInterval: 1000, discardOldest: true, queueSize: 1 },
@@ -527,10 +527,11 @@ function OpcUAclient(_data, _logger, _events) {
         return function (dataValue) {
             if (dataValue && dataValue.value) {
                 // console.log(nodeId.toString(), '\t value : ', dataValue.value.value.toString());
-                if (data.tags[nodeId]) {
-                    data.tags[nodeId].value = dataValue.value.value;
-                    data.tags[nodeId].timestamp = dataValue.serverTimestamp.toString();
-                    data.tags[nodeId].changed = true;
+                let id = tagsIdMap[nodeId];
+                if (data.tags[id]) {
+                    data.tags[id].value = dataValue.value.value;
+                    data.tags[id].timestamp = dataValue.serverTimestamp.toString();
+                    data.tags[id].changed = true;
                 }
             }
         };

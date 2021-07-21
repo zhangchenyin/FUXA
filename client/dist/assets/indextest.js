@@ -106,7 +106,7 @@ class FuxaBridge {
     /**
      * call from WebStudio to notify Message/Error to FUXA.
      * @param {*} type: MessageType
-     * @param {*} message Message Object (TagSubscriptionError)
+     * @param {*} message Message Object
      * @returns 
      */
      notifyMessage = (type, message) => {
@@ -118,16 +118,6 @@ class FuxaBridge {
         addToLogger('onNotifyMessage NOT supported!');
         console.log("onNotifyMessage NOT supported!");
     }
-}
-
-var MessageType = {
-    TAG_SUBSCRIPTION_ERR: 1001,
-}
-
-var TagSubscriptionError = {
-    tagId: 0,       // Tag Id
-    Error: '',      // Error Code or Message Text
-    Active: true    // Flag used to remove the Error
 }
 
 // class used to pass device value
