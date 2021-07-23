@@ -2,6 +2,8 @@ import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, Input, ElementR
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from "rxjs";
 
+import { environment } from '../environments/environment';
+
 import { ProjectService } from './_services/project.service';
 import { HmiService } from './_services/hmi.service';
 import { SettingsService } from './_services/settings.service';
@@ -57,6 +59,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngOnInit() {
+		console.log(`FUXA v${environment.version}`);
     }
 
     ngAfterViewInit() {

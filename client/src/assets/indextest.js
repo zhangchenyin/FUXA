@@ -298,7 +298,7 @@ class FuxaInstance {
                     if (device.type === 'WebStudio') { 
                         var tag = new DeviceValue(device.id, device.tags[x].id, 0);
                         if (x === 1) {
-                            tag.error = 1;
+                            tag.error = 'Error subscription';
                         }
                         simTags.push(tag);
                     }

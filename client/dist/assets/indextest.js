@@ -123,7 +123,7 @@ class FuxaBridge {
 // class used to pass device value
 class DeviceValue {
     constructor(deviceId, tagId, value) {
-        this.source = deviceId;
+        // this.source = deviceId;
         this.id = tagId;
         this.value = value;
         this.error = 0;
@@ -298,7 +298,7 @@ class FuxaInstance {
                     if (device.type === 'WebStudio') { 
                         var tag = new DeviceValue(device.id, device.tags[x].id, 0);
                         if (x === 1) {
-                            tag.error = 1;
+                            tag.error = 'Error subscription';
                         }
                         simTags.push(tag);
                     }

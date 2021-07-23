@@ -8,6 +8,7 @@ import { MaterialModule } from './material.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { createCustomElement } from '@angular/elements';
+import { APP_BASE_HREF } from '@angular/common';
 
 import { Ng5SliderModule } from 'ng5-slider';
 import { ToastrModule } from 'ngx-toastr';
@@ -273,7 +274,8 @@ export function createTranslateLoader(http: HttpClient) {
         ModalPositionCache,
         Define,
         AuthGuard,
-        { provide: HAMMER_GESTURE_CONFIG, useClass: GestureConfig }
+        { provide: HAMMER_GESTURE_CONFIG, useClass: GestureConfig},
+        { provide: APP_BASE_HREF, useValue: '/' }
     ],
     entryComponents: [
         DialogDocProperty,
