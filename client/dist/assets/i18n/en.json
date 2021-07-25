@@ -66,9 +66,11 @@
     "dlg.docproperty-size-1280-960": "1280 x 960 pixels",
     "dlg.docproperty-size-1600-1200": "1600 x 1200 pixels",
     "dlg.docproperty-size-1920-1080": "1920 x 1080 pixels",
-
+    "dlg.docproperty-margin": "Margin",
+    
     "dlg.docname-title": "View name",
     "dlg.docname-name": "Name",
+    "dlg.docproperty-type": "View type",
 
     "dlg.linkproperty-title": "Make Hyperlink",
     "dlg.linkproperty-url": "Hyperlink URL",
@@ -78,6 +80,7 @@
 
     "dlg.ok": "OK",
     "dlg.cancel": "CANCEL",
+    "dlg.close": "CLOSE",
 
     "dlg.userproperty-title": "User",
     "dlg.userproperty-groups": "Authorization Groups",
@@ -92,11 +95,13 @@
     "general.search": "Search...",
     "general.search-notfound": "No options found",
     "general.username": "Username",
+	"general.fullname": "Fullname",
     "general.password": "Password",
     "general.clientId": "Client ID",
     "general.authority": "Authority",
     "general.grant-type": "Grant type",
-
+    "general.usergroups": "Viewer,Operator,Engineer,Supervisor,Manager,Administrator,G,H",
+    "general.subscribe": "Subscribe",
 
     "tester.title": "Variable",
     "tester.send": "Send",
@@ -199,6 +204,7 @@
     "editor.controls-slider-settings": "Slider settings",
     "editor.controls-shape-settings": "Shape settings",
     "editor.controls-html-switch-settings": "Switch settings",
+	"editor.controls-switch": "Switch",
 
     "editor.layout-settings": "Layout settings",
 
@@ -341,6 +347,16 @@
     "shapes.action-clockwise": "Turn clockwise",
     "shapes.action-anticlockwise": "Turn anticlockwise",
     "shapes.action-downup": "Up and down",
+    "shapes.event-click": "Click",
+    "shapes.event-onpage": "Open Page",
+    "shapes.event-onwindow": "Open Card",
+    "shapes.event-ondialog": "Open Dialog",
+    "shapes.event-oniframe": "Open iframe",
+    "shapes.event-oncard": "Open Window",
+    "shapes.event-onsetvalue": "Set Value",
+    "shapes.event-ontogglevalue": "Toggle Value",
+    "shapes.event-onsetinput": "Set from Input",
+    "shapes.event-onclose": "Close",
 
     "pipe.property-props": "Property",
     "pipe.property-border-width": "Border width",
@@ -424,6 +440,8 @@
     "device.property-enable": "Enable",
     "device.property-subscribe": "Subscribe",
     "device.property-address": "Address (IP or opc.tcp://[server]:[port])",
+    "device.property-address-opc": "Address (opc.tcp://[server]:[port])",
+    "device.property-address-s7": "IP-Address (IP 127.0.0.1)",
     "device.property-device-port": "Device IP and Port (127.0.0.1:47808)",
     "device.property-address-port": "Slave IP and Port (127.0.0.1:502)",
     "device.property-security": "Security and encryption mode",
@@ -440,7 +458,7 @@
     "device.property-parity": "Parity",
     "device.property-method": "Method",
     "device.property-format": "Format",
-    "device.property-url": "URL",
+    "device.property-url": "URL (http://[server]:[port])",
     "device.property-webapi-result": "Result of request",
     "device.not-webapi-result": "Configure WebAPI result",
     "device.property-show": "Show Device property",
@@ -450,7 +468,12 @@
     "device.security-signandencrypt": "Sign & Encrypt",
 
     "device.browsetopics-property-title": "Broker Topics to subscribe and publish",
+    "device.browsetopics-property-sub": "Subscribe",
+    "device.browsetopics-property-pub": "Publish",
     "device.discovery-topics": "Browser Topics on broker",
+    "device.topic-selected": "Topic selected",
+    "device.topic-raw": "raw",
+    "device.topic-json": "json",
     "device.add-topics": "Publish my Topics on broker",
     "device.property-mqtt-address": "Address (mqtt://[server]:[port])",
     "device.tag-property-title": "Tag Property",
@@ -472,6 +495,7 @@
 
     "users.list-title": "Users settings",
     "users.list-name": "Username",
+	"users.list-fullname": "Full Name",
     "users.list-groups": "Groups",
 
     "gauges.property-props": "Property",
@@ -582,6 +606,13 @@
     "alarm.status-passive": "Passive",
     "alarm.status-active-ack": "Active-ACK",
 
+    "card.config-title": "Card settings",
+    "card.config-content-type": "Content type",
+    "card.config-content-view": "Content View",
+    "card.widget-view": "View",
+    "card.widget-alarms": "Alarms",
+    "card.widget-table": "Table",
+
     "texts.list-title": "Texts settings",
     "texts.list-filter": "Filter",
     "texts.list-filter-group": "Group",
@@ -625,6 +656,8 @@
     "dlg.app-language-ru": "Russian",
     "dlg.app-language-ua": "Ukrainian",
     "dlg.app-language-zh-cn": "Chinese",
+    "dlg.app-language-pt": "Portuguese",
+    "dlg.app-language-tr": "Turkish",
     "dlg.app-settings-server-port": "Server is listening on port",
     "dlg.app-settings-auth-token": "Authentication with Token",
     "dlg.app-auth-disabled": "Disabled",
@@ -642,7 +675,7 @@
     "msg.textproperty-missing-value": "Some values are missing!",
     "msg.device-remove": "Would you like to remove Device ",
     "msg.device-tag-remove": "Would you like to remove Tag ",
-    "msg.device-tag-exist": "Tag exist!",
+    "msg.device-tag-exist": "Tag name exist!",
 
     "msg.home-welcome": "Wait...go to editor, map the devices, design your visualization and bind the devices variables",
     "msg.project-load-error": "Unable to read '{{value}}'",
@@ -653,7 +686,9 @@
     "msg.server-connection-error": "Server connection failed!",
     "msg.users-save-error": "User save failed!",
     "msg.user-remove": "Would you like to remove User ",
+    "msg.project-save-success": "Project save successful!",
     "msg.project-save-error": "Project save failed!",
+    "msg.project-format-error": "Project wrong format!",
     "msg.project-save-unauthorized": "Project save failed! Unauthorized!",
     "msg.project-save-ask": "You want to leave the project?",
     "msg.login-username-required": "Enter a username",

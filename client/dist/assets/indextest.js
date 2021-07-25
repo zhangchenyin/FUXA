@@ -123,7 +123,7 @@ class FuxaBridge {
 // class used to pass device value
 class DeviceValue {
     constructor(deviceId, tagId, value) {
-        // this.source = deviceId;
+        this.source = deviceId;
         this.id = tagId;
         this.value = value;
         this.error = 0;
