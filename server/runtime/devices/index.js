@@ -153,7 +153,7 @@ function loadDevice(device) {
         }
     }
     if (runtime.settings.daqEnabled) {
-        var fncToSaveDaqValue = runtime.daqStorage.addDaqNode(device.name, activeDevices[device.id].getTagProperty);
+        var fncToSaveDaqValue = runtime.daqStorage.addDaqNode(device.id, activeDevices[device.id].getTagProperty);
         activeDevices[device.id].bindSaveDaqValue(fncToSaveDaqValue);
     }
     return true;
@@ -192,6 +192,21 @@ function getDevicesValues() {
 function getDeviceValue(deviceid, sigid) {
     if (activeDevices[deviceid]) {
         return activeDevices[deviceid].getValue(sigid);
+    }
+    return null;
+}
+
+/**
+ * Get the Device from the tag id
+ * used from Alarms
+ * @param {*} sigid 
+ */
+ function getDeviceIdForomTag(sigid) {
+    for (var id in activeDevices) {
+        var tag = activeDevices[id].getTagProperty(sigid);
+        if (tag) {
+            return id;
+        }
     }
     return null;
 }
@@ -283,6 +298,7 @@ var devices = module.exports = {
     getDevicesValues: getDevicesValues,
     getDeviceValue: getDeviceValue,
     setDeviceValue: setDeviceValue,
+    getDeviceIdForomTag: getDeviceIdForomTag,
     browseDevice: browseDevice,
     readNodeAttribute: readNodeAttribute,
     isWoking: isWoking,

@@ -112,7 +112,7 @@ function init(_io, _api, _settings, _log, eventsMain) {
                         updateDeviceValues({ id: id, values: adevs[id] });
                     }
                 } else if (message.cmd === 'set' && message.var) {
-                    devices.setDeviceValue(message.var.source, message.var.name, message.var.value)
+                    devices.setDeviceValue(message.var.source, message.var.id, message.var.value)
                 }
             } catch (err) {
                 logger.error('socket.on.device-values: ' + err);
@@ -164,8 +164,7 @@ function init(_io, _api, _settings, _log, eventsMain) {
                     console.log('>' + new Date(msg.from).toString() + ' ' + new Date(msg.to).toString());
                     var dbfncs = [];
                     for (let i = 0; i < msg.sids.length; i++) {
-                        let tks = msg.sids[i].split('^~^');
-                        dbfncs.push(daqstorage.getNodeValues(tks[0], tks[1], msg.from, msg.to));
+                        dbfncs.push(daqstorage.getNodeValues(msg.sids[i], msg.from, msg.to));
                     }
                     var result = {};
                     Promise.all(dbfncs).then(values => {

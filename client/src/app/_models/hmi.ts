@@ -21,7 +21,14 @@ export class View {
     variables: DictionaryVariables = {};
     /** Svg code content of the view  */
     svgcontent: string = '';
+    /** Type of view SVG/CARDS */
+    type: ViewType;
 }
+
+export enum ViewType {
+    svg = 'SVG',
+    cards ='CARDS'
+} 
 
 export class LayoutSettings {
     /** Start view (home) */
@@ -98,6 +105,7 @@ export class DocProfile {
     width: number = 640;
     height: number = 480;
     bkcolor: string = '';
+    margin: number = 10;
 }
 
 export class MyItem {
@@ -173,19 +181,19 @@ export class GaugeActionStatus {
 }
 
 export enum GaugeEventType {
-    click = 'Click',
+    click = 'shapes.event-click',
 }
 
 export enum GaugeEventActionType {
-    onpage = 'Open Page',
-    onwindow = 'Open Card',
-    ondialog = 'Open Dialog',
-    oniframe = 'Open iframe',
-    oncard = 'Open Window',     // wrong name exchange with 'onwindow'
-    onSetValue = 'Set Value',
-    onToggleValue = 'Toggle Value',
-    onSetInput = 'Set from Input',
-    onclose = 'Close',
+    onpage = 'shapes.event-onpage',
+    onwindow = 'shapes.event-onwindow',
+    ondialog = 'shapes.event-ondialog',
+    oniframe = 'shapes.event-oniframe',
+    oncard = 'shapes.event-oncard',     // wrong name exchange with 'onwindow'
+    onSetValue = 'shapes.event-onsetvalue',
+    onToggleValue = 'shapes.event-ontogglevalue',
+    onSetInput = 'shapes.event-onsetinput',
+    onclose = 'shapes.event-onclose',
 }
 
 export class GaugeRangeProperty {
@@ -284,4 +292,19 @@ export enum DateFormatType {
 export enum TimeFormatType {
     hh_mm_ss = '16:58:10',
     hh_mm_ss_AA = '04:58:10 PM',
+}
+
+export class CardWidget {
+    data: string;
+    type: string;
+    constructor(type: string, data: string) {
+        this.type = type;
+        this.data = data;
+    }
+}
+
+export enum CardWidgetType {
+    view = 'card.widget-view',
+    alarms = 'card.widget-alarms',
+    table = 'card.widget-table',
 }
