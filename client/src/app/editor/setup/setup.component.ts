@@ -2,12 +2,12 @@ import { Component, OnInit, AfterViewInit, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 import { ProjectService } from '../../_services/project.service';
+import { AppService } from '../../_services/app.service';
 
 import { ChartConfigComponent } from '../../editor/chart-config/chart-config.component';
 import { LayoutPropertyComponent } from '../../editor/layout-property/layout-property.component';
 import { PluginsComponent } from '../../editor/plugins/plugins.component';
 import { AppSettingsComponent } from '../../editor/app-settings/app-settings.component';
-import { AppService } from '../../_services/app.service';
 
 @Component({
     selector: 'app-setup',
@@ -110,5 +110,16 @@ export class SetupComponent implements OnInit, AfterViewInit {
         });
         dialogRef.afterClosed().subscribe(result => {
         });
+    }
+
+    isToDisable(section: string) {
+        if (section === 'messages') {
+            return this.appService.isClientApp;
+        } else if (section === 'users') {
+            return this.appService.isClientApp;
+        } else if (section === 'plugins') {
+            return this.appService.isClientApp;
+        }
+        return false;
     }
 }
