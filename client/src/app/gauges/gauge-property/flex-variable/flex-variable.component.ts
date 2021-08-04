@@ -98,5 +98,12 @@ export class FlexVariableComponent implements OnInit {
             this.onChanged();
         });
     }
+
+    setVariable(tag: Tag) {
+        if (tag) {
+            this.variableId = tag.id;
+            this.onChanged();
+        }
+    }
 }
 

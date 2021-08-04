@@ -273,6 +273,16 @@ export class DeviceListComponent implements OnInit {
                         delete result.device.tags[oldtag];
                         this.checkToAdd(tag, result.device);
                     }
+                    if (result.unit) {
+                        let utag = new Tag(Utils.getGUID(TAG_PREFIX));
+                        utag.address = result.unit;
+                        this.checkToAddAddress(utag, result.device);
+                    }
+                    if (result.digits) {
+                        let dtag = new Tag(Utils.getGUID(TAG_PREFIX));
+                        dtag.address = result.digits;
+                        this.checkToAddAddress(dtag, result.device);
+                    }
                     this.projectService.setDeviceTags(this.deviceSelected);
                 }
             }
@@ -295,6 +305,20 @@ export class DeviceListComponent implements OnInit {
         }
         this.tagsMap[tag.id] = tag;
         this.bindToTable(this.deviceSelected.tags);
+    }
+
+    checkToAddAddress(tag: Tag, device: Device) {
+        let exist = false;
+        Object.keys(device.tags).forEach((key) => {
+            if (device.tags[key].address === tag.address) {
+                exist = true;
+            }
+        })
+        if (!exist) {
+            device.tags[tag.id] = tag;
+            this.tagsMap[tag.id] = tag;
+            this.bindToTable(this.deviceSelected.tags);
+        }
     }
 
     updateDeviceValue() {

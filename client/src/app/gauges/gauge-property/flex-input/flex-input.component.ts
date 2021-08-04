@@ -1,9 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Options } from 'ng5-slider';
 
 import { GaugeRangeProperty } from '../../../_models/hmi';
-import { Tag } from '../../../_models/device';
+import { DevicesUtils, Tag } from '../../../_models/device';
 import { Utils } from '../../../_helpers/utils';
+import { FlexVariableComponent } from '../flex-variable/flex-variable.component';
 
 @Component({
     selector: 'flex-input',
@@ -16,6 +17,9 @@ export class FlexInputComponent implements OnInit {
     @Input() type: string;
     @Input() inputType: string;
     @Input() default: any;
+    @ViewChild('unit') varunit: FlexVariableComponent;
+    @ViewChild('digits') vardigits: FlexVariableComponent;
+
 
     tag: Tag = null;
     withLabel = true;
@@ -123,6 +127,23 @@ export class FlexInputComponent implements OnInit {
                 }
                 if (!this.ranges[i].max || this.ranges[i].max >= newOptions.ceil) {
                     this.ranges[i].max = newOptions.ceil;
+                }
+            }
+        }
+        if (this.isWithUnit()) {
+            let device = DevicesUtils.getDeviceFromTagId(this.data.devices, _tag.id);
+            if (device) {
+                if (this.varunit) {
+                    let utag = DevicesUtils.getTagFromTagAddress(device, _tag.address + 'OpcEngUnit');
+                    if (utag) {
+                        this.varunit.setVariable(utag);
+                    }
+                }
+                if (this.vardigits) {
+                    let dtag = DevicesUtils.getTagFromTagAddress(device, _tag.address + 'DecimalPlaces');
+                    if (dtag) {
+                        this.vardigits.setVariable(dtag);
+                    }
                 }
             }
         }

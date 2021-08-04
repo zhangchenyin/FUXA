@@ -489,6 +489,8 @@
     "device.tag-property-address-offset": "Address offset (1-65536)",
     "device.tag-property-obj-name": "Name",
     "device.tag-property-path": "Path",
+    "device.tag-property-unit": "Unit",
+    "device.tag-property-digits": "Decimal",
     "device.tag-array-id": "Array ID:",
     "device.tag-array-value": "Value:",
     "device-tag-dialog-title": "Tag Selection",
