@@ -134,16 +134,10 @@ export class FlexInputComponent implements OnInit {
             let device = DevicesUtils.getDeviceFromTagId(this.data.devices, _tag.id);
             if (device) {
                 if (this.varunit) {
-                    let utag = DevicesUtils.getTagFromTagAddress(device, _tag.address + 'OpcEngUnit');
-                    if (utag) {
-                        this.varunit.setVariable(utag);
-                    }
+                    this.varunit.setVariable(DevicesUtils.getTagFromTagAddress(device, _tag.address + 'OpcEngUnit'));
                 }
                 if (this.vardigits) {
-                    let dtag = DevicesUtils.getTagFromTagAddress(device, _tag.address + 'DecimalPlaces');
-                    if (dtag) {
-                        this.vardigits.setVariable(dtag);
-                    }
+                    this.vardigits.setVariable(DevicesUtils.getTagFromTagAddress(device, _tag.address + 'DecimalPlaces'));
                 }
             }
         }
