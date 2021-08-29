@@ -45,7 +45,8 @@
             <mat-header-cell *matHeaderCellDef style="padding-right: 0px;">
             </mat-header-cell>
             <mat-cell *matCellDef="let element" style="padding-right: 0px;">
-                <button mat-icon-button (click)="onSelect(element)">
+                <button mat-flat-button color="primary" (click)="onSelect(element)" 
+                            style="min-width: 30px; width: 30px; padding: 0 0; line-height: 25px !important; height: 26px;">
                     <mat-icon>check</mat-icon>
                 </button>
             </mat-cell>
