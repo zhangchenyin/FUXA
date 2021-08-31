@@ -2,6 +2,7 @@ import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 
+import { AppService } from '../../_services/app.service';
 import { SelOptionsComponent } from '../../gui-helpers/sel-options/sel-options.component';
 
 import { LayoutSettings, NaviModeType, NaviItem, NaviItemType, NotificationModeType, ZoomModeType, InputModeType } from '../../_models/hmi';
@@ -31,6 +32,7 @@ export class LayoutPropertyComponent implements OnInit {
     constructor(@Inject(MAT_DIALOG_DATA) public data: any,
         public dialog: MatDialog,
         public dialogRef: MatDialogRef<LayoutPropertyComponent>,
+        private appService: AppService,
         private translateService: TranslateService) {
         if (!data.layout) {
             data.layout = new LayoutSettings();
@@ -161,7 +163,7 @@ export class DialogMenuItem {
 
     @ViewChild(SelOptionsComponent) seloptions: SelOptionsComponent;
 
-    constructor(
+    constructor(private appService: AppService,
         public dialogRef: MatDialogRef<DialogMenuItem>,
         @Inject(MAT_DIALOG_DATA) public data: any) { 
             this.selectedGroups = UserGroups.ValueToGroups(this.data.permission);
@@ -172,7 +174,13 @@ export class DialogMenuItem {
     }
 
     onOkClick(): void {
-		this.data.permission = UserGroups.GroupsToValue(this.seloptions.selected);
+        if (!this.isClient()) {
+		    this.data.permission = UserGroups.GroupsToValue(this.seloptions.selected);
+        }
         this.dialogRef.close(this.data);
+    }
+
+    isClient(): boolean {
+        return this.appService.isClientApp;
     }
 }

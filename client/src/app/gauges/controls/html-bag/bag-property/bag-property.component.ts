@@ -2,6 +2,8 @@ import { Component, Inject, OnInit, AfterViewInit, OnChanges, SimpleChanges, Vie
 import { Utils } from '../../../../_helpers/utils';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
+import { AppService } from '../../../../_services/app.service';
+
 import { GaugeOptions, GaugeType, } from '../../../../gui-helpers/ngx-gauge/gaugeOptions';
 import { NgxGaugeComponent } from '../../../../gui-helpers/ngx-gauge/ngx-gauge.component';
 import { GaugeSettings } from '../../../../_models/hmi';
@@ -36,6 +38,7 @@ export class BagPropertyComponent implements OnInit, AfterViewInit, OnChanges {
     fonts = Define.fonts;
 
     constructor(private cdRef: ChangeDetectorRef,
+                private appService: AppService,
                 public dialog: MatDialog,
                 public dialogRef: MatDialogRef<BagPropertyComponent>,
                 @Inject(MAT_DIALOG_DATA) public data: any) { 
@@ -224,6 +227,10 @@ export class BagPropertyComponent implements OnInit, AfterViewInit, OnChanges {
         this.setGaugeOptions();
     }
 
+    isClient(): boolean {
+        return this.appService.isClientApp;
+    }
+    
     private checkFontFamily() {
         if (this.options.staticLabels && this.options.fontFamily) {
             this.options.staticLabels.font = this.options.staticFontSize + 'px ' + this.options.fontFamily;

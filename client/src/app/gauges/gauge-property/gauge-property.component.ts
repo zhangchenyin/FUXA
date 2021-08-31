@@ -2,6 +2,7 @@ import { Component, Inject, Input, OnInit, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
 
 import { SelOptionsComponent } from '../../gui-helpers/sel-options/sel-options.component';
+import { AppService } from '../../_services/app.service';
 
 import { FlexHeadComponent } from './flex-head/flex-head.component';
 import { FlexEventComponent } from './flex-event/flex-event.component';
@@ -33,6 +34,7 @@ export class GaugePropertyComponent implements OnInit {
 
     constructor(public dialog: MatDialog,
         public dialogRef: MatDialogRef<GaugePropertyComponent>,
+        private appService: AppService,
         @Inject(MAT_DIALOG_DATA) public data: any) {
     }
 
@@ -133,6 +135,10 @@ export class GaugePropertyComponent implements OnInit {
             return true;
         }
         return false;
+    }
+
+    isClient(): boolean {
+        return this.appService.isClientApp;
     }
 
     onEditPermission() {

@@ -1,6 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
+import { AppService } from '../../../_services/app.service';
+
 import { GaugeProperty } from '../../../_models/hmi';
 import { DialogGaugePermission } from '../../gauge-property/gauge-property.component';
 
@@ -15,7 +17,8 @@ export class FlexAuthComponent implements OnInit {
     @Input() permission: number;
 
 
-    constructor(public dialog: MatDialog) { }
+    constructor(public dialog: MatDialog,
+            private appService: AppService) { }
 
     ngOnInit() {
         // this.property = JSON.parse(JSON.stringify(this.data.settings.property));
@@ -37,5 +40,9 @@ export class FlexAuthComponent implements OnInit {
 
     getResult() {
         return { name: this.name, pemission: this.permission };
+    }
+
+    isClient(): boolean {
+        return this.appService.isClientApp;
     }
 }
