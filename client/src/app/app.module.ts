@@ -74,7 +74,7 @@ import { NgxSwitchComponent } from './gui-helpers/ngx-switch/ngx-switch.componen
 import { DialogDraggableDirective } from './_directives/dialog-draggable.directive';
 import { ModalPositionCache } from './_directives/modal-position.cache';
 import { DraggableDirective } from './_directives/ngx-draggable.directive';
-import { NumberOnlyDirective } from './_directives/number.directive';
+import { NumberOnlyDirective, IntegerOnlyDirective } from './_directives/number.directive';
 import { LazyForDirective } from './_directives/lazyFor.directive';
 
 import { GaugesManager } from './gauges/gauges.component';
@@ -124,7 +124,9 @@ import { environment } from '../environments/environment';
 
 
 export function createTranslateLoader(http: HttpClient) {
-    return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+    let appbasepath = window['_app_base'] || '/';
+    console.log('pathname: ' + appbasepath);
+    return new TranslateHttpLoader(http, appbasepath + 'assets/i18n/', '.json');
 }
 
 // console.log("environment: " + environment.type);
@@ -200,6 +202,7 @@ export function createTranslateLoader(http: HttpClient) {
         EnumToArrayPipe,
         DraggableDirective,
         NumberOnlyDirective,
+        IntegerOnlyDirective,
         NgxFabButtonComponent,
         NgxFabItemButtonComponent,
         TreetableComponent,
@@ -275,7 +278,7 @@ export function createTranslateLoader(http: HttpClient) {
         Define,
         AuthGuard,
         { provide: HAMMER_GESTURE_CONFIG, useClass: GestureConfig},
-        { provide: APP_BASE_HREF, useValue: '/' }
+        { provide: APP_BASE_HREF, useValue: window['_app_base'] || '/' }
     ],
     entryComponents: [
         DialogDocProperty,

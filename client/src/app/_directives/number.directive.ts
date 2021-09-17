@@ -16,6 +16,7 @@ export class NumberOnlyDirective {
     onKeyDown(event: KeyboardEvent) {
         // Allow Backspace, tab, end, and home keys
         if (this.specialKeys.indexOf(event.key) !== -1) {
+            event.stopPropagation();
             return;
         }
         let current: string = this.el.nativeElement.value;
@@ -26,6 +27,48 @@ export class NumberOnlyDirective {
                 next = event.key + current;
                 this.el.nativeElement.value = next;
             }
+        } else {
+            next = current.concat(event.key);
+        }
+        if (next && !String(next).match(this.regex)) {
+            event.preventDefault();
+        }
+    }
+}
+
+@Directive({
+    selector: '[integerOnly]'
+})
+export class IntegerOnlyDirective {
+    // Allow integer numbers and negative values
+    private regex: RegExp = new RegExp(/^-?[0-9]+(\.[0-9]*){0,1}$/g);///^-?[0-9]+(\.[0-9]*){0,1}$/g);
+    // Allow key codes for special events. Reflect :
+    // Backspace, tab, end, home
+    private specialKeys: Array<string> = ['Backspace', 'Delete', 'Tab', 'End', 'Home', 'ArrowLeft', 'ArrowRight'];
+    private toSkipKeys: Array<string> = ['.', ','];
+
+    constructor(private el: ElementRef) {
+    }
+    @HostListener('keydown', ['$event'])
+    onKeyDown(event: KeyboardEvent) {
+        // Allow Backspace, tab, end, and home keys
+        if (this.specialKeys.indexOf(event.key) !== -1) {
+            event.stopPropagation();
+            return;
+        }
+        if (this.toSkipKeys.indexOf(event.key) !== -1) {
+            event.preventDefault();
+        }
+        let current: string = this.el.nativeElement.value;
+        let next: string = '';
+        if (event.key === '-') {
+            event.preventDefault();
+            if (!current.startsWith('-')) {
+                next = event.key + current;
+                this.el.nativeElement.value = next;
+            }
+        } else if (event.key === 'ArrowUp') {
+        } else if (event.key === 'ArrowDown') {
         } else {
             next = current.concat(event.key);
         }

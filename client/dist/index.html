@@ -2,7 +2,13 @@
 <html>
 
 <head>
-    <base href="/" />
+    <!-- <base href="/" /> -->
+    <script>
+        (function() {
+            var path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+          window['_app_base'] = path + '/fuxa-libs/';
+        })();
+    </script>
     <title>FUXA</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -32,7 +38,7 @@
     <script src="assets/lib/svg/svg.min.js"></script>
     <script src="assets/lib/svg/raphael.min.js"></script>
 
-<link rel="stylesheet" href="styles.528815410aefa0c1dfbb.css"></head>
+<link rel="stylesheet" href="/fuxa-libs/assets/imagesstyles.css"></head>
 <!-- 3. Display the application -->
 <body>
     <script src="assets/indextest.js"></script>
@@ -49,5 +55,5 @@
     <div id="logger" style="width: 300px; position: absolute; top: 30px; left: 10px">
     </div>
 
-<script type="text/javascript" src="runtime.a66f828dca56eeb90e02.js"></script><script type="text/javascript" src="polyfills.287f7e5e4cd30d0a031d.js"></script><script type="text/javascript" src="scripts.b8e77019b9ff4d559277.js"></script><script type="text/javascript" src="main.fe34e727ea1e1752d4a6.js"></script></body>
+<script type="text/javascript" src="/fuxa-libs/assets/imagesruntime.js"></script><script type="text/javascript" src="/fuxa-libs/assets/imagespolyfills.js"></script><script type="text/javascript" src="/fuxa-libs/assets/imagesscripts.js"></script><script type="text/javascript" src="/fuxa-libs/assets/imagesmain.js"></script></body>
 </html>

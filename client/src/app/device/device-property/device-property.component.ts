@@ -215,6 +215,9 @@ export class DevicePropertyComponent implements OnInit, OnDestroy {
 		} else {
 			this.pollingType = this.pollingPlcType;
 		}
+		if (this.data.device.type === DeviceType.internal) {
+			this.data.device.enabled = true;
+		}
 	}
 
 	isValid(device): boolean {
