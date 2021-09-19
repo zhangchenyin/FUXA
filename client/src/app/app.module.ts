@@ -122,9 +122,14 @@ import { ChartUplotComponent } from './gauges/controls/html-chart/chart-uplot/ch
 import { httpInterceptorProviders } from './_helpers/auth-interceptor';
 import { environment } from '../environments/environment';
 
+export function getLibPath() {
+    let libpath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+    libpath += 'fuxa-libs/';
+    return libpath;
+}
 
 export function createTranslateLoader(http: HttpClient) {
-    let appbasepath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/')) || '/';
+    let appbasepath = getLibPath() || '/';
     console.log('pathname: ' + appbasepath);
     return new TranslateHttpLoader(http, appbasepath + 'assets/i18n/', '.json');
 }
@@ -278,7 +283,7 @@ export function createTranslateLoader(http: HttpClient) {
         Define,
         AuthGuard,
         { provide: HAMMER_GESTURE_CONFIG, useClass: GestureConfig},
-        { provide: APP_BASE_HREF, useValue: '/' }
+        { provide: APP_BASE_HREF, useValue: getLibPath() }
     ],
     entryComponents: [
         DialogDocProperty,
