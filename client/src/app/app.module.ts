@@ -124,7 +124,7 @@ import { environment } from '../environments/environment';
 
 export function getLibPath() {
     let libpath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
-    libpath += 'fuxa-libs/';
+    // libpath += 'fuxa-libs/';
     return libpath;
 }
 

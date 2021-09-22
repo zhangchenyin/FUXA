@@ -109,6 +109,15 @@ export class Utils {
     static getEnumKey(etype: any, ekey: any) {
         return Object.keys(etype).find(key => etype[key] === ekey);
     }
+
+    static Boolify(arg) {
+        var BoolArray = [true, false, 'true', 'false', 1, 0];
+        if (BoolArray.indexOf(arg) === -1) {
+            return null;
+        } else {
+            return (arg == true || arg == 'true' || arg == 1) ? true : false;
+        }
+    }
 }
 
 @Pipe({

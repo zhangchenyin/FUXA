@@ -15,6 +15,7 @@ import { GaugesManager } from '../gauges/gauges.component';
 import { Hmi, View, NaviModeType, NotificationModeType, ZoomModeType, HeaderSettings } from '../_models/hmi';
 import { LoginComponent } from '../login/login.component';
 import { AlarmViewComponent } from '../alarms/alarm-view/alarm-view.component';
+import { Utils } from '../_helpers/utils';
 
 import panzoom from 'panzoom';
 // declare var panzoom: any;
@@ -50,6 +51,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 	headerButtonMode = NotificationModeType;
 	alarmsPanelOpen = false;
 	layoutHeader = new HeaderSettings();
+	showNavigation = true;
 
 	private subscriptionLoad: Subscription;
 	private subscriptionAlarmsStatus: Subscription;
@@ -210,6 +212,9 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 			// check sidenav
 			this.showSidenav = null;
 			if (this.hmi.layout) {
+				if (Utils.Boolify(this.hmi.layout.hidenavigation)) {
+					this.showNavigation = false;
+				}
 				let nvoid = NaviModeType[this.hmi.layout.navigation.mode];
 				if (this.hmi.layout && nvoid !== NaviModeType.void) {
 					if (nvoid === NaviModeType.over) {
