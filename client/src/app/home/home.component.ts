@@ -224,7 +224,9 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 					} else if (nvoid === NaviModeType.push) {
 						this.showSidenav = 'push';
 					}
-					this.sidenav.setLayout(this.hmi.layout);
+					if (this.sidenav) {
+						this.sidenav.setLayout(this.hmi.layout);
+					}
 				}
 				if (this.hmi.layout.header) {
 					this.title = this.hmi.layout.header.title;
