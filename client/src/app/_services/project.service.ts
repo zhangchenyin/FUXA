@@ -77,7 +77,6 @@ export class ProjectService {
     }
 
     onRefreshProject(): boolean {
-        console.log('FUXA onRefreshProject: ', this.AppId);
         this.storage.getStorageProject().subscribe(prj => {
             if (prj) {
                 this.projectData = prj;
@@ -105,10 +104,8 @@ export class ProjectService {
     private load() {
         this.storage.getStorageProject().subscribe(prj => {
             if (!prj && this.appService.isDemoApp) {
-                console.log('create demo');
                 this.setNewProject();
             } else if (this.appService.isClientApp) {
-                console.log('FUXA load project: ', prj);
                 if (!prj && (this.storage as ResClientService).isReady) {
                     this.setNewProject();
                 } else {
@@ -139,7 +136,7 @@ export class ProjectService {
             this.translateService.get('msg.project-save-success').subscribe((txt: string) => { msg = txt });
             this.toastr.success(msg);
         }, err => {
-            console.log(err);
+            console.error(err);
             var msg = '';
             this.translateService.get('msg.project-save-error').subscribe((txt: string) => { msg = txt });
             this.toastr.error(msg, '', {
@@ -199,11 +196,11 @@ export class ProjectService {
                         this.removeDevice(old);
                     }
                 }, err => {
-                    console.log(err);
+                    console.error(err);
                     this.notifySaveError(err);
                 });                
             }, err => {
-                console.log(err);
+                console.error(err);
                 this.notifySaveError(err);
             });
         }
@@ -213,7 +210,7 @@ export class ProjectService {
         this.projectData.devices[device.id] = device;
         this.storage.setServerProjectData(ProjectDataCmdType.SetDevice, device, this.projectData).subscribe(result => {
         }, err => {
-            console.log(err);
+            console.error(err);
             this.notifySaveError(err);
         });                
     }
@@ -227,12 +224,12 @@ export class ProjectService {
         delete this.projectData.devices[device.id];
         this.storage.setServerProjectData(ProjectDataCmdType.DelDevice, device, this.projectData).subscribe(result => {
         }, err => {
-            console.log(err);
+            console.error(err);
             this.notifySaveError(err);
         });
         this.storage.setDeviceSecurity(device.id, '').subscribe(() => {
         }, err => {
-            console.log(err);
+            console.error(err);
             this.notifySaveError(err);
         });
     }
@@ -262,7 +259,7 @@ export class ProjectService {
         }
         this.storage.setServerProjectData(ProjectDataCmdType.SetView, view, this.projectData).subscribe(result => {
         }, err => {
-            console.log(err);
+            console.error(err);
             this.notifySaveError(err);
         });
     }
@@ -281,7 +278,7 @@ export class ProjectService {
         }
         this.storage.setServerProjectData(ProjectDataCmdType.DelView, view, this.projectData).subscribe(result => {
         }, err => {
-            console.log(err);
+            console.error(err);
             this.notifySaveError(err);
         });
     }
@@ -300,7 +297,7 @@ export class ProjectService {
         this.projectData.hmi.layout = layout;
         this.storage.setServerProjectData(ProjectDataCmdType.HmiLayout, layout, this.projectData).subscribe(result => {
         }, err => {
-            console.log(err);
+            console.error(err);
             this.notifySaveError(err);
         });
     }
@@ -330,7 +327,7 @@ export class ProjectService {
         this.projectData.charts = charts;
         this.storage.setServerProjectData(ProjectDataCmdType.Charts, charts, this.projectData).subscribe(result => {
         }, err => {
-            console.log(err);
+            console.error(err);
             this.notifySaveError(err);
         });
     }
@@ -373,7 +370,7 @@ export class ProjectService {
                     observer.next();
                 }
             }, err => {
-                console.log(err);
+                console.error(err);
                 this.notifySaveError(err);
                 observer.error(err);
             });
@@ -397,7 +394,7 @@ export class ProjectService {
             this.storage.setServerProjectData(ProjectDataCmdType.DelAlarm, alarm, this.projectData).subscribe(result => {
                 observer.next();
             }, err => {
-                console.log(err);
+                console.error(err);
                 this.notifySaveError(err);
                 observer.error(err);
             });
@@ -441,7 +438,7 @@ export class ProjectService {
                 this.removeText(old);
             }
         }, err => {
-            console.log(err);
+            console.error(err);
             this.notifySaveError(err);
         });                
     }
@@ -461,7 +458,7 @@ export class ProjectService {
         }
         this.storage.setServerProjectData(ProjectDataCmdType.DelText, text, this.projectData).subscribe(result => {
         }, err => {
-            console.log(err);
+            console.error(err);
             this.notifySaveError(err);
         });           
     }
@@ -621,7 +618,7 @@ export class ProjectService {
                     }
                 }
             } catch (ex) {
-                console.log(ex);
+                console.error(ex);
                 return false;
             }
             return true;

@@ -65,7 +65,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     ngAfterViewInit() {
         this.appService.setShowMode(this.showMode);
         this.projectService.AppId = this.id;
-        console.log(this.projectService.AppId);
         try {
             this.settingsService.init();
             let hmi = this.projectService.getHmi();
@@ -75,7 +74,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
             this.subscriptionLoad = this.projectService.onLoadHmi.subscribe(load => {
                 this.checkSettings();
             }, error => {
-                console.log('Error loadHMI');
+                console.error('Error loadHMI');
             });
 
             this.subscriptionShowModeChanged = this.appService.onShowModeChanged.subscribe((mode) => {
@@ -86,7 +85,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
             this.hmiService.initClient(this.clientBridge);
         }
         catch (err) {
-            console.log(err);
+            console.error(err);
         }
     }
 

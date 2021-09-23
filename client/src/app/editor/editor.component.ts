@@ -138,7 +138,7 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
             });
             this.gaugesManager.clearMemory();
         } catch (err) {
-            console.log(err);
+            console.error(err);
         }
         this.appService.lockEditMode();
     }
@@ -156,7 +156,7 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
             this.subscriptionLoad = this.projectService.onLoadHmi.subscribe(load => {
                 this.loadHmi();
             }, error => {
-                console.log('Error loadHMI');
+                console.error('Error loadHMI');
             });
         this.changeDetector.detectChanges();
     }
@@ -210,15 +210,12 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
                         this.colorFill = color;
                         this.setFillColor(this.colorFill);
                         this.checkMySelectedToSetColor(this.colorFill, null, this.winRef.nativeWindow.svgEditor.getSelectedElements());
-                        // console.log('fill ' + color);
                     } else if (type === 'stroke') {
                         this.colorStroke = color;
                         this.checkMySelectedToSetColor(null, this.colorStroke, this.winRef.nativeWindow.svgEditor.getSelectedElements());
-                        // console.log('stroke ' + color);
                     }
                 },
                 (eleadded) => {
-                    // console.log('added: ' + eleadded.id + ' ' + eleadded.type);
                     let ga: GaugeSettings = this.getGaugeSettings(eleadded);
                     this.checkGaugeAdded(ga);
                     setTimeout(() => {
@@ -259,7 +256,7 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
             $(initContextmenu);
 
         } catch (err) {
-            console.log(err);
+            console.error(err);
         }
         this.setFillColor(this.colorFill);
         this.setFillColor(this.colorStroke);
@@ -315,7 +312,7 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private saveHmi() {
-        console.log('TO REMOVE!!!!!!!!!');
+        console.error('TO REMOVE!!!!!!!!!');
     }
 
     /**
@@ -412,7 +409,6 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
                     this.colorStroke = clrstroke;
                 }
                 // this.setFillColor(this.colorFill);
-                // console.log('f:' + this.colorFill + ' s:' + this.colorStroke);
             }
         }
     }
@@ -525,9 +521,6 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
             if (document.activeElement !== document.body) (document.activeElement as HTMLElement).blur();
         } catch (e) { }
         if (elems) {
-            for (let i = 0; i < elems.length; i++) {
-                // console.log('selected: ' + event[i].id + ' ' + event[i].type);
-            }
             if (elems.length <= 1) {
                 this.selectedElement = elems[0];
                 this.selectedElement.type = elems[0].type || 'svg-ext-shapes-' + (this.currentMode || 'default');
@@ -542,9 +535,6 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
      * @param args
      */
     private onExtensionLoaded(args) {
-        if (args && args.length) {
-            // console.log('ext \'' + args[0] + '\' loaded');
-        }
     }
 
     /**

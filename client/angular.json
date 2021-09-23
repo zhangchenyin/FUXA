@@ -84,15 +84,15 @@
                   "with": "src/environments/environment.client.ts"
                 }
               ],
-              "optimization": true,
-              "outputHashing": "all",
+              "optimization": false,
+              "outputHashing": "none",
               "sourceMap": false,
               "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
-              "buildOptimizer": true              
+              "buildOptimizer": true
             },
             "clientdebug": {
               "fileReplacements": [

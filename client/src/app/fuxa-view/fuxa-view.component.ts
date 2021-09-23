@@ -62,7 +62,7 @@ export class FuxaViewComponent implements OnInit, AfterViewInit {
                 })
             }
         } catch (err) {
-            console.log(err);
+            console.error(err);
         }
     }
 
@@ -71,7 +71,7 @@ export class FuxaViewComponent implements OnInit, AfterViewInit {
         try {
             this.gaugesManager.emitBindedSignals(this.id);
         } catch (err) {
-            console.log(err);
+            console.error(err);
         }
     }
 
@@ -83,7 +83,7 @@ export class FuxaViewComponent implements OnInit, AfterViewInit {
                 this.subscriptionOnChange.unsubscribe();
             }
         } catch (err) {
-            console.log(err);
+            console.error(err);
         }
     }
 
@@ -103,7 +103,7 @@ export class FuxaViewComponent implements OnInit, AfterViewInit {
                     }
                 }
             } catch (err) {
-                console.log(err);
+                console.error(err);
             }
         });
         this.mapGaugeStatus = {};
@@ -121,7 +121,7 @@ export class FuxaViewComponent implements OnInit, AfterViewInit {
                 this.viewContainerRef.clear();
                 this.dataContainer.nativeElement.innerHTML = '';
             } catch (err) {
-                console.log(err);
+                console.error(err);
             }
         }
         if (view) {
@@ -367,7 +367,6 @@ export class FuxaViewComponent implements OnInit, AfterViewInit {
         if (htmlevent.type === 'key-enter') {
             htmlevent.dom.onkeypress = function (ev) {
                 if (ev.keyCode === 13) {
-                    console.log('enter sig ' + htmlevent.dom.id + ' ' + htmlevent.dom.value);
                     htmlevent.dbg = 'key pressed ' + htmlevent.dom.id + ' ' + htmlevent.dom.value;
                     htmlevent.id = htmlevent.dom.id;
                     htmlevent.value = htmlevent.dom.value;
@@ -376,7 +375,6 @@ export class FuxaViewComponent implements OnInit, AfterViewInit {
             };
         } else if (htmlevent.type === 'change') {
             htmlevent.dom.onchange = function (ev) {
-                console.log('change sig ' + htmlevent.dom.id + ' ' + htmlevent.dom.value);
                 htmlevent.dbg = 'key pressed ' + htmlevent.dom.id + ' ' + htmlevent.dom.value;
                 htmlevent.id = htmlevent.dom.id;
                 htmlevent.value = htmlevent.dom.value;

@@ -130,22 +130,8 @@ export function getLibPath() {
 
 export function createTranslateLoader(http: HttpClient) {
     let appbasepath = getLibPath() || '/';
-    console.log('pathname: ' + appbasepath);
     return new TranslateHttpLoader(http, appbasepath + 'assets/i18n/', '.json');
 }
-
-// console.log("environment: " + environment.type);
-// var providersResourceService: Provider = { provide: ResourceStorageService, useClass: ResWebApiService };
-// switch (environment.type) {
-// 	case "demo":
-// 		console.log("Found:", "ResDemoService");
-// 		providersResourceService = { provide: ResourceStorageService, useClass: ResDemoService };
-// 	break;
-// 	case "client":
-// 		console.log("Found:", "ResClientService");
-// 		providersResourceService = { provide: ResourceStorageService, useClass: ResClientService };
-// 	break;
-// }
 
 @NgModule({
     declarations: [

@@ -94,7 +94,6 @@ export class HmiService {
      * @returns 
      */
     initClient(bridge?: any) {
-        console.log('FUXA init client bridge: ', (bridge) ? true : false);
         if (!bridge) return false;
         this.bridge = bridge;
         if (this.bridge) {
