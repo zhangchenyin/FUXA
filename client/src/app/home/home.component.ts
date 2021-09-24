@@ -55,6 +55,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	private subscriptionLoad: Subscription;
 	private subscriptionAlarmsStatus: Subscription;
+	private subscriptionGoTo: Subscription;
 
 	constructor(private projectService: ProjectService,
 		private changeDetector: ChangeDetectorRef,
@@ -83,6 +84,9 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 			this.subscriptionAlarmsStatus = this.hmiService.onAlarmsStatus.subscribe(event => {
 				this.setAlarmsStatus(event);
 			});
+			this.subscriptionGoTo = this.hmiService.onGoToPage.subscribe(page => {
+				this.onGoToPage(page);
+			});
 			this.hmiService.askAlarmsStatus();
 			this.changeDetector.detectChanges();
 		}
@@ -99,6 +103,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 			if (this.subscriptionAlarmsStatus) {
 				this.subscriptionAlarmsStatus.unsubscribe();
 			}
+			if (this.subscriptionGoTo) {
+				this.subscriptionGoTo.unsubscribe();
+			}
+
 		} catch (e) {
 		}
 	}

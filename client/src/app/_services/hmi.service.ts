@@ -23,6 +23,7 @@ export class HmiService {
     @Output() onDeviceProperty: EventEmitter<any> = new EventEmitter();
     @Output() onHostInterfaces: EventEmitter<any> = new EventEmitter();
     @Output() onAlarmsStatus: EventEmitter<any> = new EventEmitter();
+    @Output() onGoToPage: EventEmitter<any> = new EventEmitter();
     @Output() onDeviceWebApiRequest: EventEmitter<any> = new EventEmitter();
 
     public static separator = '^~^';
@@ -98,12 +99,17 @@ export class HmiService {
         this.bridge = bridge;
         if (this.bridge) {
             this.bridge.onDeviceValues = (tags: Variable[]) => this.onDeviceValues(tags);
+            this.bridge.onSetCommand = (type: string, params: Object[]) => this.onSetCommand(type, params);
             this.askDeviceValues();
             return true;
         }
         return false;
     }
 
+    /**
+     * Set device values, call from outside FUXA
+     * @param tags 
+     */
     private onDeviceValues(tags: Variable[]) {
         // console.log('FUXA onDeviceValues: ', tags);
         for (let idx = 0; idx < tags.length; idx++) {
@@ -114,6 +120,21 @@ export class HmiService {
             this.variables[varid].value = tags[idx].value;
             this.variables[varid].error = tags[idx].error;
             this.setSignalValue(this.variables[varid]);
+        }
+    }
+
+    /**
+     * Set command, call from outside FUXA
+     * @param type command type: 'view' to switch page
+     * @param params 
+     */
+    private onSetCommand(type: string, params: Object[]) {
+        switch (type) {
+            case 'view':
+                if (params && params.length) {
+                    this.onGoToPage.emit(params[0]);
+                }
+                break;
         }
     }
 

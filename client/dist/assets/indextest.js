@@ -102,14 +102,30 @@ class FuxaBridge {
         addToLogger('=> onGetDeviceValues NOT supported!');
         console.error("=> onGetDeviceValues NOT supported!");
     }
-    
+
+    /**
+     * call from WebStudio to set command to FUXA.
+     * @param {*} type: CommandType
+     * @param {*} params Command parameters
+     * @returns 
+     */
+    setCommand = (type, params) => {
+        addToLogger(`APP invoke setCommand to FUXA ${this.id}`);
+        return this.invoke(this.onSetCommand, type, params);
+    }
+
+    onSetCommand = function (type, params) {
+        addToLogger('onSetCommand NOT supported!');
+        console.log("onSetCommand NOT supported!");
+    }
+
     /**
      * call from WebStudio to notify Message/Error to FUXA.
      * @param {*} type: MessageType
      * @param {*} message Message Object
      * @returns 
      */
-     notifyMessage = (type, message) => {
+    notifyMessage = (type, message) => {
         addToLogger(`APP invoke notifyMessage to FUXA ${this.id}`);
         return this.invoke(this.onNotifyMessage, type, message);
     }
@@ -161,7 +177,7 @@ const fuxaBridgeManager = new FuxaBridgeManager();
 
 function addToLogger(msg) {
     var logger = document.getElementById("logger");
-    document.querySelector('#logger').innerHTML += '<span style="font-size: 10px;display:block;">' + msg + '</span>'; 
+    document.querySelector('#logger').innerHTML += '<span style="font-size: 10px;display:block;">' + msg + '</span>';
 }
 
 function refresh(id) {
@@ -180,6 +196,13 @@ function send(id) {
     const bridge = fuxaBridgeManager.getBridge('fuxa' + id);
     if (bridge) {
         bridge.emitDeviceValues([seltag]);
+    }
+}
+
+function command(id, selectedObject) {
+    const bridge = fuxaBridgeManager.getBridge('fuxa' + id);
+    if (bridge) {
+        bridge.setCommand('view', [selectedObject.value]);
     }
 }
 
@@ -226,6 +249,7 @@ class FuxaInstance {
             let prj = JSON.parse(localStorage.getItem(bridge.id));
             if (prj) {
                 this.checkProjectDevices(prj.devices);
+                this.checkProjectViews(prj.hmi.views);
             }
             return prj;
             // return 'prj: ' + bridge._id;
@@ -237,6 +261,7 @@ class FuxaInstance {
                 console.log(`FUXA ${bridge.id} ask to save project ${refresh}`);
                 localStorage.setItem(bridge.id, JSON.stringify(project));
                 this.checkProjectDevices(project.devices);
+                this.checkProjectViews(project.hmi.views);
                 if (refresh) {
                     this.bridge.refreshProject();
                 }
@@ -246,9 +271,9 @@ class FuxaInstance {
         }
 
         var elem = document.createElement('div');
-        elem.innerHTML += 
-        // document.body.innerHTML += `
-        elem.innerHTML = `
+        elem.innerHTML +=
+            // document.body.innerHTML += `
+            elem.innerHTML = `
             <div id="mydiv${id}" style="position: absolute; z-index: 9; background-color: #f1f1f1; border: 1px solid #d3d3d3;">
                 <div id="mydiv${id}header" style="padding: 10px; cursor: move; z-index: 10; background-color: #2196F3; color: #fff;">Click here to move
                     <div style="float: right; cursor: pointer;" onclick="closeWidget('${id}')">X</div>
@@ -272,7 +297,7 @@ class FuxaInstance {
         const fuxa = document.querySelector('#fuxa' + id);
         refresh(id);
         fuxa.bridge = bridge; // It works!
-        refresh(id);   
+        refresh(id);
     }
 
     // to manage the device tags subscription
@@ -289,13 +314,13 @@ class FuxaInstance {
         for (var i = 0; i < devices.length; i++) {
             var device = devices[i];
             if (device.tags) {
-                for (var x = 0 ; x < device.tags.length; x++) {
+                for (var x = 0; x < device.tags.length; x++) {
                     console.log(`${device.tags[x].id}: ${device.tags[x].address}`);
                     var opt = document.createElement('option');
                     opt.value = JSON.stringify(new DeviceValue(device.id, device.tags[x].id, null));
                     opt.innerHTML = device.tags[x].name;
                     selectTags.appendChild(opt);
-                    if (device.type === 'WebStudio') { 
+                    if (device.type === 'WebStudio') {
                         var tag = new DeviceValue(device.id, device.tags[x].id, 0);
                         if (x === 1) {
                             tag.error = 'Error subscription';
@@ -307,6 +332,23 @@ class FuxaInstance {
         }
         if (simTags.length) {
             this.startSimulator(simTags);
+        }
+    }
+
+    checkProjectViews = (views) => {
+        var selectViews = document.getElementById("views");
+        selectViews.innerHTML = "";
+        // add devices subscriptions
+        if (!views) {
+            return;
+        }
+        for (var i = 0; i < views.length; i++) {
+            var view = views[i];
+            console.log(`${view.id}`);
+            var opt = document.createElement('option');
+            opt.value = view.id;
+            opt.innerHTML = view.name;
+            selectViews.appendChild(opt);
         }
     }
 
