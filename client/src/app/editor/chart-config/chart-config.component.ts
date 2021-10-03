@@ -198,9 +198,10 @@ export class ChartConfigComponent implements OnInit {
     getTagLabel(tag) {
         if (tag.label) {
             return tag.label;
-        } else {
+        } else if (tag.name) {
             return tag.name;
         }
+        return tag.address;
     }
 
     getDeviceTagName(line: ChartLine) {
