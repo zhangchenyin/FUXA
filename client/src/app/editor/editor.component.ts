@@ -67,11 +67,13 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('gaugepanel') gaugePanelComponent: GaugeBaseComponent;
     @ViewChild('viewFileImportInput') viewFileImportInput: any;
 
+    readonly colorDefault = { fill: '#FFFFFF', stroke: '#000000' };
+
     fonts = Define.fonts;
     isLoading = true;
     defaultColor = Utils.defaultColor;
-    colorFill: string = '#FFFFFF'
-    colorStroke: string = '#000000'
+    colorFill = this.colorDefault.fill;
+    colorStroke = this.colorDefault.stroke;
     currentView: View = null;
     hmi: Hmi = new Hmi();// = {_id: '', name: '', networktype: '', ipaddress: '', maskaddress: '' };
     currentMode = '';
@@ -219,7 +221,7 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
                     let ga: GaugeSettings = this.getGaugeSettings(eleadded);
                     this.checkGaugeAdded(ga);
                     setTimeout(() => {
-                        this.setMode('select');
+                        this.setMode('select', false);
                     }, 700);
                     // this.hmiService.addGauge(this.hmi, eleadded);
                 },
@@ -229,7 +231,7 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
                 (eleresized) => {
                     if (eleresized && eleresized.id) {
                         let ga: GaugeSettings = this.getGaugeSettings(eleresized);
-                        this.gaugesManager.checkElementToResize(ga, this.resolver, this.viewContainerRef);
+                        this.gaugesManager.checkElementToResize(ga, this.resolver, this.viewContainerRef, eleresized.size);
                     }
                 },
                 (copiedpasted) => {
@@ -488,8 +490,12 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
      * set the mode to svg-editor (line,text,...)
      * @param mode mode to set
      */
-    setMode(mode: string) {
+     setMode(mode: string, clearSelection: boolean = true) {
         this.currentMode = mode;
+        if (clearSelection) {
+            this.clearSelection();
+            this.checkFillAndStrokeColor();
+        }
         this.winRef.nativeWindow.svgEditor.clickToSetMode(mode);
     }
 
@@ -507,6 +513,16 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
     private clearEditor() {
         if (this.winRef.nativeWindow.svgEditor) {
             this.winRef.nativeWindow.svgEditor.clickClearAll();
+        }
+    }
+
+    /** 
+     * check if fill and stroke not the same color is, text and label set all to black
+     */
+    private checkFillAndStrokeColor() {
+        if (this.colorFill && this.colorStroke && this.colorFill === this.colorStroke) {
+            this.setFillColor(this.colorDefault.fill);
+            this.setStrokeColor(this.colorDefault.stroke);
         }
     }
 
@@ -747,7 +763,7 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
      */
     onStartCurrent() {
         this.saveProjectView(true);
-        this.winRef.nativeWindow.open('lab', 'MyTest', 'width=800,height=640,menubar=0');
+        this.appService.setShowMode('lab');
     }
     //#endregion
 

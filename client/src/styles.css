@@ -742,3 +742,28 @@ mat-toolbar-row {
     right: 4px;
     position: absolute;
 }
+
+/* Color picker */
+.color-picker .hue-alpha {
+    padding: 0 !important;
+    height: 50px;
+}
+
+.color-picker .hue {
+    margin-bottom: 4px !important;
+}
+
+.color-picker .type-policy {
+    top: 185px !important;
+}
+.color-picker > .hex-text, .rgba-text, .hsla-text {
+    padding: 0px 8px !important;
+}
+
+.color-picker .preset-area {
+    padding: 0px 8px !important;
+}
+
+.color-picker .hex-text .box input, .color-picker input {
+    background-color: #ffffff !important;
+}

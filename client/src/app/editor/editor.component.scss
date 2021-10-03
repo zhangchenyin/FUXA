@@ -360,6 +360,10 @@
     /* overflow: auto; */
 }
 
+.rightbar-input {
+    width: 70px;
+}
+
 .mat-expansion-panel-header-title span {
     padding-top: 3px;
 }
@@ -486,6 +490,7 @@ li {
     margin: 0px 10px 12px 10px;
     background-color: inherit;
     color: inherit;
+    width: 174px;
 }
 
 .font-family option {
@@ -498,6 +503,7 @@ li {
     margin: 0px 10px 12px 10px;
     background-color: inherit;
     color: inherit;
+    width: 75px;
 }
 
 .text-align option {

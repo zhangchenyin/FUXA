@@ -32,7 +32,11 @@ export class NumberOnlyDirective {
         }
         if (next && !String(next).match(this.regex)) {
             event.preventDefault();
+            if (this.el.nativeElement.value === '') {
+                this.el.nativeElement.value = '1';
+            }
         }
+        event.stopPropagation();
     }
 }
 

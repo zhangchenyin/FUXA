@@ -287,6 +287,15 @@ export class HelpData {
     tag: string;
 }
 
+export class Size {
+    height: number;
+    width: number;
+    constructor (h: number, w: number) {
+        this.height = h;
+        this.width = w;
+    }
+}
+
 interface DictionaryGaugeSettings {
     [x: string]: GaugeSettings
 }
