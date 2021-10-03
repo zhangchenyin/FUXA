@@ -154,7 +154,7 @@
                             <mat-icon aria-label="Login">account_circle</mat-icon>
                         </button>
                     </div>
-                    <div class="header-button">
+                    <div *ngIf="false" class="header-button">
                         <button mat-icon-button class="alarm-layout">
                             <mat-icon aria-label="Alarms">notifications_none</mat-icon>
                         </button>
@@ -186,7 +186,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="config">
+                    <div *ngIf="false" class="config">
                         <div class="my-form-field">
                             <span>{{'dlg.layout-lbl-alarms' | translate}}</span>
                             <mat-select [(value)]="data.layout.header.alarms" style="width: 260px">

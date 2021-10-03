@@ -15,13 +15,13 @@
                             </mat-select>
                         </div>
                     </div>
-                    <div style="display: block; margin-top: 20px">
+                    <div *ngIf="false" style="display: block; margin-top: 20px">
                         <div class="my-form-field">
                             <span>{{'dlg.app-settings-server-port' | translate}}</span>
                             <input numberOnly [(ngModel)]="settings.uiPort" style="width: 320px" type="text" disabled="true">
                         </div>
                     </div>
-                    <div style="display: block; margin-top: 20px">
+                    <div *ngIf="false" style="display: block; margin-top: 20px">
                         <div class="my-form-field">
                             <span style="display: inline-block;">{{'dlg.app-settings-auth-token' | translate}}</span>
                             <mat-icon class="my-form-field-info" style="display: block;" matTooltip="{{authenticationTooltip}}">info</mat-icon>
