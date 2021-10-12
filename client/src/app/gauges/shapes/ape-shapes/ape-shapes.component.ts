@@ -114,15 +114,14 @@ export class ApeShapesComponent extends GaugeBaseComponent {
     }
 
     static runMyAction(element, type, gaugeStatus: GaugeStatus) {
-        element.stop(true);
+        if (gaugeStatus.actionRef && gaugeStatus.actionRef.type === type) {
+            return;
+        }
         if (ApeShapesComponent.actionsType[type] === ApeShapesComponent.actionsType.clockwise) {
             gaugeStatus.actionRef = <GaugeActionStatus>{ type: type, animr: element.animate(3000).rotate(365).loop() };
         } else if (ApeShapesComponent.actionsType[type] === ApeShapesComponent.actionsType.anticlockwise) {
             gaugeStatus.actionRef = <GaugeActionStatus>{ type: type, animr: element.animate(3000).rotate(-365).loop() };
         } else if (ApeShapesComponent.actionsType[type] === ApeShapesComponent.actionsType.downup) {
-            if (gaugeStatus.actionRef && gaugeStatus.actionRef.type === type) {
-                return;
-            }
             let eletoanim = Utils.searchTreeStartWith(element.node, 'pm');
             if (eletoanim) {
                 element = SVG.adopt(eletoanim);
@@ -136,9 +135,11 @@ export class ApeShapesComponent extends GaugeBaseComponent {
                 gaugeStatus.actionRef = <GaugeActionStatus>{ type: type, timer: timeout };
             }
         } else if (ApeShapesComponent.actionsType[type] === ApeShapesComponent.actionsType.stop) {
+            element.stop(true);            
             if (gaugeStatus.actionRef && gaugeStatus.actionRef.timer) {
                 clearTimeout(gaugeStatus.actionRef.timer);
                 gaugeStatus.actionRef.timer = null;
+                gaugeStatus.actionRef.type = type;
             }
         }
     }
