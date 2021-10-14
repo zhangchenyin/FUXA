@@ -8426,7 +8426,7 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\work\FUXA\inmation\client\src\polyfills.ts */"./polyfills.ts");
+module.exports = __webpack_require__(/*! C:\work\inmation\inmation\client\src\polyfills.ts */"./polyfills.ts");
 
 
 /***/ })

@@ -132,9 +132,10 @@ export class FuxaViewComponent implements OnInit, AfterViewInit {
                 this.dataContainer.nativeElement.style.backgroundColor = view.profile.bkcolor;
             }
         }
+        this.changeDetector.detectChanges();
         setTimeout(() => {
             this.loadWatch(this.view);
-        }, 500);
+        }, 100);
     }
 
     /**
