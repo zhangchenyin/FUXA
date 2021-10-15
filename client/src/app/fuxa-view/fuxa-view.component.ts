@@ -353,8 +353,8 @@ export class FuxaViewComponent implements OnInit, AfterViewInit {
     }
 
     onToggleValue(ga: GaugeSettings, event: GaugeEvent) {
-        if (event.actoptions && event.actoptions['variableId']) {
-            this.gaugesManager.toggleSignalValue(event.actoptions['variableId']);
+        if (event.actoptions && event.actoptions['variable']) {
+            this.gaugesManager.toggleSignalValue(event.actoptions['variable']['variableId']);
         } else if (ga.property && ga.property.variableId) {
             this.gaugesManager.toggleSignalValue(ga.property.variableId);
         }
