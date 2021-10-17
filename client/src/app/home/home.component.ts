@@ -115,12 +115,12 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 		const view = this.hmi.views.find(x => x.id === event);
 		this.showHomeView = (this.homeView) ? true : false;
 		this.showHomeLink = false;
-		this.changeDetector.detectChanges();
 		if (view) {
 			this.homeView = view;
 			this.setBackground();
 			this.fuxaview.loadHmi(this.homeView);
 		}
+		this.changeDetector.detectChanges();
 	}
 
 	onGoToLink(event: string) {

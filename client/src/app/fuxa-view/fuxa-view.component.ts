@@ -38,6 +38,7 @@ export class FuxaViewComponent implements OnInit, AfterViewInit {
     @Output() onclose = new EventEmitter();
 
     @ViewChild('dataContainer') dataContainer: ElementRef;
+    @ViewChild('hideContainer') hideContainer: ElementRef;
 
     cards: CardModel[] = [];
     iframes: CardModel[] = [];
@@ -132,9 +133,11 @@ export class FuxaViewComponent implements OnInit, AfterViewInit {
                 this.dataContainer.nativeElement.style.backgroundColor = view.profile.bkcolor;
             }
         }
+        this.hideContainer.nativeElement.style.display = 'block';
         this.changeDetector.detectChanges();
         setTimeout(() => {
             this.loadWatch(this.view);
+            this.hideContainer.nativeElement.style.display = 'none';
         }, 100);
     }
 
@@ -353,7 +356,7 @@ export class FuxaViewComponent implements OnInit, AfterViewInit {
     }
 
     onToggleValue(ga: GaugeSettings, event: GaugeEvent) {
-        if (event.actoptions && event.actoptions['variable']) {
+        if (event.actoptions && event.actoptions['variable'] && event.actoptions['variable']['variableId']) {
             this.gaugesManager.toggleSignalValue(event.actoptions['variable']['variableId']);
         } else if (ga.property && ga.property.variableId) {
             this.gaugesManager.toggleSignalValue(ga.property.variableId);
