@@ -53,7 +53,7 @@ function init(_settings, log) {
  * Load project resource in a local data
  * Read all storaged sections and fill in local data
  */
-function load() {
+function load(booting = false) {
     return new Promise(function (resolve, reject) {
         data = { devices: {}, hmi: { views: [] }, texts: [], alarms: [] };
         // load general data
@@ -98,16 +98,19 @@ function load() {
                             }).catch(function (err) {
                                 logger.error(`project.prjstorage-failed-to-load! '${prjstorage.TableType.ALARMS}' ${err}`);
                                 callback(err);
-                            }); 
+                            });
                         }
                     ],
-                    function (err) {
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve();
-                        }
-                    });
+                        async function (err) {
+                            if (err) {
+                                reject(err);
+                            } else {
+                                if (booting) {
+                                    await _mergeDefaultConfig();
+                                }
+                                resolve();
+                            }
+                        });
                 }).catch(function (err) {
                     logger.error(`project.prjstorage-failed-to-load! '${prjstorage.TableType.DEVICES}' ${err}`);
                     reject(err);
@@ -177,7 +180,7 @@ function setProjectData(cmd, value) {
             }
             else {
                 logger.error(`prjstorage.setdata failed! '${section.table}'`);
-                reject('prjstorage.failed-to-setdata: Command not found!');    
+                reject('prjstorage.failed-to-setdata: Command not found!');
             }
             if (toremove) {
                 prjstorage.deleteSection(section).then(result => {
@@ -407,7 +410,7 @@ function setProject(prjcontent) {
                             for (var i = 0; i < alarms.length; i++) {
                                 scs.push({ table: prjstorage.TableType.ALARMS, name: alarms[i].name, value: alarms[i] });
                             }
-                        }                        
+                        }
                     } else {
                         // charts, version
                         scs.push({ table: prjstorage.TableType.GENERAL, name: key, value: prjcontent[key] });
@@ -578,6 +581,122 @@ function _filterProjectGroups(groups) {
     return result;
 }
 
+function _mergeDefaultConfig() {
+    return new Promise(async function (resolve, reject) {
+        try {
+            if (process.env.CFG_DEVICES) {
+                if (data.devices && Object.keys(data.devices).length) {
+                    logger.info(`project.prjstorage-merge-default-config: devices found! config merge not applied!`);
+                    resolve();
+                    return;
+                }
+                logger.info('project.prjstorage-merge-default-config: in progress!');
+                var devices = process.env.CFG_DEVICES;
+                if (typeof devices === 'string') {
+                    devices = JSON.parse(devices);
+                }
+                if (Array.isArray(devices)) {
+                    var tagIds = [];
+                    for (var i = 0; i < devices.length; i++) {
+                        var device = devices[i];
+                        // check device required
+                        if (!device.id || !device.name || !DeviceType.hasOwnProperty(device.type)) {
+                            logger.error(`CFG_DEVICES Error: ${device}`);
+                            continue;
+                        }
+                        var deviceToAdd = new Device(device.id, device.name, device.type);
+                        deviceToAdd.polling = device.polling || 1000;
+                        deviceToAdd.property = device.property || {};
+                        // check tags
+                        if (Array.isArray(device.tags)) {
+                            for (var y = 0; y < device.tags.length; y++) {
+                                var tag = device.tags[y];
+                                if (!tag.id || tagIds.indexOf(tag.id) !== -1) {
+                                    logger.error(`CFG_DEVICES Error: ${device.name} tag ID is not defined or already exist ${tag.id}`);
+                                    continue;
+                                }
+                                try {
+                                    var tagToAdd = new Tag(tag.id);
+                                    if (tag.name) tagToAdd.name = tag.name;
+                                    if (tag.label) tagToAdd.label = tag.label;
+                                    if (tag.type) tagToAdd.type = tag.type;
+                                    if (tag.address) tagToAdd.address = tag.address;
+                                    if (tag.memaddress) tagToAdd.memaddress = tag.memaddress;
+                                    if (tag.divisor) tagToAdd.divisor = tag.divisor;
+                                    // check options for OPCUA, BACnet, WebAPI
+                                    if (deviceToAdd.type === DeviceType.OPCUA || deviceToAdd.type === DeviceType.BACnet || deviceToAdd.type === DeviceType.WebAPI) {
+                                        tagToAdd.label = tag.name;
+                                    }
+                                    // check options for MQTT
+                                    if (deviceToAdd.type === DeviceType.MQTTclient) {
+                                        if (tag.subscription) {
+                                            tagToAdd.options = { subs: [tag.subscription] };
+                                            tagToAdd.address = tag.subscription;
+                                            tagToAdd.memaddress = tag.subscription;
+                                            if (tagToAdd.type === 'json' && tag.item) {
+                                                tagToAdd.memaddress = tag.item;
+                                            }
+                                        } else if (tag.publish && Array.isArray(tag.publish)) {
+                                            let pubs = [];
+                                            for (var t = 0; t < tag.publish.length; t++) {
+                                                if (!tag.publish[t].type) {
+                                                    logger.error(`CFG_DEVICES Error: ${device.name} publish type is not defined ${tag.id}`);
+                                                    continue;
+                                                }
+                                                let pub = { type: tag.publish[t].type, address: tag.publish[t].address };
+                                                if (tag.publish[t].key) pub['key'] = tag.publish[t].key;
+                                                if (tag.publish[t].name) pub['name'] = tag.publish[t].name;
+                                                if (pub.type === 'tag') {
+                                                    if (tag.publish[t].id) {
+                                                        pub['value'] = tag.publish[t].id;
+                                                        pubs.push(pub);
+                                                    }
+                                                } else {
+                                                    pubs.push(pub);
+                                                }
+                                            }
+                                            if (pubs.length) {
+                                                tagToAdd.options = { pubs: pubs };
+                                            }
+                                        } else {
+                                            logger.error(`CFG_DEVICES Error: ${device.name} tag defination ${tag.id}`);
+                                            continue;
+                                        }
+                                    }
+                                    deviceToAdd.tags[tagToAdd.id] = tagToAdd;
+                                } catch (terr) {
+                                    logger.error(`CFG_DEVICES Error: ${device.name} tag defination ${tag.id} ${terr}`);
+                                }
+                            }
+                        }
+                        setDevice(deviceToAdd);
+                        if (device.security) {
+                            await setDeviceSecurity(deviceToAdd.id, device.security);
+                        }
+                        logger.info(`CFG_DEVICES: Device ${deviceToAdd.name} added!`);
+                    }
+                }
+                logger.info('project.prjstorage-merge-default-config: successful!', true);
+            }
+            resolve();
+        } catch (err) {
+            logger.error(`project.prjstorage-merge-default-config! failed! ${err}`);
+            reject();
+        }
+    });
+}
+
+function setDeviceSecurity(name, value) {
+    return new Promise(async function (resolve, reject) {
+        await prjstorage.setSection({ table: prjstorage.TableType.DEVICESSECURITY, name: name, value: value }).then(() => {
+            resolve();
+        }).catch(function (err) {
+            logger.error(`project.prjstorage-merge-default: set device property failed! '${prjstorage.TableType.DEVICESSECURITY} ${err}'`);
+            reject(err);
+        });
+    });
+}
+
 const ProjectDataCmdType = {
     SetDevice: 'set-device',
     DelDevice: 'del-device',
@@ -605,3 +724,52 @@ module.exports = {
     getProjectDemo: getProjectDemo,
     ProjectDataCmdType, ProjectDataCmdType,
 };
+
+function Device(_id, _name, _type) {
+    /** Device id, GUID */
+    this.id = _id;       //: string
+    /** Device name */
+    this.name = _name;   //: string
+    /** Enabled */
+    this.enabled = true; //: boolean;
+    /** Connection property, DeviceNetProperty */
+    this.property;       //: any;
+    /** Device type, OPC, Modbus, S7, etc. */
+    this.type = _type;   //: DeviceType;
+    /** Polling interval */
+    this.polling = 1000; //: number;
+    /** Tags list of Tag */
+    this.tags = {};      //: any;
+}
+
+function Tag(_id) {
+    /** Tag id, GUID */
+    this.id = _id;       //: string;
+    /** Tag name, is like the id  */
+    this.name;           //: string;
+    /** Tag label, used by BACnet and WebAPI  */
+    this.label;          //: string;
+    /** Tag type, Bool, Byte, etc. */
+    this.type;           //: string;
+    /** Address of Tag, combine with address by Modbus, some property for WebAPI */
+    this.memaddress;     //: string;
+    /** Tag address, for OPCUA like the id */
+    this.address;        //: string;
+    /** Value divisor, used by Modbus */
+    this.divisor;        //: number;
+    /** Options, used for WebAPI and MQTT */
+    this.options;        //: any;
+}
+
+const DeviceType = {
+    FuxaServer: 'FuxaServer',
+    SiemensS7: 'SiemensS7',
+    OPCUA: 'OPCUA',
+    BACnet: 'BACnet',
+    ModbusRTU: 'ModbusRTU',
+    ModbusTCP: 'ModbusTCP',
+    WebAPI: 'WebAPI',
+    MQTTclient: 'MQTTclient',
+    WebStudio: 'WebStudio',
+    internal: 'internal'
+}

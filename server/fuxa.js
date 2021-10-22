@@ -25,7 +25,7 @@ module.exports = {
         api.init(httpServer, runtime);
     },
     start: function () {
-        return runtime.start().then(function () {
+        return runtime.start(true).then(function () {
             logger.info('FUXA started!');
         });
     },

@@ -325,6 +325,9 @@ function MQTTclient(_data, _logger, _events) {
      */
     var _createSubscription = function () {
         return new Promise(function (resolve, reject) {
+            if (!data.tags) {
+                resolve();
+            }
             var topics = Object.values(data.tags).map(t => t.address);
             _mapTopicsAddress(Object.values(data.tags));
             if (topics && topics.length) {

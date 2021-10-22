@@ -236,10 +236,10 @@ function init(_io, _api, _settings, _log, eventsMain) {
     });
 }
 
-function start() {
+function start(booting = false) {
     return new Promise(function (resolve, reject) {
         // load project
-        project.load().then(result => {
+        project.load(booting).then(result => {
             // start to comunicate with devices
             devices.start().then(function () {
                 resolve(true);
