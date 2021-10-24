@@ -118,6 +118,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 		if (view) {
 			this.homeView = view;
 			this.setBackground();
+			this.fuxaview.hmi.layout = this.hmi.layout;
 			this.fuxaview.loadHmi(this.homeView);
 		}
 		this.changeDetector.detectChanges();
@@ -263,6 +264,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 			this.showHomeView = (this.homeView) ? true : false;
 		}
 		if (this.homeView && this.fuxaview) {
+            this.fuxaview.hmi.layout = this.hmi.layout;
 			this.fuxaview.loadHmi(this.homeView);
 		}
 		this.isLoading = false;

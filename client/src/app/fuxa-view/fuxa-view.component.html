@@ -28,4 +28,15 @@
     <app-iframe [link]="iframe.link" [style.height]="iframe.height + 'px'" [style.transform]="'scale(' + iframe.scale + ')'" [style.width]="iframe.width + 'px'"
         [style.zoom]="1 / iframe.scale" class="iframe-class"></app-iframe>
 </div>
+<div #inputDialogRef [style.display]="(inputDialog.show) ? 'inline-block' : 'none'" class="dialog-input" [style.top.px]="inputDialog.y" [style.left.px]="inputDialog.x">
+    <input matInput #inputValueRef [(ngModel)]="gaugeInput" autocomplete="off" type="text" (focus)="toggleShowInputDialog(true)" (focusout)="toggleShowInputDialog(false)">
+    <div style="display: block; padding-top: 5px;">
+        <button mat-raised-button (click)="onOkClick(gaugeInput)" style="float: right;min-width: 16px;padding-left: 4px;padding-right: 4px;margin-left: 5px;" color="primary" cdkFocusInitial>
+            <mat-icon>done</mat-icon>
+        </button>
+        <button mat-raised-button (click)="onNoClick()" style="float: right; min-width:16px;padding-left: 4px;padding-right: 4px;">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+</div>
 <div #hideContainer style="display: none; position: absolute; top: 0; bottom: 0; left: 0; right: 0; background-color: white;"></div>

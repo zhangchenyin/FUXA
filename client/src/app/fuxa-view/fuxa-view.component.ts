@@ -39,11 +39,15 @@ export class FuxaViewComponent implements OnInit, AfterViewInit {
 
     @ViewChild('dataContainer') dataContainer: ElementRef;
     @ViewChild('hideContainer') hideContainer: ElementRef;
+    @ViewChild('inputDialogRef') inputDialogRef: ElementRef;
+    @ViewChild('inputValueRef') inputValueRef: ElementRef;
 
     cards: CardModel[] = [];
     iframes: CardModel[] = [];
     dialog: DialogModalModel;
     mapGaugeStatus = {};
+    inputDialog = { show: false, timer: null, x: 0, y: 0, target: null };
+    gaugeInput = '';
 
     private subscriptionOnChange: Subscription;
     protected staticValues: any = {};
@@ -379,6 +383,28 @@ export class FuxaViewComponent implements OnInit, AfterViewInit {
                     self.gaugesManager.putEvent(htmlevent);
                 }
             };
+            if (this.hmi.layout.inputdialog === 'true') {
+                htmlevent.dom.onfocus = function (ev) {
+                    if (ev.currentTarget) {
+                        var inputRect = ev.currentTarget.getBoundingClientRect();
+                        self.toggleShowInputDialog(true, inputRect.left, inputRect.top, htmlevent);
+                        self.toggleShowInputDialog(true, inputRect.left + ((inputRect.width < 80) ? -((80 - inputRect.width) / 2) : 0), inputRect.top - 5, htmlevent);
+                        for (let i = 0; i < ev.currentTarget.attributes.length; i++)  {
+                            if (ev.currentTarget.attributes['style']) {
+                                self.setInputDialogStyle(self.inputDialogRef.nativeElement, ev.currentTarget.attributes['style'].textContent, inputRect);
+                            }
+                            
+                        }
+                        document.body.appendChild(self.inputDialogRef.nativeElement);
+                        setTimeout(() => {
+                            self.inputValueRef.nativeElement.focus();
+                        }, 300);
+                    }
+                }
+                htmlevent.dom.onblur = function (ev) {
+                    self.toggleShowInputDialog(false);
+                }
+            }
         } else if (htmlevent.type === 'change') {
             htmlevent.dom.onchange = function (ev) {
                 htmlevent.dbg = 'key pressed ' + htmlevent.dom.id + ' ' + htmlevent.dom.value;
@@ -387,6 +413,18 @@ export class FuxaViewComponent implements OnInit, AfterViewInit {
                 self.gaugesManager.putEvent(htmlevent);
             };
         }
+    }
+
+    private setInputDialogStyle(element: any, style: string, sourceBound: DOMRect) {
+        for (let i = 0; i < element.children.length; i++) {
+            let el = element.children[i];
+            if (el.tagName.toLowerCase() === 'input') {
+                el.value = '';
+                style += 'width: ' + sourceBound.width + 'px !important;'; 
+                el.setAttribute('style', style);
+            }
+        }
+        element.style.backgroundColor = this.view.profile.bkcolor;
     }
 
     private getView(viewref: string): View {
@@ -600,6 +638,37 @@ export class FuxaViewComponent implements OnInit, AfterViewInit {
 
         return null;
     }
+    
+    toggleShowInputDialog(show: boolean, x: number = -1, y: number = -1, htmlev: Event = null) {
+        if (show) {
+            this.inputDialog.show = true;
+            if (x >= 0 && y >= 0) {
+                this.inputDialog.target = htmlev;
+                this.inputDialog.x = x;
+                this.inputDialog.y = y;
+            }
+            clearTimeout(this.inputDialog.timer);
+        } else {
+            this.inputDialog.timer = setTimeout(() => {
+                this.inputDialog.show = false;
+            }, 300);
+        }
+    }
+
+    onNoClick() {
+
+    }
+
+    onOkClick(evintput) {
+        if (this.inputDialog.target.dom) {
+            this.inputDialog.target.dom.value = evintput;
+            this.inputDialog.target.dbg = 'key pressed ' + this.inputDialog.target.dom.id + ' ' + this.inputDialog.target.dom.value;
+            this.inputDialog.target.id = this.inputDialog.target.dom.id;
+            this.inputDialog.target.value = this.inputDialog.target.dom.value;
+            this.gaugesManager.putEvent(this.inputDialog.target);
+        }
+    }
+
 }
 
 export class CardModel {
