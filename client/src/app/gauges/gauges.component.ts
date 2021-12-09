@@ -217,7 +217,8 @@ export class GaugesManager {
      */
     emitBindedSignals(domViewId: string) {
         this.hmiService.emitMappedSignalsGauge(domViewId);
-    }
+    }    
+
     /**
      * called from fuxa-view, bind dom view, gauge with signal (for animation) and event
      * @param gaugekey
@@ -522,7 +523,7 @@ export class GaugesManager {
     toggleSignalValue(sigid: string) {
         if (this.hmiService.variables.hasOwnProperty(sigid)) {
             let currentValue = this.hmiService.variables[sigid].value;
-            if (currentValue === null || currentValue === undefined){
+            if (currentValue === null || currentValue === undefined) {
                 return;
             } else {
                 if (currentValue === 0) {
