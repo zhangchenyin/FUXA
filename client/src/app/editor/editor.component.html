@@ -7,6 +7,9 @@
         <mat-icon>close</mat-icon>
     </button>
     <div [ngSwitch]="gaugeDialog.type">
+        <div *ngSwitchCase="gaugeDialogType.Chart">
+            <app-chart-property [data]="gaugeDialog.data" [reload]="reloadGaugeDialog" (onPropChanged)="onGaugeDialogChanged($event)"></app-chart-property>
+        </div>        
         <div *ngSwitchCase="gaugeDialogType.Graph">
             <app-graph-property [data]="gaugeDialog.data" [reload]="reloadGaugeDialog" (onPropChanged)="onGaugeDialogChanged($event)"></app-graph-property>
         </div>
@@ -36,7 +39,7 @@
                         <mat-icon aria-label="Import" matTooltip="{{'editor.view-import' | translate}}" *ngIf="panelsState.panelView" class="leftbar-edit-btn"
                             (click)="onImportView($event);$event.stopPropagation()">system_update_alt</mat-icon>
                         <input type="file" #viewFileImportInput style="display: none" id="viewFileUpload" (click)="$event.stopPropagation()"
-                            (change)="onViewFileChangeListener($event)" accept=".fuxav" />
+                            (change)="onViewFileChangeListener($event)" accept=".json" />
                     </mat-expansion-panel-header>
                     <div class="leftbar-panel view-panel">
                         <div *ngIf="hmi.views && hmi.views.length <= 0">
@@ -202,10 +205,10 @@
                     <mat-expansion-panel class="svg-workarea-leftbar-p" hideToggle="true">
                         <mat-expansion-panel-header class="svg-workarea-leftbar-h" style="max-height: 32px;height: 32px">
                             <mat-panel-title>
-                                <mat-icon aria-label="Select">expand_more</mat-icon>
+                                <mat-icon aria-label="Select" style="color: rgba(255,255, 255,0.4)">expand_more</mat-icon>
                                 <span>{{'editor.resources' | translate}}</span>
                             </mat-panel-title>
-                            <mat-icon aria-label="Add" matTooltip="{{'editor.view-add' | translate}}" class="leftbar-edit-btn" (click)="onAddResource();$event.stopPropagation()">add
+                            <mat-icon aria-label="Add" matTooltip="{{'editor.image-add' | translate}}" class="leftbar-edit-btn" (click)="onAddResource();$event.stopPropagation()">add
                             </mat-icon>
                         </mat-expansion-panel-header>
                     </mat-expansion-panel>              
@@ -218,7 +221,7 @@
             <!-- SVG-EDITOR -->
             <div [style.display]="(editorMode === editorModeType.SVG)?'block':'none' ">
                 <!-- RIGHT BAR -->
-                <div class="svg-tools-fly">
+                <div class="svg-tools-fly" [style.display]="(isAnySelected)?'block':'none' ">
                     <mat-expansion-panel class="svg-workarea-fly-p" (opened)="panelPropertyIdOpenState = true" (closed)="panelPropertyIdOpenState = false" hideToggle="true"
                         expanded="true" style="display:none">
                         <mat-expansion-panel-header class="svg-workarea-flybar-h">
@@ -241,8 +244,8 @@
                             </div>
                         </div>
                     </mat-expansion-panel>
-                    <mat-expansion-panel class="svg-workarea-fly-p" (opened)="panelPropertyTransformOpenState = true" (closed)="panelPropertyTransformOpenState = false"
-                        hideToggle="true" expanded="true">
+                    <mat-expansion-panel class="svg-workarea-fly-p" [style.display]="(selectedElement)?'block':'none'" (opened)="panelPropertyTransformOpenState = true" 
+                        (closed)="panelPropertyTransformOpenState = false" hideToggle="true" expanded="true">
                         <mat-expansion-panel-header class="svg-workarea-leftbar-h">
                             <mat-panel-title>
                                 <mat-icon aria-label="Select" *ngIf="panelPropertyTransformOpenState">expand_less</mat-icon>
@@ -594,7 +597,8 @@
                             </div>
                         </div>
                     </mat-expansion-panel>
-                    <mat-expansion-panel id="interaction_panel" class="svg-workarea-fly-p" (opened)="panelEventOpenState = true" (closed)="panelEventOpenState = false" hideToggle="true" expanded="true">
+                    <mat-expansion-panel id="interaction_panel" class="svg-workarea-fly-p" [style.display]="(selectedElement)?'block':'none'" (opened)="panelEventOpenState = true" 
+                        (closed)="panelEventOpenState = false" hideToggle="true" expanded="true">
                         <mat-expansion-panel-header class="svg-workarea-leftbar-h">
                             <mat-panel-title>
                                 <mat-icon aria-label="Select" *ngIf="panelEventOpenState">expand_less</mat-icon>

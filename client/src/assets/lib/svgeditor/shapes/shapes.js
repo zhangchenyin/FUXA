@@ -7,24 +7,55 @@ var svgedit = svgedit || {};
         svgedit.shapes = {};
     }
 
-    // Add here the your shapes file name 
-    var shapesToLoad = ['my-shapes.js', 'proc-shapes.js', 'ape-shapes.js'];
+    $.getJSON('/assets/shapes/shapes.json', function (data) {
+        var shapesToLoad = data.shapesToLoad;
 
-    svgedit.shapes.load = function (path, callback) {
-        var progress = 0;
-        $.each(shapesToLoad, function() {
-            var name = this;
-            $.getScript(curConfig.shapesPath + name, function(d) {
-                if (++progress == shapesToLoad.length) {
-                    callback();
-                }
-            }).fail(function(){
-                console.log('ERROR: loading ' + curConfig.shapesPath + name);
-                if (++progress == shapesToLoad.length) {
-                    callback();
-                }
-            });
+        $.getJSON('http://localhost:1881/api/resources/shapes', function (data) {
+            svgedit.shapes.load = function (path, callback) {
+                var progress = 0;
+                $.each(data.groups, function() {
+                    $.getJSON(`http://localhost:1881/api/resources/json-shapes/${this.name}`, function(data) {
+                        for (var i = 0; i < data.shapes.length; i++) {
+                            data.shapes[i].name = data.typeId + '-' + data.shapes[i].name;
+                        }
+                        if (svgEditor.shapesGrps[data.shapesGroupName]) {
+                            for (var i = 0; i < data.shapes.length; i++) {
+                                svgEditor.shapesGrps[data.shapesGroupName].push(data.shapes.shapes[i]);
+                            }
+                        } else {
+                            svgEditor.shapesGrps[data.shapesGroupName] = data.shapes;
+                        }
+                    }).fail(function(){
+                        console.log('ERROR: loading ' + '/assets/shapes/' + name  + '.json');
+                    });
+                });
+
+                $.each(shapesToLoad, function() {
+                    var name = this;
+                    $.getJSON('/assets/shapes/' + name + '.json', function(data) {
+                        for (var i = 0; i < data.shapes.length; i++) {
+                            data.shapes[i].name = data.typeId + '-' + data.shapes[i].name;
+                        }
+                        if (svgEditor.shapesGrps[data.shapesGroupName]) {
+                            for (var i = 0; i < data.shapes.length; i++) {
+                                svgEditor.shapesGrps[data.shapesGroupName].push(data.shapes[i]);
+                            }
+                        } else {
+                            svgEditor.shapesGrps[data.shapesGroupName] = data.shapes;
+                        }
+                        if (++progress == shapesToLoad.length) {
+                            callback();
+                        }
+                    }).fail(function(){
+                        console.log('ERROR: loading ' + '/assets/shapes/' + name  + '.json');
+                        if (++progress == shapesToLoad.length) {
+                            callback();
+                        }
+                    });
+                });
+
+                return true;
+            };
         });
-        return true;
-    };
+    });
 }());

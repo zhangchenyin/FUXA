@@ -71,6 +71,7 @@ function ScriptsManager(_runtime) {
                 if (script.test) {
                     scriptModule.runTestScript(script);
                 } else {
+                    logger.info(`Run script ${script.name}`);
                     scriptModule.runScript(script);
                 }
                 // this.runtime.project.getScripts();
@@ -79,6 +80,19 @@ function ScriptsManager(_runtime) {
                 reject(err);
             }
         });
+    }
+
+    this.isAuthorised = function (_script, groups) {
+        try {
+            const st = scriptModule.getScript(_script);
+            var admin = (groups === -1 || groups === 255) ? true : false;
+            if (admin || (st && (!st.permission || st.permission & groups))) {
+                return true;
+            }
+        } catch (err) {
+            logger.error(err);
+        }
+        return false;
     }
 
     /**
@@ -112,7 +126,11 @@ function ScriptsManager(_runtime) {
                         scriptModule.runScriptWithoutParameter(script);
                         script.lastRun = time;
                     } catch (err) {
-                        reject(err);
+                        if (err.message) {
+                            logger.error(err.message);
+                        } else {
+                            logger.error(err);
+                        }
                     }
                 }
             });

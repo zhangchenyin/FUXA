@@ -143,12 +143,12 @@ export class GaugesManager {
         return false;
     }
 
-    isWithActions(type) {
+    isWithActions(type, content) {
         if (type) {
             for (let i = 0; i < GaugesManager.GaugeWithActions.length; i++) {
                 if (type.startsWith(GaugesManager.GaugeWithActions[i].TypeTag)) {
                     if (typeof GaugesManager.GaugeWithActions[i]['getActions'] === 'function') {
-                        return GaugesManager.GaugeWithActions[i]['getActions'](type);
+                        return GaugesManager.GaugeWithActions[i]['getActions'](type, content);
                     }
                 }
             }
@@ -198,7 +198,7 @@ export class GaugesManager {
         } else if (ga.type.startsWith(HtmlSwitchComponent.TypeTag)) {
             return this.mapGauges[ga.id] = HtmlSwitchComponent.detectChange(ga, res, ref);
         } else if (ga.type.startsWith(HtmlIframeComponent.TypeTag)) {
-            HtmlIframeComponent.initElement(ga, true);
+            HtmlIframeComponent.detectChange(ga);
         } else if (ga.type.startsWith(HtmlTableComponent.TypeTag)) {
             delete this.mapGauges[ga.id];
             let gauge = HtmlTableComponent.detectChange(ga, res, ref);
@@ -737,7 +737,7 @@ export class GaugesManager {
                     this.hmiService.queryDaqValues(data);
                 });
                 if (isview) {
-                    gauge.setRange(Object.keys(chartRange)[0]);
+                    gauge.setRange(null);
                 }
                 this.mapGauges[ga.id] = gauge;
             }

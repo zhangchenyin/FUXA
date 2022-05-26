@@ -36,6 +36,7 @@ import { HtmlSwitchPropertyComponent } from '../gauges/controls/html-switch/html
 import { GridsterItem } from 'angular-gridster2';
 import { CardConfigComponent } from './card-config/card-config.component';
 import { CardsViewComponent } from '../cards-view/cards-view.component';
+import { FuxaViewComponent } from '../fuxa-view/fuxa-view.component';
 
 declare var Gauge: any;
 
@@ -92,6 +93,7 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
     currentMode = '';
     imagefile: string;
     gridOn: boolean = false;
+    isAnySelected = false;
     selectedElement: SelElement = new SelElement();
     panelsState = {
         enabled: false,
@@ -203,6 +205,7 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
             // init svg-editor
             let toinit = mysvgeditor.initSvgEditor($,
                 (selected) => {
+                    this.isAnySelected = (selected);
                     this.onSelectedElement(selected);
                     let ga: GaugeSettings = this.getGaugeSettings(selected);
                 },
@@ -1047,19 +1050,18 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     /**
-     * Export view in a file json format MyView.fuxav
+     * Export view in a file json format [View name].json
      * @param view
      */
     onExportView(view: View) {
-        let filename = 'fuxa-view.json';
-        let date = new Date();
+        let filename = `${view.name}.json`;
         let content = JSON.stringify(view);
         let blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
         FileSaver.saveAs(blob, filename);
     }
 
     /**
-     * Import view from file (exported in json format MyView.fuxav)
+     * Import view from file (exported in json format [View name].json)
      */
     onImportView() {
         let ele = document.getElementById('viewFileUpload') as HTMLElement;
@@ -1160,8 +1162,8 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
         return this.gaugesManager.isWithEvents(type);
     }
 
-    isWithActions(type) {
-        return this.gaugesManager.isWithActions(type);
+    isWithActions(type, content) {
+        return this.gaugesManager.isWithActions(type, content);
     }
 
     /**
@@ -1173,11 +1175,13 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
      */
     openEditGauge(settings, callback) {
         let tempsettings = JSON.parse(JSON.stringify(settings));
+        console.log('hola');
+        console.log(tempsettings);
         let hmi = this.projectService.getHmi();
         let dlgType = GaugesManager.getEditDialogTypeToUse(settings.type);
         let bitmaskSupported = GaugesManager.isBitmaskSupported(settings.type);
         let eventsSupported = this.isWithEvents(settings.type);
-        let actionsSupported = this.isWithActions(settings.type);
+        let actionsSupported = this.isWithActions(settings.type, FuxaViewComponent.getSvgElement(settings.id));
         let defaultValue = GaugesManager.getDefaultValue(settings.type);
         let names = Object.values(this.currentView.items).map(gs => gs.name);
         // set default name
@@ -1187,14 +1191,17 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
         // settings.property = JSON.parse(settings.property);        
         let dialogRef: any;
         if (dlgType === GaugeDialogType.Chart) {
-            dialogRef = this.dialog.open(ChartPropertyComponent, {
-                position: { top: '60px' },
-                data: {
-                    settings: tempsettings, devices: Object.values(this.projectService.getDevices()),
-                    views: hmi.views, dlgType: dlgType, charts: this.projectService.getCharts(),
-                    names: names
-                }
-            });
+            this.gaugeDialog.type = dlgType;
+            this.gaugeDialog.data = {
+                settings: tempsettings, devices: Object.values(this.projectService.getDevices()),
+                views: hmi.views, dlgType: dlgType, charts: this.projectService.getCharts(),
+                names: names
+            };
+            if (!this.sidePanel.opened) {
+                this.sidePanel.toggle();
+            }
+            this.reloadGaugeDialog = !this.reloadGaugeDialog;
+            return;
         } else if (dlgType === GaugeDialogType.Graph) {
             this.gaugeDialog.type = dlgType;
             this.gaugeDialog.data = {
@@ -1326,6 +1333,26 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
         });
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
+                if (result) {
+                    this.imagefile = result;
+                    let self = this;
+                    if (this.imagefile.split('.').pop().toLowerCase() === 'svg') {
+                        fetch(this.imagefile).then(r => r.text()).then(text => {
+                            if (self.winRef.nativeWindow.svgEditor.setSvgImageToAdd) {
+                                self.winRef.nativeWindow.svgEditor.setSvgImageToAdd(text);
+                            }
+                            self.setMode('svg-image');                        
+                        })
+                    }
+                    // } else {
+                    //     this.getBase64Image(result, function (imgdata) {
+                    //         if (self.winRef.nativeWindow.svgEditor.setUrlImageToAdd) {
+                    //             self.winRef.nativeWindow.svgEditor.setUrlImageToAdd(imgdata);
+                    //         }
+                    //         self.setMode('image');
+                    //     });
+                    // }
+                }
             }
         });
     }

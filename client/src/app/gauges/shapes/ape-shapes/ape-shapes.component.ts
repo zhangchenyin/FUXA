@@ -1,7 +1,7 @@
 /**
  * Shape extension
  */
-import { Component } from '@angular/core';
+import { Component, ContentChild } from '@angular/core';
 import { GaugeBaseComponent } from '../../gauge-base/gauge-base.component'
 import { GaugeSettings, GaugeAction, Variable, GaugeStatus, GaugeActionStatus, GaugeActionsType, GaugeProperty } from '../../../_models/hmi';
 import { GaugeDialogType } from '../../gauge-property/gauge-property.component';
@@ -23,8 +23,14 @@ export class ApeShapesComponent extends GaugeBaseComponent {
     static EliType = ApeShapesComponent.TypeTag + '-eli';
     static PistonType = ApeShapesComponent.TypeTag + '-piston';
 
-    static actionsType = { stop: GaugeActionsType.stop, clockwise: GaugeActionsType.clockwise, anticlockwise: GaugeActionsType.anticlockwise, downup: GaugeActionsType.downup,
-        hide: GaugeActionsType.hide, show: GaugeActionsType.show };
+    static actionsType: {
+        stop: GaugeActionsType.stop;
+        hide: GaugeActionsType.hide;
+        show: GaugeActionsType.show;
+        downup?: GaugeActionsType.downup;
+        clockwise?: GaugeActionsType.clockwise;
+        anticlockwise?: GaugeActionsType.anticlockwise;
+        } = { stop: GaugeActionsType.stop, hide: GaugeActionsType.hide, show: GaugeActionsType.show };
 
     constructor() {
         super();
@@ -46,14 +52,20 @@ export class ApeShapesComponent extends GaugeBaseComponent {
         return res;
     }
 
-    static getActions(type: string) {
+    static getActions(type: string, content: any) {
+        console.log(content);
         let actions = Object.assign({}, ApeShapesComponent.actionsType);
-        if (type === ApeShapesComponent.EliType) {
-            delete actions.downup;
-        } else if (type === ApeShapesComponent.PistonType) {
-            delete actions.anticlockwise;
-            delete actions.clockwise;
-        }
+        content[0].children[1].children.forEach(child => {
+            if (child.name === 'clockwise') {
+                actions.clockwise = ApeShapesComponent.actionsType.clockwise;
+            }
+            if (child.name === 'anticlockwise') {
+                actions.anticlockwise = ApeShapesComponent.actionsType.anticlockwise;
+            }
+            if (child.name === 'downup') {
+                actions.downup = ApeShapesComponent.actionsType.downup;
+            }
+        });
         return actions;
     }
 

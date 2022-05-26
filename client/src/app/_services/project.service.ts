@@ -154,7 +154,9 @@ export class ProjectService {
 
     saveAs() {
         let filename = 'fuxa-project.json';
-        let date = new Date();
+        if (this.getProjectName()) {
+            filename = `${this.getProjectName()}.json`;
+        }
         let content = JSON.stringify(this.convertToSave(this.getProject()));
         let blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
         FileSaver.saveAs(blob, filename);
@@ -162,6 +164,9 @@ export class ProjectService {
 
     exportDevices() {
         let filename = 'fuxa-devices.json';
+        if (this.getProjectName()) {
+            filename = `${this.getProjectName()}-devices.json`;
+        }        
         let devices = Object.values(this.convertToSave(this.getDevices()));
         let content = JSON.stringify(devices, null, 2);
         let blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
@@ -197,6 +202,15 @@ export class ProjectService {
             }
         }
         return result;
+    }
+
+    getProjectName(): string {
+        return (this.projectData) ? this.projectData.name : null;
+    }
+
+    setProjectName(name: string) {
+        this.projectData.name = name;
+        this.save();
     }
     //#endregion
 
@@ -404,11 +418,14 @@ export class ProjectService {
      * @returns 
      */
     getGraph(id: string) {
-        for (let i = 0; i < this.projectData.graphs.length; i++) {
-            if (this.projectData.graphs[i].id === id) {
-                return this.projectData.graphs[i];
+        if (this.projectData.graphs) {
+            for (let i = 0; i < this.projectData.graphs.length; i++) {
+                if (this.projectData.graphs[i].id === id) {
+                    return this.projectData.graphs[i];
+                }
             }
         }
+        return null;
     }
 
     /**
